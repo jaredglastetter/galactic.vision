@@ -1,5 +1,5 @@
 var scene = new THREE.Scene();
-var frustumSize = 10;
+var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
 var camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 2000 );
 
@@ -8,12 +8,14 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 
-var geometry = new THREE.SphereGeometry(1, 8, 8);
+var geometry = new THREE.SphereGeometry(0.5, 8, 8);
 var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 
-var node = new THREE.Mesh( geometry, material );
+
+//var node = new THREE.Mesh( geometry, material );
 var node2 = new THREE.Mesh( geometry, material );
-var node3 = new THREE.Mesh( geometry, material );
+//var node3 = new THREE.Mesh( geometry, material );
 
 var edges = new THREE.EdgesGeometry( geometry );
 var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
@@ -40,23 +42,23 @@ function TripManager() {
 TripManager.prototype = {
 	    constructor: TripManager,
 	    travel:function ()  {
+        var newTrips = this.trips; //will replace trips copy at end of function
+
           this.trips.forEach(function(trip) {
             var index;
             trip.travel();
             if(trip.alpha >= 1 && trip.processed) {
-              //remove trip
-              index = this.trips.indexOf(trip);
-              if (index > -1) {
-                this.trips.splice(index, 1);
-              }
+              trip.remove();
+              newTrips = _.without(newTrips, trip);
             }
           });
+
+          this.trips = newTrips;
 	    },
       addTrip: function (trip) {
         this.trips.push(trip);
       },
       hasTrips: function () {
-        console.log(this.trips);
         if(this.trips) {
           return true;
         } else {
@@ -67,16 +69,59 @@ TripManager.prototype = {
 
 //Trip javascript object function
 
-function Trip(startPos, endPos, payload, ledger) {
-  this.startPos = startPos;
-  this.endPos = endPos;
-  this.payload = payload;
+function Trip(ledger) {
+  //Three js objects
+  this.startNode = new THREE.Mesh( geometry, material );
+  this.endNode = new THREE.Mesh( geometry, material2 );
+
+  this.edges = new THREE.EdgesGeometry( geometry );
+  this.line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+  this.edges2 = new THREE.EdgesGeometry( geometry );
+  this.line2 = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+
+  this.payload = new THREE.Points(pGeometry, pMaterial);
+
+  //randomize initial pos
+
+  var angle = Math.random() * Math.PI*2;
+  var radius = Math.random() * 5 + 4;
+
+  var x1 = Math.cos(angle) * radius;
+  var y1 = Math.random() * 5 - 2.5;
+  var z1 = Math.sin(angle) * radius;
+
+  var angle2 = Math.random() * Math.PI*2;
+  var radius2 = Math.random() * 5 + 4;
+
+  var x2 = Math.cos(angle2) * radius2;
+  var y2 = Math.random() * 5 - 2.5;
+  var z2 = Math.sin(angle2) * radius2;
+
+  this.startNode.position.set(x1,y1,z1);
+  this.line.position.set(x1,y1,z1);
+
+  this.endNode.position.set(x2,y2,z2);
+  this.line2.position.set(x2,y2,z2);
+
+  this.payload.position.set(-1,0,0);
+
+  scene.add( this.startNode );
+  scene.add( this.endNode);
+  scene.add( this.line );
+  scene.add( this.line2 );  
+  scene.add( this.payload );
+
+  //data
+  //this.startPos = this.startNode.position;
+  //this.endPos = this.endNode.position;
+  this.payloadPos = this.payload.position;
   this.ledger = ledger;
   this.alpha = 0;
-  this.rate = 0.0025;
+  this.rate = Math.random() / 100;
   this.processed = false; //keeps track of status of trip false -> going to ledger true -> traveling to destination 
+
   //inner trip management -> swap with ledger -> endPos once first trip complete
-  this.v1 = this.startPos;
+  this.v1 = this.startNode.position;
   this.v2 = this.ledger;
 }
 
@@ -84,15 +129,20 @@ Trip.prototype = {
 	    constructor: Trip,
 	    travel:function ()  {
           this.alpha += this.rate;
-	        this.payload.lerpVectors(this.v1, this.v2, this.alpha);
+	        this.payloadPos.lerpVectors(this.v1, this.v2, this.alpha);
           if(this.alpha >= 1 && !this.processed) {
             //switch trip to endpoint
             this.alpha = 0;
             this.v1 = this.ledger;
-            this.v2 = this.endPos;
+            this.v2 = this.endNode.position;
             this.processed = true;
           }
-	    }
+	    },
+      remove:function () {
+        scene.remove(this.startNode);
+        scene.remove(this.endNode);
+        scene.remove(this.payload);
+      }
 	}
 
 pGeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( [-1,0,0], 3 ) );
@@ -100,32 +150,15 @@ pGeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( [0,1,0], 3 ) 
 
 pGeometry.computeBoundingSphere();
 
-points = new THREE.Points(pGeometry, pMaterial);
 point2 = new THREE.Points(pGeometry, pMaterial);
 
-scene.add(points);
-scene.add(point2);
-
-scene.add( line );
 scene.add( line2 );
-scene.add(line3);
 
-points.position.set(-1,0,0);
-point2.position.set(-3,0,0);
+node2.position.set(0,0,0);
+line2.position.set(0,0,0);
 
-node.position.set(-5,0,0);
-line.position.set(-5,0,0);
-
-node2.position.set(5,0,-2);
-line2.position.set(5,0,-2);
-
-node3.position.set(10,0,5);
-line3.position.set(10,0,5);
-
-// create trip and test
-scene.add( node );
 scene.add(node2);
-scene.add(node3);
+
 
 camera.position.x = -2.5;
 camera.position.y = 7.5;
@@ -133,21 +166,15 @@ camera.position.z = 5;
 
 camera.lookAt( scene.position );
 
-var t = 0;
-var forward = true;
-
-points.position = node.position;
-
 //create trip
-var testTrip = new Trip(node.position, node3.position, points.position, node2.position);
-
-//connection trip
-var testTrip2 = new Trip(node3.position, node.position, point2.position, node2.position);
+//var testTrip = new Trip(node2.position);
 
 var tripManager = new TripManager();
 
-tripManager.addTrip(testTrip);
-tripManager.addTrip(testTrip2);
+for(var i = 0; i < 5; i++) {
+  tripManager.addTrip(new Trip(node2.position));
+}
+//tripManager.addTrip(testTrip2);
 
 function animate() {
 	requestAnimationFrame( animate );
@@ -155,9 +182,6 @@ function animate() {
   if(tripManager.hasTrips()) {
     tripManager.travel();
   }
-  
-  node.rotation.y += 0.01;
-  line.rotation.y += 0.01;
   
   node2.rotation.y += 0.01;
   line2.rotation.y += 0.01;
