@@ -1,12 +1,23 @@
 var scene = new THREE.Scene();
 var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
+
+
 var camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 2000 );
+//var camera = new THREE.PerspectiveCamera( 50, 0.5 * aspect, 1, 10000 );
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+var controls = new THREE.OrbitControls( camera );
+
+controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+controls.dampingFactor = 0.25;
+controls.panningMode = THREE.HorizontalPanning; // default is THREE.ScreenSpacePanning
+controls.minDistance = 100;
+controls.maxDistance = 500
+controls.maxPolarAngle = Math.PI / 2;
 
 var geometry = new THREE.SphereGeometry(0.5, 8, 8);
 var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -159,10 +170,16 @@ line2.position.set(0,0,0);
 
 scene.add(node2);
 
-
+//ortho
 camera.position.x = -2.5;
 camera.position.y = 7.5;
 camera.position.z = 5;
+
+//perspective
+/*
+camera.position.x = 0;
+camera.position.y = 20;
+camera.position.z = 20;*/
 
 camera.lookAt( scene.position );
 
