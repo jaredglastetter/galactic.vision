@@ -20,6 +20,7 @@ controls.maxDistance = 500
 controls.maxPolarAngle = Math.PI / 2;
 
 var geometry = new THREE.SphereGeometry(0.5, 8, 8);
+var geometry2 = new THREE.SphereGeometry(0.25, 8, 8);
 var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 
@@ -28,11 +29,11 @@ var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 var node2 = new THREE.Mesh( geometry, material );
 //var node3 = new THREE.Mesh( geometry, material );
 
-var edges = new THREE.EdgesGeometry( geometry );
+var edges = new THREE.EdgesGeometry( geometry2 );
 var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
 var edges2 = new THREE.EdgesGeometry( geometry );
-var line2 = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+var line2 = new THREE.LineSegments( edges2, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
 var edges3 = new THREE.EdgesGeometry( geometry );
 var line3 = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
@@ -82,13 +83,13 @@ TripManager.prototype = {
 
 function Trip(ledger) {
   //Three js objects
-  this.startNode = new THREE.Mesh( geometry, material );
-  this.endNode = new THREE.Mesh( geometry, material2 );
+  this.startNode = new THREE.Mesh( geometry2, material );
+  this.endNode = new THREE.Mesh( geometry2, material2 );
 
-  this.edges = new THREE.EdgesGeometry( geometry );
-  this.line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-  this.edges2 = new THREE.EdgesGeometry( geometry );
-  this.line2 = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+  this.edges = new THREE.EdgesGeometry( geometry2 );
+  this.line = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+  this.edges2 = new THREE.EdgesGeometry( geometry2 );
+  this.line2 = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
   this.payload = new THREE.Points(pGeometry, pMaterial);
 
@@ -158,6 +159,21 @@ Trip.prototype = {
       }
 	}
 
+   function loadJSON(callback) {   
+
+    var xobj = new XMLHttpRequest();
+        xobj.overrideMimeType("application/json");
+    xobj.open('GET', 'operations.json', true); // Replace 'my_data' with the path to your file
+    xobj.onreadystatechange = function () {
+          if (xobj.readyState == 4 && xobj.status == "200") {
+            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            callback(xobj.responseText);
+          }
+    };
+    xobj.send(null);  
+ }
+ 
+
 pGeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( [-1,0,0], 3 ) );
 pGeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( [0,1,0], 3 ) );
 
@@ -188,21 +204,44 @@ camera.lookAt( scene.position );
 //create trip
 //var testTrip = new Trip(node2.position);
 
-var tripManager = new TripManager();
+(function addTrips (i) {
+  setTimeout(function () {
+    tripManager.addTrip(new Trip(node2.position));
+    if (--i) {          // If i > 0, keep going
+      addTrips(i);       // Call the loop again, and pass it the current value of i
+    }
+  }, 1000);
+})(50);
 
-for(var i = 0; i < 5; i++) {
-  tripManager.addTrip(new Trip(node2.position));
-}
+var tripManager;
+
+loadJSON(function(response) {
+// Parse JSON string into object
+  var actual_JSON = JSON.parse(response);
+  console.log(actual_JSON);
+  var records = actual_JSON._embedded.records;
+  console.log(records);
+  console.log(records.length);
+
+  tripManager = new TripManager();
+
+  addTrips(records.length);
+});
+
+
+
 //tripManager.addTrip(testTrip2);
 
 
 function animate() {
 	requestAnimationFrame( animate );
   
-  if(tripManager.hasTrips()) {
-    tripManager.travel();
+  if(tripManager) {
+    if(tripManager.hasTrips()) {
+      tripManager.travel();
+    }
   }
-  
+
   node2.rotation.y += 0.01;
   line2.rotation.y += 0.01;
   
