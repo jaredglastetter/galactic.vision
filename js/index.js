@@ -129,7 +129,7 @@ function Trip(ledger) {
   this.payloadPos = this.payload.position;
   this.ledger = ledger;
   this.alpha = 0;
-  this.rate = Math.random() / 100;
+  this.rate = Math.random() / 25;
   this.processed = false; //keeps track of status of trip false -> going to ledger true -> traveling to destination 
 
   //inner trip management -> swap with ledger -> endPos once first trip complete
@@ -204,6 +204,7 @@ camera.lookAt( scene.position );
 //create trip
 //var testTrip = new Trip(node2.position);
 
+/*
 (function addTrips (i) {
   setTimeout(function () {
     tripManager.addTrip(new Trip(node2.position));
@@ -218,16 +219,40 @@ var tripManager;
 loadJSON(function(response) {
 // Parse JSON string into object
   var actual_JSON = JSON.parse(response);
-  console.log(actual_JSON);
+  //console.log(actual_JSON);
   var records = actual_JSON._embedded.records;
-  console.log(records);
-  console.log(records.length);
+  //console.log(records);
+  //console.log(records.length);
 
   tripManager = new TripManager();
 
   addTrips(records.length);
 });
 
+*/
+
+/*
+var server = new StellarSdk.Server('https://horizon-testnet.stellar.org');
+// get a list of transactions that occurred in ledger 1400
+server.transactions()
+    .forLedger(1400)
+    .call().then(function(r){ console.log(r); });*/
+
+
+var tripManager = new TripManager();
+
+
+var es = new EventSource('https://horizon-testnet.stellar.org/transactions');
+es.onmessage = function(message) {
+    var result = message.data ? JSON.parse(message.data) : message;
+    console.log('New transaction:');
+    console.log(result);
+    tripManager.addTrip(new Trip(node2.position));
+
+};
+es.onerror = function(error) {
+    console.log('An error occured!');
+}
 
 
 //tripManager.addTrip(testTrip2);
