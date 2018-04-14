@@ -159,6 +159,77 @@ Trip.prototype = {
       }
 	}
 
+  function RequestStream() {
+
+    this.server = new StellarSdk.Server('https://horizon.stellar.org');
+
+    this.stream = this.server.transactions()
+    .cursor('now')
+    .stream({
+      onmessage: function (message) {
+        //console.log(message);
+        console.log("initial transactions stream");
+        tripManager.addTrip(new Trip(node2.position));
+      }
+    });
+
+    console.log(this.es);
+}
+
+RequestStream.prototype = {
+  constructor: RequestStream,
+  transactions:function ()  {
+    //this.es.close();
+    this.stream = this.server.transactions()
+    .cursor('now')
+    .stream({
+      onmessage: function (message) {
+        //console.log(message);
+        console.log("transactions stream");
+        tripManager.addTrip(new Trip(node2.position));
+      }
+    });
+  },
+  payments: function () {
+    //this.stream.close();
+    this.stream = this.server.payments()
+    .cursor('now')
+    .stream({
+      onmessage: function (message) {
+        //console.log(message);
+        console.log("payments stream");
+        tripManager.addTrip(new Trip(node2.position));
+      }
+    });
+  },
+  operations: function () {
+    //this.es.close();
+    this.stream = this.server.operations()
+    .cursor('now')
+    .stream({
+      onmessage: function (message) {
+        //console.log(message);
+        console.log("operations stream");
+        tripManager.addTrip(new Trip(node2.position));
+      }
+    });
+  },
+  effects: function () {
+    //this.es.close();
+    this.stream = this.server.effects()
+    .cursor('now')
+    .stream({
+      onmessage: function (message) {
+       // console.log(message);
+       console.log("effects stream");
+        tripManager.addTrip(new Trip(node2.position));
+      }
+    });
+  }
+
+}
+
+
    function loadJSON(callback) {   
 
     var xobj = new XMLHttpRequest();
@@ -231,31 +302,38 @@ loadJSON(function(response) {
 
 */
 
-/*
-var server = new StellarSdk.Server('https://horizon-testnet.stellar.org');
-// get a list of transactions that occurred in ledger 1400
-server.transactions()
-    .forLedger(1400)
-    .call().then(function(r){ console.log(r); });*/
-
-
 var tripManager = new TripManager();
 
+var liveMode = new RequestStream();
 
-var es = new EventSource('https://horizon-testnet.stellar.org/transactions');
-es.onmessage = function(message) {
-    var result = message.data ? JSON.parse(message.data) : message;
-    console.log('New transaction:');
-    console.log(result);
-    tripManager.addTrip(new Trip(node2.position));
+$(document).ready(function() {
+  $("#transactions").click(function setLiveTransactions() {
+    //console.log(liveMode);
+    liveMode.transactions();
+    $("#transactions").toggleClass('selected');
+  });
 
-};
-es.onerror = function(error) {
-    console.log('An error occured!');
-}
+  $("#payments").click(function setLivePayments() {
+    //console.log(liveMode);
+    liveMode.payments();
+    $("#payments").toggleClass('selected');
+  });
+
+  $("#operations").click(function setLiveOperations() {
+    //console.log(liveMode);
+    liveMode.operations();
+    $("#operations").toggleClass('selected');
+  });
 
 
-//tripManager.addTrip(testTrip2);
+  $("#effects").click(function setLiveEffects() {
+   // console.log(liveMode);
+    liveMode.effects();
+    $("#effects").toggleClass('selected');
+  });
+
+});
+
 
 
 function animate() {
