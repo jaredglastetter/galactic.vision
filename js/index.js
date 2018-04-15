@@ -43,8 +43,9 @@ var color = new THREE.Color();
 
 //var pMaterial = new THREE.PointsMaterial( { size: 0.05, vertexColors: THREE.VertexColors } );
 //
+var spriteMap = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/lensflare/lensflare0_alpha.png' ); // new THREE.CanvasTexture( generateSprite() )
 var pMaterial = new THREE.SpriteMaterial( {
-          map: new THREE.CanvasTexture( generateSprite() ),
+          map: spriteMap,
           blending: THREE.AdditiveBlending
         } );
 
@@ -54,7 +55,9 @@ var points;
 var point2;
 
 
-//generate sprite canvas
+/*  Sprites  */
+
+
 function generateSprite() {
         var canvas = document.createElement( 'canvas' );
         canvas.width = 16;
@@ -70,6 +73,28 @@ function generateSprite() {
         return canvas;
       }
 
+function initParticle( particle, delay ) {
+        var particle = this instanceof THREE.Sprite ? this : particle;
+        var delay = delay !== undefined ? delay : 0;
+        particle.position.set( 0, 0, 0 );
+        //particle.scale.x = particle.scale.y = Math.random() * 32 + 16;
+        new TWEEN.Tween( particle )
+          .delay( delay )
+          .to( {}, 10000 )
+          .onComplete( initParticle )
+          .start();
+        new TWEEN.Tween( particle.position )
+          .delay( delay )
+          .to( { x: Math.random() * 4000 - 2000, y: Math.random() * 1000 - 500, z: Math.random() * 4000 - 2000 }, 10000 )
+          .start();
+        new TWEEN.Tween( particle.scale )
+          .delay( delay )
+          .to( { x: 0.01, y: 0.01 }, 10000 )
+          .start();
+      }
+
+/*    END Sprites */
+
 
 //Trip manager object to manage trips and remove trips when lerp is complete -> controls animation
 function TripManager() {
@@ -77,8 +102,8 @@ function TripManager() {
 }
 
 TripManager.prototype = {
-	    constructor: TripManager,
-	    travel:function ()  {
+      constructor: TripManager,
+      travel:function ()  {
         var newTrips = this.trips; //will replace trips copy at end of function
 
           this.trips.forEach(function(trip) {
@@ -91,7 +116,7 @@ TripManager.prototype = {
           });
 
           this.trips = newTrips;
-	    },
+      },
       addTrip: function (trip) {
         this.trips.push(trip);
       },
@@ -102,7 +127,7 @@ TripManager.prototype = {
           return false;
         }
       }
-	}
+  }
 
 //Trip javascript object function
 
@@ -117,6 +142,7 @@ function Trip(ledger) {
   this.line2 = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
   this.payload = new THREE.Sprite(pMaterial);
+  initParticle(this.payload, 0);
 
   //randomize initial pos
 
@@ -163,10 +189,10 @@ function Trip(ledger) {
 }
 
 Trip.prototype = {
-	    constructor: Trip,
-	    travel:function ()  {
+      constructor: Trip,
+      travel:function ()  {
           this.alpha += this.rate;
-	        this.payloadPos.lerpVectors(this.v1, this.v2, this.alpha);
+          this.payloadPos.lerpVectors(this.v1, this.v2, this.alpha);
           if(this.alpha >= 1 && !this.processed) {
             //switch trip to endpoint
             this.alpha = 0;
@@ -174,7 +200,7 @@ Trip.prototype = {
             this.v2 = this.endNode.position;
             this.processed = true;
           }
-	    },
+      },
       remove:function () {
         scene.remove(this.startNode);
         scene.remove(this.endNode);
@@ -182,7 +208,7 @@ Trip.prototype = {
         scene.remove(this.line);
         scene.remove(this.line2);
       }
-	}
+  }
 
   function RequestStream() {
 
@@ -362,8 +388,8 @@ $(document).ready(function() {
 
 
 function animate() {
-	requestAnimationFrame( animate );
-  
+  requestAnimationFrame( animate );
+  TWEEN.update();
   if(tripManager) {
     if(tripManager.hasTrips()) {
       tripManager.travel();
@@ -373,7 +399,7 @@ function animate() {
   node2.rotation.y += 0.01;
   line2.rotation.y += 0.01;
   
-	renderer.render( scene, camera );
+  renderer.render( scene, camera );
 }
 
 animate();
