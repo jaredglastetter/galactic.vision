@@ -40,10 +40,35 @@ var line3 = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color:
 
 var pGeometry = new THREE.BufferGeometry();
 var color = new THREE.Color();
-var pMaterial = new THREE.PointsMaterial( { size: 0.05, vertexColors: THREE.VertexColors } );
+
+//var pMaterial = new THREE.PointsMaterial( { size: 0.05, vertexColors: THREE.VertexColors } );
+//
+var pMaterial = new THREE.SpriteMaterial( {
+          map: new THREE.CanvasTexture( generateSprite() ),
+          blending: THREE.AdditiveBlending
+        } );
+
+
 var particles, particle, particleCount = 0;
 var points;
 var point2;
+
+
+//generate sprite canvas
+function generateSprite() {
+        var canvas = document.createElement( 'canvas' );
+        canvas.width = 16;
+        canvas.height = 16;
+        var context = canvas.getContext( '2d' );
+        var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
+        gradient.addColorStop( 0, 'rgba(255,255,255,1)' );
+        gradient.addColorStop( 0.2, 'rgba(0,255,255,1)' );
+        gradient.addColorStop( 0.4, 'rgba(0,0,64,1)' );
+        gradient.addColorStop( 1, 'rgba(0,0,0,1)' );
+        context.fillStyle = gradient;
+        context.fillRect( 0, 0, canvas.width, canvas.height );
+        return canvas;
+      }
 
 
 //Trip manager object to manage trips and remove trips when lerp is complete -> controls animation
@@ -91,7 +116,7 @@ function Trip(ledger) {
   this.edges2 = new THREE.EdgesGeometry( geometry2 );
   this.line2 = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
-  this.payload = new THREE.Points(pGeometry, pMaterial);
+  this.payload = new THREE.Sprite(pMaterial);
 
   //randomize initial pos
 
