@@ -142,7 +142,7 @@ function Trip(ledger) {
   this.line2 = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
   this.payload = new THREE.Sprite(pMaterial);
-  initParticle(this.payload, 0);
+  //initParticle(this.payload, 0);
 
   //randomize initial pos
 
