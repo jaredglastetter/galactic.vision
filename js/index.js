@@ -10,6 +10,13 @@ var renderer = new THREE.WebGLRenderer( { alpha: true } );
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+// for interactive
+var mouse = new THREE.Vector2(), INTERSECTED;
+var raycaster = new THREE.Raycaster();
+var radius = 500;
+var theta = 0;
+
+
 var controls = new THREE.OrbitControls( camera );
 
 controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
@@ -94,6 +101,30 @@ function initParticle( particle, delay ) {
       }
 
 /*    END Sprites */
+
+/* raycaster */
+var light = new THREE.DirectionalLight( 0xffffff, 1 );
+light.position.set( 1, 1, 1 ).normalize();
+scene.add( light );
+
+document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize() {
+        var aspect = window.innerWidth / window.innerHeight;
+        camera.left   = - frustumSize * aspect / 2;
+        camera.right  =   frustumSize * aspect / 2;
+        camera.top    =   frustumSize / 2;
+        camera.bottom = - frustumSize / 2;
+        camera.updateProjectionMatrix();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+      }
+function onDocumentMouseMove( event ) {
+        event.preventDefault();
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      }
+//////////
 
 
 //Trip manager object to manage trips and remove trips when lerp is complete -> controls animation
@@ -389,7 +420,7 @@ $(document).ready(function() {
 
 function animate() {
   requestAnimationFrame( animate );
-  TWEEN.update();
+  //TWEEN.update();
   if(tripManager) {
     if(tripManager.hasTrips()) {
       tripManager.travel();
@@ -398,8 +429,41 @@ function animate() {
 
   node2.rotation.y += 0.01;
   line2.rotation.y += 0.01;
-  
+  render();
   renderer.render( scene, camera );
+  
+  //renderer.render( scene, camera );
+}
+
+function render()
+{
+      theta += 0.1;
+      camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
+      camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
+      camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
+      camera.lookAt( scene.position );
+      camera.updateMatrixWorld();
+      // find intersections
+      raycaster.setFromCamera( mouse, camera );
+      var intersects = raycaster.intersectObjects( scene.children );
+      if ( intersects.length > 0 ) 
+      {
+        if ( INTERSECTED != intersects[ 0 ].object ) 
+        {
+          if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+          INTERSECTED = intersects[ 0 ].object;
+          INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+          INTERSECTED.material.color.setHex( 0xff0000 );
+          console.log(intersects.length);
+        }
+      } 
+      else 
+      {
+        if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+        INTERSECTED = null;
+      }
+      
+    
 }
 
 animate();
