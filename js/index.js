@@ -108,9 +108,11 @@ light.position.set( 1, 1, 1 ).normalize();
 scene.add( light );
 
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+document.addEventListener( 'mousedown', onDocumentMouseDown, false);
 window.addEventListener( 'resize', onWindowResize, false );
 
-function onWindowResize() {
+function onWindowResize() 
+{
         var aspect = window.innerWidth / window.innerHeight;
         camera.left   = - frustumSize * aspect / 2;
         camera.right  =   frustumSize * aspect / 2;
@@ -118,12 +120,34 @@ function onWindowResize() {
         camera.bottom = - frustumSize / 2;
         camera.updateProjectionMatrix();
         renderer.setSize( window.innerWidth, window.innerHeight );
-      }
-function onDocumentMouseMove( event ) {
+}
+function onDocumentMouseMove( event ) 
+{
         event.preventDefault();
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+function onDocumentMouseDown(event)
+{
+  raycaster.setFromCamera( mouse, camera );
+      var intersects = raycaster.intersectObjects( scene.children );
+      if ( intersects.length > 0 ) 
+      {
+        if ( INTERSECTED != intersects[ 0 ].object ) 
+        {
+          if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+          INTERSECTED = intersects[ 0 ].object;
+          INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+          INTERSECTED.material.color.setHex( 0xff0000 );
+          console.log(intersects.length);
+        }
+      } 
+      else 
+      {
+        if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+        INTERSECTED = null;
       }
+}
 //////////
 
 
@@ -429,7 +453,7 @@ function animate() {
 
   node2.rotation.y += 0.01;
   line2.rotation.y += 0.01;
-  render();
+  //render();
   renderer.render( scene, camera );
   
   //renderer.render( scene, camera );
