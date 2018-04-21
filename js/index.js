@@ -383,36 +383,6 @@ camera.position.z = 20;*/
 
 camera.lookAt( scene.position );
 
-//create trip
-//var testTrip = new Trip(node2.position);
-
-/*
-(function addTrips (i) {
-  setTimeout(function () {
-    tripManager.addTrip(new Trip(node2.position));
-    if (--i) {          // If i > 0, keep going
-      addTrips(i);       // Call the loop again, and pass it the current value of i
-    }
-  }, 1000);
-})(50);
-
-var tripManager;
-
-loadJSON(function(response) {
-// Parse JSON string into object
-  var actual_JSON = JSON.parse(response);
-  //console.log(actual_JSON);
-  var records = actual_JSON._embedded.records;
-  //console.log(records);
-  //console.log(records.length);
-
-  tripManager = new TripManager();
-
-  addTrips(records.length);
-});
-
-*/
-
 var tripManager = new TripManager();
 
 var liveMode = new RequestStream();
