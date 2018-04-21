@@ -148,6 +148,8 @@ function onDocumentMouseDown(event)
            // var dir = camera.position.clone().sub(intersects[0].point).normalize();
            // camera.position = intersects[0].point.clone().add(dir);
            // camera.lookAt(intersects[0].point);
+           // 
+           // 
 
         }
       } 
