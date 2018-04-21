@@ -45,6 +45,20 @@ var particles, particle, particleCount = 0;
 var points;
 var point2;
 
+var asset_colours = {
+  "native": "#0eb9e9",
+  "BTC": "#FF9900", //orangish
+  "ETH": "#ecf0f1", //light gray
+  "XRP": "#178bc2", //middle of logo blue
+  "LTC": "#d3d3d3", //lighter gray
+  "USDT": "#22a079", //some kind of green
+  "ADA": "#2a71d0", // blue
+  "NEO":"#58bf00", //green
+  "IOTA": "#a3a3a3", //light gray?
+  "XMR": "#f26822", //orange
+  "OTHER": "#FF0" //red for now
+}
+
 
 //Trip manager object to manage trips and remove trips when lerp is complete -> controls animation
 function TripManager() {
@@ -81,7 +95,7 @@ TripManager.prototype = {
 
 //Trip javascript object function
 
-function Trip(ledger) {
+function Trip(ledger, request) {
   //Three js objects
   this.startNode = new THREE.Mesh( geometry2, material );
   this.endNode = new THREE.Mesh( geometry2, material2 );
@@ -91,7 +105,40 @@ function Trip(ledger) {
   this.edges2 = new THREE.EdgesGeometry( geometry2 );
   this.line2 = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
-  this.payload = new THREE.Points(pGeometry, pMaterial);
+  var colour;
+
+  if(request) {
+    
+    console.log(asset_colours);
+    console.log(request.asset);
+
+
+    if(asset_colours.hasOwnProperty(request.asset)) {
+      console.log(request.asset);
+      console.log(asset_colours[request.asset]);
+      colour = asset_colours[request.asset];
+
+      this.aMaterial = new THREE.PointsMaterial( { size: 0.05, color: colour } );
+    } else {
+      this.aMaterial = new THREE.PointsMaterial( { size: 0.05, color: 0x00FF00 } );
+    }
+    this.payload = new THREE.Points(pGeometry, this.aMaterial);
+  } else {
+    this.payload = new THREE.Points(pGeometry, pMaterial);
+  }
+
+  /*
+  if(request.name == "operation") {
+    //1st asset
+    this.payload = new THREE.Points(pGeometry, pMaterial);
+
+
+    //assign asset color to point
+
+    //2nd asset
+    this.payload2 = new THREE.Points(pGeometry, pMaterial);
+
+  }*/
 
   //randomize initial pos
 
@@ -127,14 +174,21 @@ function Trip(ledger) {
   //this.startPos = this.startNode.position;
   //this.endPos = this.endNode.position;
   this.payloadPos = this.payload.position;
+ // if(this.payload2) {
+    //this.payloadPos2 = this.payload2.position;
+  //}
   this.ledger = ledger;
   this.alpha = 0;
+  this.alpha2 = 0; //2nd asset
   this.rate = Math.random() / 25;
   this.processed = false; //keeps track of status of trip false -> going to ledger true -> traveling to destination 
+  this.processed2 = false;
 
   //inner trip management -> swap with ledger -> endPos once first trip complete
   this.v1 = this.startNode.position;
   this.v2 = this.ledger;
+  this.v3 = this.endNode.position;
+  this.v4 = this.ledger;
 }
 
 Trip.prototype = {
@@ -149,6 +203,17 @@ Trip.prototype = {
             this.v2 = this.endNode.position;
             this.processed = true;
           }
+          /*
+          if(this.payload2) {
+            this.payloadPos2.lerpVectors(this.v3, this.v4, this.alpha);
+            if(this.alpha2 >= 1 && !this.processed) {
+              //switch trip to endpoint
+              this.alpha2 = 0;
+              this.v3 = this.ledger;
+              this.v4 = this.startNode.position;
+              this.processed2 = true;
+            }
+          }*/
 	    },
       remove:function () {
         scene.remove(this.startNode);
@@ -163,6 +228,7 @@ Trip.prototype = {
 
     this.server = new StellarSdk.Server('https://horizon.stellar.org');
 
+    /*
     this.stream = this.server.transactions()
     .cursor('now')
     .stream({
@@ -171,10 +237,11 @@ Trip.prototype = {
         console.log("initial transactions stream");
         tripManager.addTrip(new Trip(node2.position));
       }
-    });
+    });*/
 
-    console.log(this.es);
+    //console.log(this.es);
 }
+
 
 RequestStream.prototype = {
   constructor: RequestStream,
@@ -184,7 +251,7 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        //console.log(message);
+        console.log(message);
         console.log("transactions stream");
         tripManager.addTrip(new Trip(node2.position));
       }
@@ -196,9 +263,18 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        //console.log(message);
+        console.log(message);
+
+        var payment = new Object();
+        payment.name = "payment";
+        if(message.asset_code) {
+          payment.asset = message.asset_code; 
+        } else if(message.asset_type) {
+          payment.asset = message.asset_type; 
+        }
+
         console.log("payments stream");
-        tripManager.addTrip(new Trip(node2.position));
+        tripManager.addTrip(new Trip(node2.position, payment));
       }
     });
   },
@@ -209,7 +285,42 @@ RequestStream.prototype = {
     .stream({
       onmessage: function (message) {
         //console.log(message);
-        console.log("operations stream");
+        var trade = new Object();
+        trade.name = "trade";
+        if(message.buying_asset_code) {
+          trade.asset = message.buying_asset_code; 
+        } else {
+          trade.asset = message.buying_asset_type; 
+        }
+        if(message.selling_asset_code) {
+          trade.asset2 = message.selling_asset_code; 
+        } else {
+          trade.asset2 = message.selling_asset_type; 
+        }
+        console.log(trade);
+        tripManager.addTrip(new Trip(node2.position, trade));
+      }
+    });
+  },
+  trades: function () {
+    //this.es.close();
+    this.stream = this.server.trades()
+    .stream({
+      onmessage: function (message) {
+        console.log(message);
+        var trade = new Object();
+        trade.name = "trade";
+        if(message.buying_asset_code) {
+          trade.asset = message.buying_asset_code; 
+        } else {
+          trade.asset = message.buying_asset_type; 
+        }
+        if(message.selling_asset_code) {
+          trade.asset2 = message.selling_asset_code; 
+        } else {
+          trade.asset2 = message.selling_asset_type; 
+        }
+        console.log(trade);
         tripManager.addTrip(new Trip(node2.position));
       }
     });
@@ -220,7 +331,7 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-       // console.log(message);
+        console.log(message);
        console.log("effects stream");
         tripManager.addTrip(new Trip(node2.position));
       }
@@ -325,6 +436,11 @@ $(document).ready(function() {
     $("#operations").toggleClass('selected');
   });
 
+  $("#trades").click(function setLiveTrades() {
+    //console.log(liveMode);
+    liveMode.trades();
+    $("#trades").toggleClass('selected');
+  });
 
   $("#effects").click(function setLiveEffects() {
    // console.log(liveMode);
