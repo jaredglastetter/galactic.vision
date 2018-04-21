@@ -140,6 +140,15 @@ function onDocumentMouseDown(event)
           INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
           INTERSECTED.material.color.setHex( 0xff0000 );
           console.log(intersects.length);
+
+          setupTween(INTERSECTED.position);
+
+
+           // var length= 0;
+           // var dir = camera.position.clone().sub(intersects[0].point).normalize();
+           // camera.position = intersects[0].point.clone().add(dir);
+           // camera.lookAt(intersects[0].point);
+
         }
       } 
       else 
@@ -147,6 +156,18 @@ function onDocumentMouseDown(event)
         if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
         INTERSECTED = null;
       }
+}
+
+function setupTween(pos)
+{
+  TWEEN.removeAll();
+
+  
+  var tweenObject = new TWEEN.Tween(camera.position).to(pos, 2000);
+  //tweenObject.easing(TWEEN.Easing.Elastic.InOut);
+
+  tweenObject.start();
+
 }
 //////////
 
@@ -444,7 +465,10 @@ $(document).ready(function() {
 
 function animate() {
   requestAnimationFrame( animate );
-  //TWEEN.update();
+
+    
+  TWEEN.update();
+
   if(tripManager) {
     if(tripManager.hasTrips()) {
       tripManager.travel();
@@ -457,37 +481,6 @@ function animate() {
   renderer.render( scene, camera );
   
   //renderer.render( scene, camera );
-}
-
-function render()
-{
-      theta += 0.1;
-      camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
-      camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
-      camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
-      camera.lookAt( scene.position );
-      camera.updateMatrixWorld();
-      // find intersections
-      raycaster.setFromCamera( mouse, camera );
-      var intersects = raycaster.intersectObjects( scene.children );
-      if ( intersects.length > 0 ) 
-      {
-        if ( INTERSECTED != intersects[ 0 ].object ) 
-        {
-          if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-          INTERSECTED = intersects[ 0 ].object;
-          INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-          INTERSECTED.material.color.setHex( 0xff0000 );
-          console.log(intersects.length);
-        }
-      } 
-      else 
-      {
-        if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-        INTERSECTED = null;
-      }
-      
-    
 }
 
 animate();
