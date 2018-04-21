@@ -3,8 +3,8 @@ var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
 
 
-var camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 2000 );
-//var camera = new THREE.PerspectiveCamera( 50, 0.5 * aspect, 1, 10000 );
+//var camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 2000 );
+var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
 
 var renderer = new THREE.WebGLRenderer( { alpha: true } );
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -15,7 +15,7 @@ var controls = new THREE.OrbitControls( camera );
 controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
 controls.dampingFactor = 0.25;
 controls.panningMode = THREE.HorizontalPanning; // default is THREE.ScreenSpacePanning
-controls.minDistance = 100;
+controls.minDistance = 0;
 controls.maxDistance = 500
 controls.maxPolarAngle = Math.PI / 2;
 
