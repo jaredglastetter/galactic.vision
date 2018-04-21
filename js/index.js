@@ -140,74 +140,13 @@ function onDocumentMouseDown(event)
           INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
           INTERSECTED.material.color.setHex( 0xff0000 );
           console.log(intersects.length);
-
-          //setupTween(INTERSECTED.position);
-
-
-           var length= 0;
-           var dir = camera.position.clone().sub(intersects[0].point).normalize();
-           camera.position = intersects[0].point.clone().add(dir);
-           camera.lookAt(intersects[0].point);
-
-           // will add if for if ledger
-           var message = tripManager.trips.find( t => t.line.id === INTERSECTED.id || t.line2.id === INTERSECTED.id).message;
-
-           
-            // var desc = document.getElementById("description");
-            // desc.style.display == "block";
-            var elem = document.getElementById("description_lines");
-            elem.innerHTML = "";
-
-            $("#description").show();
-            var info = "";
-            info += "<h3>Source</h3><p>" + message.source_account + "</p>";
-            info += "<h3>Date</h3><p>" + message.created_at + "</p>";
-            info += "<h3>Ledger</h3><p>" + message.ledger_attr + "</p>";
-            info += "<h3>envelope_xdr</h3><p>" + "blah blah blah these are too long" +"</p>";
-            info += "<h3>fee_meta_xdr</h3><p>" + "blah blah blah these are too long" + "</p>"
-            info += "<h3>hash</h3><p>" + message.hash +"</p>";
-            info += "<h3>ledger_attr</h3><p>" + message.ledger_attr+ "</p>";
-            info += "<h3>paging_token</h3><p>" + message.paging_token +"</p>";
-
-            $("#description_lines").append(info);
-
-            
-
-// envelope_xdr
-// fee_meta_xdr
-// hash
-//    id         
-// ledger_attr
-// paging_token
-            //S$("#description").append();
-
-
-
-            //var result = _.findWhere(tripManager.trips, {line.id: INTERSECTED.id});
-
-
         }
       } 
       else 
       {
         if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
         INTERSECTED = null;
-
-            $("#description").hide();
-           
       }
-}
-
-function setupTween(pos)
-{
-  TWEEN.removeAll();
-
-  
-  var tweenObject = new TWEEN.Tween(camera.position).to(pos, 2000);
-  //tweenObject.easing(TWEEN.Easing.Elastic.InOut);
-
-  tweenObject.start();
-
 }
 //////////
 
@@ -247,7 +186,7 @@ TripManager.prototype = {
 
 //Trip javascript object function
 
-function Trip(ledger, message) {
+function Trip(ledger) {
   //Three js objects
   this.startNode = new THREE.Mesh( geometry2, material );
   this.endNode = new THREE.Mesh( geometry2, material2 );
@@ -259,9 +198,6 @@ function Trip(ledger, message) {
 
   this.payload = new THREE.Sprite(pMaterial);
   //initParticle(this.payload, 0);
-
-  //API INFO
-  this.message = message;
 
   //randomize initial pos
 
@@ -339,7 +275,7 @@ Trip.prototype = {
       onmessage: function (message) {
         //console.log(message);
         console.log("initial transactions stream");
-        tripManager.addTrip(new Trip(node2.position, message));
+        tripManager.addTrip(new Trip(node2.position));
       }
     });
 
@@ -356,7 +292,7 @@ RequestStream.prototype = {
       onmessage: function (message) {
         //console.log(message);
         console.log("transactions stream");
-        tripManager.addTrip(new Trip(node2.position, message));
+        tripManager.addTrip(new Trip(node2.position));
       }
     });
   },
@@ -368,7 +304,7 @@ RequestStream.prototype = {
       onmessage: function (message) {
         //console.log(message);
         console.log("payments stream");
-        tripManager.addTrip(new Trip(node2.position, message));
+        tripManager.addTrip(new Trip(node2.position));
       }
     });
   },
@@ -380,7 +316,7 @@ RequestStream.prototype = {
       onmessage: function (message) {
         //console.log(message);
         console.log("operations stream");
-        tripManager.addTrip(new Trip(node2.position, message));
+        tripManager.addTrip(new Trip(node2.position));
       }
     });
   },
@@ -392,7 +328,7 @@ RequestStream.prototype = {
       onmessage: function (message) {
        // console.log(message);
        console.log("effects stream");
-        tripManager.addTrip(new Trip(node2.position, message));
+        tripManager.addTrip(new Trip(node2.position));
       }
     });
   }
@@ -508,10 +444,7 @@ $(document).ready(function() {
 
 function animate() {
   requestAnimationFrame( animate );
-
-    
-  TWEEN.update();
-
+  //TWEEN.update();
   if(tripManager) {
     if(tripManager.hasTrips()) {
       tripManager.travel();
@@ -524,6 +457,37 @@ function animate() {
   renderer.render( scene, camera );
   
   //renderer.render( scene, camera );
+}
+
+function render()
+{
+      theta += 0.1;
+      camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
+      camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
+      camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
+      camera.lookAt( scene.position );
+      camera.updateMatrixWorld();
+      // find intersections
+      raycaster.setFromCamera( mouse, camera );
+      var intersects = raycaster.intersectObjects( scene.children );
+      if ( intersects.length > 0 ) 
+      {
+        if ( INTERSECTED != intersects[ 0 ].object ) 
+        {
+          if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+          INTERSECTED = intersects[ 0 ].object;
+          INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+          INTERSECTED.material.color.setHex( 0xff0000 );
+          console.log(intersects.length);
+        }
+      } 
+      else 
+      {
+        if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+        INTERSECTED = null;
+      }
+      
+    
 }
 
 animate();
