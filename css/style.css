@@ -33,7 +33,7 @@ canvas {
 	margin-right:auto;
 }
 
-h1 {
+.buttons h1 {
 	margin-left: 30px;
 	color: #0eb9e9;
 	font: 700 3em 'Fira Sans', sans-serif;
@@ -76,4 +76,41 @@ button {
   box-shadow: 0 0.5em 0.5em -0.4em;
   transform: translateY(-0.25em);
   color: #00FFFF;
+}
+
+
+#description {
+	position:absolute;
+	top: 0;
+	left:0;
+	width:400px;
+	height:100vh;
+	background-color: rgba(50,50,50,.5);
+	text-align: center;
+	transform-origin: left;
+	transition: all 400 ms ease;
+
+}
+#description  p {
+	color: #00FFFF;
+	font-size: 11px;
+	width:100%;
+	height: 20px;
+	text-align: center;
+
+
+}
+#description  h1 {
+	color: #0080ff;
+	font-size: 25px;
+	width:100%;
+	height: 50px;
+	text-align: center;
+	font-weight: bold;
+
+}
+
+#description_lines h3 {
+	font-weight: bold;
+	color: #0080ff;
 }
