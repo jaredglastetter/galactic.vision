@@ -3,8 +3,8 @@ var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
 
 
-var camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 2000 );
-//var camera = new THREE.PerspectiveCamera( 50, 0.5 * aspect, 1, 10000 );
+//var camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 2000 );
+var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
 
 var renderer = new THREE.WebGLRenderer( { alpha: true } );
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -22,7 +22,7 @@ var controls = new THREE.OrbitControls( camera );
 controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
 controls.dampingFactor = 0.25;
 controls.panningMode = THREE.HorizontalPanning; // default is THREE.ScreenSpacePanning
-controls.minDistance = 100;
+controls.minDistance = 0;
 controls.maxDistance = 500
 controls.maxPolarAngle = Math.PI / 2;
 
@@ -60,6 +60,20 @@ var pMaterial = new THREE.SpriteMaterial( {
 var particles, particle, particleCount = 0;
 var points;
 var point2;
+
+var asset_colours = {
+  "native": "#0eb9e9",
+  "BTC": "#FF9900", //orangish
+  "ETH": "#ecf0f1", //light gray
+  "XRP": "#178bc2", //middle of logo blue
+  "LTC": "#d3d3d3", //lighter gray
+  "USDT": "#22a079", //some kind of green
+  "ADA": "#2a71d0", // blue
+  "NEO":"#58bf00", //green
+  "IOTA": "#a3a3a3", //light gray?
+  "XMR": "#f26822", //orange
+  "OTHER": "#FF0" //red for now
+}
 
 
 /*  Sprites  */
@@ -247,7 +261,8 @@ TripManager.prototype = {
 
 //Trip javascript object function
 
-function Trip(ledger, message) {
+
+function Trip(ledger, request, message) {
   //Three js objects
   this.startNode = new THREE.Mesh( geometry2, material );
   this.endNode = new THREE.Mesh( geometry2, material2 );
@@ -257,11 +272,48 @@ function Trip(ledger, message) {
   this.edges2 = new THREE.EdgesGeometry( geometry2 );
   this.line2 = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
+<<<<<<< HEAD
   this.payload = new THREE.Sprite(pMaterial);
   //initParticle(this.payload, 0);
 
   //API INFO
   this.message = message;
+=======
+  var colour;
+
+  if(request) {
+    
+    console.log(asset_colours);
+    console.log(request.asset);
+
+
+    if(asset_colours.hasOwnProperty(request.asset)) {
+      console.log(request.asset);
+      console.log(asset_colours[request.asset]);
+      colour = asset_colours[request.asset];
+
+      this.aMaterial = new THREE.PointsMaterial( { size: 0.05, color: colour } );
+    } else {
+      this.aMaterial = new THREE.PointsMaterial( { size: 0.05, color: 0x00FF00 } );
+    }
+    this.payload = new THREE.Points(pGeometry, this.aMaterial);
+  } else {
+    this.payload = new THREE.Points(pGeometry, pMaterial);
+  }
+
+  /*
+  if(request.name == "operation") {
+    //1st asset
+    this.payload = new THREE.Points(pGeometry, pMaterial);
+
+
+    //assign asset color to point
+
+    //2nd asset
+    this.payload2 = new THREE.Points(pGeometry, pMaterial);
+
+  }*/
+>>>>>>> master_v1
 
   //randomize initial pos
 
@@ -297,14 +349,21 @@ function Trip(ledger, message) {
   //this.startPos = this.startNode.position;
   //this.endPos = this.endNode.position;
   this.payloadPos = this.payload.position;
+ // if(this.payload2) {
+    //this.payloadPos2 = this.payload2.position;
+  //}
   this.ledger = ledger;
   this.alpha = 0;
+  this.alpha2 = 0; //2nd asset
   this.rate = Math.random() / 25;
   this.processed = false; //keeps track of status of trip false -> going to ledger true -> traveling to destination 
+  this.processed2 = false;
 
   //inner trip management -> swap with ledger -> endPos once first trip complete
   this.v1 = this.startNode.position;
   this.v2 = this.ledger;
+  this.v3 = this.endNode.position;
+  this.v4 = this.ledger;
 }
 
 Trip.prototype = {
@@ -319,7 +378,18 @@ Trip.prototype = {
             this.v2 = this.endNode.position;
             this.processed = true;
           }
-      },
+          /*
+          if(this.payload2) {
+            this.payloadPos2.lerpVectors(this.v3, this.v4, this.alpha);
+            if(this.alpha2 >= 1 && !this.processed) {
+              //switch trip to endpoint
+              this.alpha2 = 0;
+              this.v3 = this.ledger;
+              this.v4 = this.startNode.position;
+              this.processed2 = true;
+            }
+          }*/
+	    },
       remove:function () {
         scene.remove(this.startNode);
         scene.remove(this.endNode);
@@ -333,6 +403,7 @@ Trip.prototype = {
 
     this.server = new StellarSdk.Server('https://horizon.stellar.org');
 
+    /*
     this.stream = this.server.transactions()
     .cursor('now')
     .stream({
@@ -341,10 +412,11 @@ Trip.prototype = {
         console.log("initial transactions stream");
         tripManager.addTrip(new Trip(node2.position, message));
       }
-    });
+    });*/
 
-    console.log(this.es);
+    //console.log(this.es);
 }
+
 
 RequestStream.prototype = {
   constructor: RequestStream,
@@ -354,7 +426,7 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        //console.log(message);
+        console.log(message);
         console.log("transactions stream");
         tripManager.addTrip(new Trip(node2.position, message));
       }
@@ -366,9 +438,19 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        //console.log(message);
+        console.log(message);
+
+        var payment = new Object();
+        payment.name = "payment";
+        if(message.asset_code) {
+          payment.asset = message.asset_code; 
+        } else if(message.asset_type) {
+          payment.asset = message.asset_type; 
+        }
+
         console.log("payments stream");
-        tripManager.addTrip(new Trip(node2.position, message));
+
+        tripManager.addTrip(new Trip(node2.position, payment,  message));
       }
     });
   },
@@ -379,8 +461,43 @@ RequestStream.prototype = {
     .stream({
       onmessage: function (message) {
         //console.log(message);
-        console.log("operations stream");
-        tripManager.addTrip(new Trip(node2.position, message));
+        var trade = new Object();
+        trade.name = "trade";
+        if(message.buying_asset_code) {
+          trade.asset = message.buying_asset_code; 
+        } else {
+          trade.asset = message.buying_asset_type; 
+        }
+        if(message.selling_asset_code) {
+          trade.asset2 = message.selling_asset_code; 
+        } else {
+          trade.asset2 = message.selling_asset_type; 
+        }
+        console.log(trade);
+        tripManager.addTrip(new Trip(node2.position, trade, message));
+      }
+    });
+  },
+  trades: function () {
+    //this.es.close();
+    this.stream = this.server.trades()
+    .stream({
+      onmessage: function (message) {
+        console.log(message);
+        var trade = new Object();
+        trade.name = "trade";
+        if(message.buying_asset_code) {
+          trade.asset = message.buying_asset_code; 
+        } else {
+          trade.asset = message.buying_asset_type; 
+        }
+        if(message.selling_asset_code) {
+          trade.asset2 = message.selling_asset_code; 
+        } else {
+          trade.asset2 = message.selling_asset_type; 
+        }
+        console.log(trade);
+        tripManager.addTrip(new Trip(node2.position));
       }
     });
   },
@@ -390,7 +507,7 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-       // console.log(message);
+        console.log(message);
        console.log("effects stream");
         tripManager.addTrip(new Trip(node2.position, message));
       }
@@ -442,36 +559,6 @@ camera.position.z = 20;*/
 
 camera.lookAt( scene.position );
 
-//create trip
-//var testTrip = new Trip(node2.position);
-
-/*
-(function addTrips (i) {
-  setTimeout(function () {
-    tripManager.addTrip(new Trip(node2.position));
-    if (--i) {          // If i > 0, keep going
-      addTrips(i);       // Call the loop again, and pass it the current value of i
-    }
-  }, 1000);
-})(50);
-
-var tripManager;
-
-loadJSON(function(response) {
-// Parse JSON string into object
-  var actual_JSON = JSON.parse(response);
-  //console.log(actual_JSON);
-  var records = actual_JSON._embedded.records;
-  //console.log(records);
-  //console.log(records.length);
-
-  tripManager = new TripManager();
-
-  addTrips(records.length);
-});
-
-*/
-
 var tripManager = new TripManager();
 
 var liveMode = new RequestStream();
@@ -495,6 +582,11 @@ $(document).ready(function() {
     $("#operations").toggleClass('selected');
   });
 
+  $("#trades").click(function setLiveTrades() {
+    //console.log(liveMode);
+    liveMode.trades();
+    $("#trades").toggleClass('selected');
+  });
 
   $("#effects").click(function setLiveEffects() {
    // console.log(liveMode);
