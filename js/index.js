@@ -2,7 +2,6 @@ var scene = new THREE.Scene();
 var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
 
-
 //var camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 2000 );
 var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
 
@@ -16,6 +15,21 @@ var raycaster = new THREE.Raycaster();
 var radius = 500;
 var theta = 0;
 
+// create an AudioListener and add it to the camera
+var listener = new THREE.AudioListener();
+camera.add( listener );
+
+// create a global audio source
+var sound = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer
+var audioLoader = new THREE.AudioLoader();
+audioLoader.load( '25 Mass Effect-Uncharted Worlds.mp3', function( buffer ) {
+  sound.setBuffer( buffer );
+  sound.setLoop( true );
+  sound.setVolume( 0.5 );
+  sound.play();
+});
 
 var controls = new THREE.OrbitControls( camera );
 
@@ -26,8 +40,8 @@ controls.minDistance = 0;
 controls.maxDistance = 500
 controls.maxPolarAngle = Math.PI / 2;
 
-var geometry = new THREE.SphereGeometry(0.5, 8, 8);
-var geometry2 = new THREE.SphereGeometry(0.25, 8, 8);
+var geometry = new THREE.SphereGeometry(2, 8, 8);
+var geometry2 = new THREE.SphereGeometry(0.75, 8, 8);
 var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 
@@ -272,13 +286,11 @@ function Trip(ledger, request, message) {
   this.edges2 = new THREE.EdgesGeometry( geometry2 );
   this.line2 = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
-<<<<<<< HEAD
-  this.payload = new THREE.Sprite(pMaterial);
   //initParticle(this.payload, 0);
 
   //API INFO
   this.message = message;
-=======
+
   var colour;
 
   if(request) {
@@ -292,13 +304,20 @@ function Trip(ledger, request, message) {
       console.log(asset_colours[request.asset]);
       colour = asset_colours[request.asset];
 
-      this.aMaterial = new THREE.PointsMaterial( { size: 0.05, color: colour } );
+      this.aMaterial = new THREE.SpriteMaterial( {
+          map: spriteMap,
+          blending: THREE.AdditiveBlending,
+          color: colour
+        } );
     } else {
-      this.aMaterial = new THREE.PointsMaterial( { size: 0.05, color: 0x00FF00 } );
+      this.aMaterial = new THREE.SpriteMaterial( {
+          map: spriteMap,
+          blending: THREE.AdditiveBlending
+        } );
     }
-    this.payload = new THREE.Points(pGeometry, this.aMaterial);
+    this.payload = new THREE.Sprite(this.aMaterial);
   } else {
-    this.payload = new THREE.Points(pGeometry, pMaterial);
+    this.payload = new THREE.Sprite(pMaterial);
   }
 
   /*
@@ -313,19 +332,18 @@ function Trip(ledger, request, message) {
     this.payload2 = new THREE.Points(pGeometry, pMaterial);
 
   }*/
->>>>>>> master_v1
 
   //randomize initial pos
 
   var angle = Math.random() * Math.PI*2;
-  var radius = Math.random() * 5 + 4;
+  var radius = Math.random() * 10 + 20;
 
   var x1 = Math.cos(angle) * radius;
   var y1 = Math.random() * 5 - 2.5;
   var z1 = Math.sin(angle) * radius;
 
   var angle2 = Math.random() * Math.PI*2;
-  var radius2 = Math.random() * 5 + 4;
+  var radius2 = Math.random() * 10 + 20;
 
   var x2 = Math.cos(angle2) * radius2;
   var y2 = Math.random() * 5 - 2.5;
@@ -546,10 +564,10 @@ line2.position.set(0,0,0);
 
 scene.add(node2);
 
-//ortho
+//perspective new pos
 camera.position.x = -2.5;
-camera.position.y = 7.5;
-camera.position.z = 5;
+camera.position.y = 50;
+camera.position.z = 40;
 
 //perspective
 /*
