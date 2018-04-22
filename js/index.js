@@ -76,7 +76,8 @@ var points;
 var point2;
 
 var asset_colours = {
-  "native": "#0eb9e9",
+  "native": "#0eb9e9", //#0eb9e9
+  "XLM": "#0FF",
   "BTC": "#FF9900", //orangish
   "ETH": "#ecf0f1", //light gray
   "XRP": "#178bc2", //middle of logo blue
@@ -88,6 +89,8 @@ var asset_colours = {
   "XMR": "#f26822", //orange
   "OTHER": "#FF0" //red for now
 }
+
+
 
 
 /*  Sprites  */
@@ -610,6 +613,23 @@ $(document).ready(function() {
    // console.log(liveMode);
     liveMode.effects();
     $("#effects").toggleClass('selected');
+  });
+
+
+  var aList = $('#asset-list');
+  $.each(asset_colours, function(asset, colour)
+  {
+      console.log(asset + colour);
+
+     // $('ul.legend-labels').append(
+       // "<li>" + asset + "</li>"
+      //)
+
+      var li = $('<li/>').text(asset)
+          .appendTo(aList);
+      var aaa = $('<span/>')
+          .css('background-color', colour)
+          .appendTo(li);
   });
 
 });

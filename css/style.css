@@ -114,3 +114,51 @@ button {
 	font-weight: bold;
 	color: #0080ff;
 }
+
+.my-legend .legend-title {
+	text-align: left;
+	margin-bottom: 5px;
+	font-weight: bold;
+	font-size: 90%;
+}
+.my-legend .legend-scale ul {
+	margin: 0;
+	margin-bottom: 5px;
+	padding: 0;
+	float: left;
+	list-style: none;
+}
+.my-legend .legend-scale ul li {
+	font-size: 80%;
+	list-style: none;
+	margin-left: 0;
+	line-height: 18px;
+	margin-bottom: 5px;
+}
+.my-legend ul.legend-labels li span {
+	display: block;
+	float: left;
+	height: 16px;
+	width: 30px;
+	margin-right: 5px;
+	margin-left: 0;
+	border: 0px solid #FFF;
+}
+.my-legend .legend-source {
+	font-size: 70%;
+	color: #999;
+	clear: both;
+}
+.my-legend a {
+	color: #777;
+}
+
+.my-legend {
+	bottom: 0;
+	position: absolute;
+	right:0;
+	background-color: rgba(50,50,50,.5);
+	font: 300 1em 'Fira Sans', sans-serif;
+	color: white;
+	padding: 10px;
+}
