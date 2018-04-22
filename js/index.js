@@ -90,8 +90,7 @@ var asset_colours = {
   "OTHER": "#FF0" //red for now
 }
 
-
-
+var messageList = []; //list of all requests
 
 /*  Sprites  */
 
@@ -184,23 +183,9 @@ function onDocumentMouseDown(event)
            var message = tripManager.trips.find( t => t.line.id === INTERSECTED.id || t.line2.id === INTERSECTED.id).message;
 
            
-            // var desc = document.getElementById("description");
-            // desc.style.display == "block";
-            var elem = document.getElementById("description_lines");
-            elem.innerHTML = "";
-
-            $("#description").show();
-            var info = "";
-            info += "<h3>Source</h3><p>" + message.source_account + "</p>";
-            info += "<h3>Date</h3><p>" + message.created_at + "</p>";
-            info += "<h3>Ledger</h3><p>" + message.ledger_attr + "</p>";
-            info += "<h3>envelope_xdr</h3><p>" + "blah blah blah these are too long" +"</p>";
-            info += "<h3>fee_meta_xdr</h3><p>" + "blah blah blah these are too long" + "</p>"
-            info += "<h3>hash</h3><p>" + message.hash +"</p>";
-            info += "<h3>ledger_attr</h3><p>" + message.ledger_attr+ "</p>";
-            info += "<h3>paging_token</h3><p>" + message.paging_token +"</p>";
-
-            $("#description_lines").append(info);
+           if(message) {
+            showRequest(message);
+           }
 
             
 
@@ -223,10 +208,86 @@ function onDocumentMouseDown(event)
       {
         if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
         INTERSECTED = null;
-
-            $("#description").hide();
+            //maybe only hide on button click?
+            //$("#description").hide();
            
       }
+}
+
+function showRequest(message) {
+// var desc = document.getElementById("description");
+  // desc.style.display == "block";
+  var elem = document.getElementById("description_lines");
+  elem.innerHTML = "";
+
+  $("#description").show();
+  var info = "";
+  /*
+  info += "<h3>Source</h3><p>" + message.source_account + "</p>";
+  info += "<h3>Date</h3><p>" + message.created_at + "</p>";
+  info += "<h3>Ledger</h3><p>" + message.ledger_attr + "</p>";
+  info += "<h3>envelope_xdr</h3><p>" + "blah blah blah these are too long" +"</p>";
+  info += "<h3>fee_meta_xdr</h3><p>" + "blah blah blah these are too long" + "</p>"
+  info += "<h3>hash</h3><p>" + message.hash +"</p>";
+  info += "<h3>ledger_attr</h3><p>" + message.ledger_attr+ "</p>";
+  info += "<h3>paging_token</h3><p>" + message.paging_token +"</p>";*/
+  info += "<h3>Request Type</h3><p>" + message.type + "</p>";
+
+  info += "<h3>Source Wallet</h3><p>" + message.source_account + "</p>";
+
+  if(message.type == "payment") {
+    info += "<h3>Destination Wallet</h3><p>" + message.to + "</p>";
+    info += "<h3>Date</h3><p>" + message.created_at + "</p>";
+    if(message.asset_code) {
+      info += "<h3>Amount</h3><p>" + message.amount + " " + message.asset_code + "</p>";
+    } else {
+      info += "<h3>Amount</h3><p>" + message.amount + " " + message.asset_type + "</p>";
+    }
+  }
+
+  if(message.type == "manage_offer") {
+
+    var buying;
+    var selling;
+
+    if(message.buying_asset_code) {
+      buying = message.buying_asset_code; 
+    } else {
+      buying = message.buying_asset_type; 
+    }
+    if(message.selling_asset_code) {
+      selling = message.selling_asset_code; 
+    } else {
+      selling = message.selling_asset_type; 
+    }
+
+    if(buying == "native") {
+      buying = "XLM";
+    }
+
+    if(selling == "native") {
+      selling = "XLM";
+    }
+
+    var buying_amount = message.amount * message.price;
+    buying_amount = Math.round(buying_amount * 100) / 100;
+
+    var selling_amount = Math.round(message.amount * 100) / 100;
+    
+
+    
+    info += "<h3>Buying Asset</h3><p>" + buying + "</p>";
+    info += "<h3>Selling Asset</h3><p>" + selling + "</p>";
+
+
+    if(message.amount) {
+      info += "<h3>Offer Details</h3><p>" + "Buying " + buying_amount + " " + buying + " with " + selling_amount + " " + selling + "<br> at 1 " + selling + " = " + message.price + " " + buying + "</p>";
+    }
+  }
+
+  info += "<h3>Transaction Hash ID</h3><p>" + message.transaction_hash +"</p>";
+
+  $("#description_lines").append(info);
 }
 
 function setupTween(pos)
@@ -291,27 +352,31 @@ function Trip(ledger, request, message) {
 
   //initParticle(this.payload, 0);
 
+  var rList = $('#request-list');
+
   //API INFO
-  this.message = message;
+  if(message) {
+    this.message = message;
+
+    messageList.push(message);
+
+    $(document).ready(function() {
+      var li = $('<li/>').text(message.id);
+      li.appendTo(rList);
+    });
+  }
 
   var colour;
 
   if(request) {
-    
-    console.log(asset_colours);
-    console.log(request.asset);
-
-
     if(asset_colours.hasOwnProperty(request.asset)) {
-      console.log(request.asset);
-      console.log(asset_colours[request.asset]);
       colour = asset_colours[request.asset];
 
       this.aMaterial = new THREE.SpriteMaterial( {
-          map: spriteMap,
-          blending: THREE.AdditiveBlending,
-          color: colour
-        } );
+        map: spriteMap,
+        blending: THREE.AdditiveBlending,
+        color: colour
+      } );
     } else {
       this.aMaterial = new THREE.SpriteMaterial( {
           map: spriteMap,
@@ -447,9 +512,10 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        console.log(message);
-        console.log("transactions stream");
-        tripManager.addTrip(new Trip(node2.position, message));
+        //console.log(message);;
+        var transaction = new Object();
+        transaction.name = "transaction";
+        tripManager.addTrip(new Trip(node2.position));
       }
     });
   },
@@ -459,8 +525,7 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        console.log(message);
-
+        //console.log(message);
         var payment = new Object();
         payment.name = "payment";
         if(message.asset_code) {
@@ -469,7 +534,6 @@ RequestStream.prototype = {
           payment.asset = message.asset_type; 
         }
 
-        console.log("payments stream");
 
         tripManager.addTrip(new Trip(node2.position, payment,  message));
       }
@@ -494,7 +558,7 @@ RequestStream.prototype = {
         } else {
           trade.asset2 = message.selling_asset_type; 
         }
-        console.log(trade);
+        //console.log(trade);
         tripManager.addTrip(new Trip(node2.position, trade, message));
       }
     });
@@ -504,7 +568,7 @@ RequestStream.prototype = {
     this.stream = this.server.trades()
     .stream({
       onmessage: function (message) {
-        console.log(message);
+        //console.log(message);
         var trade = new Object();
         trade.name = "trade";
         if(message.buying_asset_code) {
@@ -517,7 +581,7 @@ RequestStream.prototype = {
         } else {
           trade.asset2 = message.selling_asset_type; 
         }
-        console.log(trade);
+        //console.log(trade);
         tripManager.addTrip(new Trip(node2.position));
       }
     });
@@ -528,8 +592,8 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        console.log(message);
-       console.log("effects stream");
+        //console.log(message);
+       //console.log("effects stream");
         tripManager.addTrip(new Trip(node2.position, message));
       }
     });
@@ -572,12 +636,6 @@ camera.position.x = -2.5;
 camera.position.y = 50;
 camera.position.z = 40;
 
-//perspective
-/*
-camera.position.x = 0;
-camera.position.y = 20;
-camera.position.z = 20;*/
-
 camera.lookAt( scene.position );
 
 var tripManager = new TripManager();
@@ -592,25 +650,21 @@ $(document).ready(function() {
   });
 
   $("#payments").click(function setLivePayments() {
-    //console.log(liveMode);
     liveMode.payments();
     $("#payments").toggleClass('selected');
   });
 
   $("#operations").click(function setLiveOperations() {
-    //console.log(liveMode);
     liveMode.operations();
     $("#operations").toggleClass('selected');
   });
 
   $("#trades").click(function setLiveTrades() {
-    //console.log(liveMode);
     liveMode.trades();
     $("#trades").toggleClass('selected');
   });
 
   $("#effects").click(function setLiveEffects() {
-   // console.log(liveMode);
     liveMode.effects();
     $("#effects").toggleClass('selected');
   });
@@ -619,12 +673,6 @@ $(document).ready(function() {
   var aList = $('#asset-list');
   $.each(asset_colours, function(asset, colour)
   {
-      console.log(asset + colour);
-
-     // $('ul.legend-labels').append(
-       // "<li>" + asset + "</li>"
-      //)
-
       var li = $('<li/>').text(asset)
           .appendTo(aList);
       var aaa = $('<span/>')
@@ -632,9 +680,24 @@ $(document).ready(function() {
           .appendTo(li);
   });
 
+  $('#request-list').on('click','li',function (){
+    console.log($(this).html());
+    var msgID = $(this).html();
+
+    var request = findReq(msgID);
+
+    showRequest(request);
+  });
+
 });
 
-
+function findReq(msgID) {
+  for (var i = 0, len = messageList.length; i < len; i++) {
+    if (messageList[i].id === msgID)
+      return messageList[i]; // Return as soon as the object is found
+    }
+  return null; // The object was not found
+}
 
 function animate() {
   requestAnimationFrame( animate );

@@ -89,16 +89,18 @@ button {
 	text-align: center;
 	transform-origin: left;
 	transition: all 400 ms ease;
+	padding-left: 20px;
+	padding-right: 20px;
+	word-wrap: break-word;
 
 }
 #description  p {
 	color: #00FFFF;
 	font-size: 11px;
 	width:100%;
-	height: 20px;
+	min-height: 20px;
 	text-align: center;
-
-
+	font: 300 1em 'Fira Sans', sans-serif;
 }
 #description  h1 {
 	color: #0080ff;
@@ -107,12 +109,14 @@ button {
 	height: 50px;
 	text-align: center;
 	font-weight: bold;
+	font: 300 2em 'Fira Sans', sans-serif;
 
 }
 
 #description_lines h3 {
 	font-weight: bold;
 	color: #0080ff;
+	font: 300 1.5em 'Fira Sans', sans-serif;
 }
 
 .my-legend .legend-title {
@@ -161,4 +165,40 @@ button {
 	font: 300 1em 'Fira Sans', sans-serif;
 	color: white;
 	padding: 10px;
+}
+
+.request-history {
+	bottom: 50%;
+	position: absolute;
+	right:0;
+	min-height: 300px;
+	max-height: 600px;
+	min-width: 200px;
+	background-color: rgba(50,50,50,.5);
+	font: 300 1em 'Fira Sans', sans-serif;
+	color: white;
+	padding: 25px;
+}
+
+.request-history ul.request-labels li span {
+	display: block;
+	float: left;
+	height: 16px;
+	width: 30px;
+	margin-right: 5px;
+	margin-left: 0;
+	border: 0px solid #FFF;
+}
+
+.request-history .request-container ul li {
+	font-size: 80%;
+	list-style: none;
+	margin-left: 0;
+	line-height: 18px;
+	margin-bottom: 5px;
+}
+
+.request-labels {
+	overflow-y: scroll;
+	max-height: 300px;
 }
