@@ -40,11 +40,85 @@ controls.minDistance = 0;
 controls.maxDistance = 500
 controls.maxPolarAngle = Math.PI / 2;
 
-var geometry = new THREE.SphereGeometry(2, 8, 8);
-var geometry2 = new THREE.SphereGeometry(0.75, 8, 8);
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+//var geometry = new THREE.SphereGeometry(2, 8, 8);
+//var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+//var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 
+
+var imgTexture = new THREE.TextureLoader().load( "images/moon_1024.jpg" );
+var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
+
+var rR = Math.random();
+var rG = Math.random();
+var rB = Math.random();
+
+var rR2 = Math.random();
+var rG2 = Math.random();
+var rB2 = Math.random();
+
+
+  imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
+  imgTexture.anisotropy = 16;
+  //imgTexture = null;
+  var shininess = 50, specular = 0x333333, bumpScale = 1;
+  var materials = [];
+  var cubeWidth = 400;
+  var numberOfSphersPerSide = 5;
+  var sphereRadius = 2;
+  var sphereRadius2 = 1;
+  var stepSize = 1.0 / numberOfSphersPerSide;
+  var geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
+  var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 32, 16 );
+  var alpha = 0.5;
+  var beta = 0.5;
+  var gamma = 0.5;
+  var alphaIndex = 1;
+  var saturation = Math.random() / 2 + 0.5;
+  var lightness = Math.random() / 2 + 0.4;
+  var hue = Math.random();
+  var planetMaterial;
+
+  console.log("Red: " + rR);
+  console.log("Green: " + rG);
+  console.log("Blue: " + rB);
+
+  console.log("Hue: " + hue);
+  console.log("Saturation: " + saturation);
+  console.log("Lightness: " + lightness);
+ // for ( var alpha = 0, alphaIndex = 0; alpha <= 1.0; alpha += stepSize, alphaIndex ++ ) {
+  var specularShininess = Math.pow( 2, alpha * 10 );
+ // for ( var beta = 0; beta <= 1.0; beta += stepSize ) {
+  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
+  var specularColor = new THREE.Color(rR, rG, rB );
+  //for ( var gamma = 0; gamma <= 1.0; gamma += stepSize ) {
+    // basic monochromatic energy preservation
+    //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+    var diffuseColor = new THREE.Color(rR, rG, rB).setHSL( rR, saturation, lightness );
+    var material = new THREE.MeshToonMaterial( {
+      map: imgTexture,
+      color: diffuseColor,
+      specular: specularColor,
+      reflectivity: beta,
+      shininess: 0.75, //was 0.75
+      envMap: alphaIndex % 2 === 0 ? null : reflectionCube
+    } );
+
+  var specularShininess = Math.pow( 2, alpha * 10 );
+ // for ( var beta = 0; beta <= 1.0; beta += stepSize ) {
+  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
+  var specularColor2 = new THREE.Color(rR2, rG2, rB2 );
+  //for ( var gamma = 0; gamma <= 1.0; gamma += stepSize ) {
+    // basic monochromatic energy preservation
+    //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+    var diffuseColor2 = new THREE.Color(rR2, rG2, rB2).setHSL( rR2, saturation, lightness );
+    var material2 = new THREE.MeshToonMaterial( {
+      map: imgTexture2,
+      color: diffuseColor2,
+      specular: specularColor2,
+      reflectivity: beta,
+      shininess: 0.75, //was 0.75
+      envMap: alphaIndex % 2 === 0 ? null : reflectionCube
+    } );
 
 //var node = new THREE.Mesh( geometry, material );
 var node2 = new THREE.Mesh( geometry, material );
@@ -136,6 +210,12 @@ function initParticle( particle, delay ) {
 var light = new THREE.DirectionalLight( 0xffffff, 1 );
 light.position.set( 1, 1, 1 ).normalize();
 scene.add( light );
+
+var reflectionCube = new THREE.CubeTextureLoader()
+    .setPath( 'images/ss_skybox/' )
+    .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
+  reflectionCube.format = THREE.RGBFormat;
+  scene.background = reflectionCube;
 
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 document.addEventListener( 'mousedown', onDocumentMouseDown, false);
@@ -377,6 +457,22 @@ function Trip(ledger, request, message) {
         blending: THREE.AdditiveBlending,
         color: colour
       } );
+
+      //planet material
+
+        specularColor = new THREE.Color(1,1,1);
+        diffuseColor = new THREE.Color(colour);
+        planetMaterial = new THREE.MeshToonMaterial( {
+          map: imgTexture,
+          color: diffuseColor,
+          specular: specularColor,
+          reflectivity: beta,
+          shininess: 0.75, //was 0.75
+          envMap: alphaIndex % 2 === 0 ? null : reflectionCube
+        } );
+
+        this.startNode = new THREE.Mesh( geometry2, planetMaterial );
+        
     } else {
       this.aMaterial = new THREE.SpriteMaterial( {
           map: spriteMap,
@@ -427,8 +523,8 @@ function Trip(ledger, request, message) {
 
   scene.add( this.startNode );
   scene.add( this.endNode);
-  scene.add( this.line );
-  scene.add( this.line2 );  
+  //scene.add( this.line );
+  //scene.add( this.line2 );  
   scene.add( this.payload );
 
   //data
@@ -624,7 +720,7 @@ pGeometry.computeBoundingSphere();
 
 point2 = new THREE.Points(pGeometry, pMaterial);
 
-scene.add( line2 );
+//scene.add( line2 );
 
 node2.position.set(0,0,0);
 line2.position.set(0,0,0);
@@ -668,6 +764,13 @@ $(document).ready(function() {
     liveMode.effects();
     $("#effects").toggleClass('selected');
   });
+
+  //Operations filters
+  $("#create_account").click(function setCreateAccount() {
+    liveMode.operations();
+    $("#create_account").toggleClass('selected');
+  });
+
 
 
   var aList = $('#asset-list');
