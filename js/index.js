@@ -248,10 +248,11 @@ function onDocumentMouseDown(event)
           if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
           INTERSECTED = intersects[ 0 ].object;
           INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-          INTERSECTED.material.color.setHex( 0xff0000 );
+          //INTERSECTED.material.color.setHex( 0xff0000 );
           console.log(intersects.length);
 
           //setupTween(INTERSECTED.position);
+          zoomToTarget(INTERSECTED.position);
 
 
            var length= 0;
@@ -382,6 +383,25 @@ function setupTween(pos)
 
 }
 //////////
+
+function zoomToTarget(pos) {
+  
+var position = { x : camera.position.x, y: camera.position.y, z: camera.position.z };
+var target = pos;
+
+var tween = new TWEEN.Tween(position).to(pos, 3000);
+
+tween.onUpdate(function(){
+  camera.lookAt( pos );
+  camera.position.x = position.x;
+  camera.position.y = position.y;
+});
+
+tween.easing(TWEEN.Easing.Circular.InOut);
+
+tween.start();
+
+}
 
 
 //Trip manager object to manage trips and remove trips when lerp is complete -> controls animation
@@ -661,7 +681,7 @@ RequestStream.prototype = {
   },
   trades: function () {
     //this.es.close();
-    this.stream = this.server.trades()
+    this.stream = this.server.trades().cursor('now')
     .stream({
       onmessage: function (message) {
         //console.log(message);
