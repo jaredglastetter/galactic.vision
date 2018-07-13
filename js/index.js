@@ -1,13 +1,9 @@
-var scene = new THREE.Scene();
+var scene;
 var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
 
-//var camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 1, 2000 );
-var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
-
-var renderer = new THREE.WebGLRenderer( { alpha: true } );
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+var camera;
+var renderer;
 
 // for interactive
 var mouse = new THREE.Vector2(), INTERSECTED;
@@ -16,134 +12,12 @@ var radius = 500;
 var theta = 0;
 
 // create an AudioListener and add it to the camera
-var listener = new THREE.AudioListener();
-camera.add( listener );
-
+var listener;
 // create a global audio source
-var sound = new THREE.Audio( listener );
-
+var sound;
 // load a sound and set it as the Audio object's buffer
-var audioLoader = new THREE.AudioLoader();
-audioLoader.load( '25 Mass Effect-Uncharted Worlds.mp3', function( buffer ) {
-  sound.setBuffer( buffer );
-  sound.setLoop( true );
-  sound.setVolume( 0.5 );
-  sound.play();
-});
-
-var controls = new THREE.OrbitControls( camera );
-
-controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-controls.dampingFactor = 0.25;
-controls.panningMode = THREE.HorizontalPanning; // default is THREE.ScreenSpacePanning
-controls.minDistance = 0;
-controls.maxDistance = 500
-controls.maxPolarAngle = Math.PI / 2;
-
-//var geometry = new THREE.SphereGeometry(2, 8, 8);
-//var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-//var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
-
-
-var imgTexture = new THREE.TextureLoader().load( "images/moon_1024.jpg" );
-var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
-
-var rR = Math.random();
-var rG = Math.random();
-var rB = Math.random();
-
-var rR2 = Math.random();
-var rG2 = Math.random();
-var rB2 = Math.random();
-
-
-  imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
-  imgTexture.anisotropy = 16;
-  //imgTexture = null;
-  var shininess = 50, specular = 0x333333, bumpScale = 1;
-  var materials = [];
-  var cubeWidth = 400;
-  var numberOfSphersPerSide = 5;
-  var sphereRadius = 2;
-  var sphereRadius2 = 1;
-  var stepSize = 1.0 / numberOfSphersPerSide;
-  var geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
-  var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 32, 16 );
-  var alpha = 0.5;
-  var beta = 0.5;
-  var gamma = 0.5;
-  var alphaIndex = 1;
-  var saturation = Math.random() / 2 + 0.5;
-  var lightness = Math.random() / 2 + 0.4;
-  var hue = Math.random();
-  var planetMaterial;
-
-  console.log("Red: " + rR);
-  console.log("Green: " + rG);
-  console.log("Blue: " + rB);
-
-  console.log("Hue: " + hue);
-  console.log("Saturation: " + saturation);
-  console.log("Lightness: " + lightness);
- // for ( var alpha = 0, alphaIndex = 0; alpha <= 1.0; alpha += stepSize, alphaIndex ++ ) {
-  var specularShininess = Math.pow( 2, alpha * 10 );
- // for ( var beta = 0; beta <= 1.0; beta += stepSize ) {
-  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
-  var specularColor = new THREE.Color(rR, rG, rB );
-  //for ( var gamma = 0; gamma <= 1.0; gamma += stepSize ) {
-    // basic monochromatic energy preservation
-    //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
-    var diffuseColor = new THREE.Color(rR, rG, rB).setHSL( rR, saturation, lightness );
-    var material = new THREE.MeshToonMaterial( {
-      map: imgTexture,
-      color: diffuseColor,
-      specular: specularColor,
-      reflectivity: beta,
-      shininess: 0.75, //was 0.75
-      envMap: alphaIndex % 2 === 0 ? null : reflectionCube
-    } );
-
-  var specularShininess = Math.pow( 2, alpha * 10 );
- // for ( var beta = 0; beta <= 1.0; beta += stepSize ) {
-  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
-  var specularColor2 = new THREE.Color(rR2, rG2, rB2 );
-  //for ( var gamma = 0; gamma <= 1.0; gamma += stepSize ) {
-    // basic monochromatic energy preservation
-    //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
-    var diffuseColor2 = new THREE.Color(rR2, rG2, rB2).setHSL( rR2, saturation, lightness );
-    var material2 = new THREE.MeshToonMaterial( {
-      map: imgTexture2,
-      color: diffuseColor2,
-      specular: specularColor2,
-      reflectivity: beta,
-      shininess: 0.75, //was 0.75
-      envMap: alphaIndex % 2 === 0 ? null : reflectionCube
-    } );
-
-//var node = new THREE.Mesh( geometry, material );
-var node2 = new THREE.Mesh( geometry, material );
-//var node3 = new THREE.Mesh( geometry, material );
-
-var edges = new THREE.EdgesGeometry( geometry2 );
-var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-
-var edges2 = new THREE.EdgesGeometry( geometry );
-var line2 = new THREE.LineSegments( edges2, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-
-var edges3 = new THREE.EdgesGeometry( geometry );
-var line3 = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-
-var pGeometry = new THREE.BufferGeometry();
-var color = new THREE.Color();
-
-//var pMaterial = new THREE.PointsMaterial( { size: 0.05, vertexColors: THREE.VertexColors } );
-//
-var spriteMap = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/lensflare/lensflare0_alpha.png' ); // new THREE.CanvasTexture( generateSprite() )
-var pMaterial = new THREE.SpriteMaterial( {
-          map: spriteMap,
-          blending: THREE.AdditiveBlending
-        } );
-
+var audioLoader;
+var controls;
 
 var particles, particle, particleCount = 0;
 var points;
@@ -166,8 +40,135 @@ var asset_colours = {
 
 var messageList = []; //list of all requests
 
-/*  Sprites  */
+var imgTexture = new THREE.TextureLoader().load( "images/moon_1024.jpg" );
+var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
 
+var rR = Math.random();
+var rG = Math.random();
+var rB = Math.random();
+
+var rR2 = Math.random();
+var rG2 = Math.random();
+var rB2 = Math.random();
+
+imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
+imgTexture.anisotropy = 16;
+//imgTexture = null;
+var shininess = 50, specular = 0x333333, bumpScale = 1;
+var materials = [];
+var cubeWidth = 400;
+var numberOfSphersPerSide = 5;
+var sphereRadius = 2;
+var sphereRadius2 = 1;
+var stepSize = 1.0 / numberOfSphersPerSide;
+var geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
+var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 32, 16 );
+var alpha = 0.5;
+var beta = 0.5;
+var gamma = 0.5;
+var alphaIndex = 1;
+var saturation = Math.random() / 2 + 0.5;
+var lightness = Math.random() / 2 + 0.4;
+var hue = Math.random();
+var planetMaterial;
+
+console.log("Red: " + rR);
+console.log("Green: " + rG);
+console.log("Blue: " + rB);
+
+console.log("Hue: " + hue);
+console.log("Saturation: " + saturation);
+console.log("Lightness: " + lightness);
+var specularShininess = Math.pow( 2, alpha * 10 );
+//var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
+var specularColor = new THREE.Color(rR, rG, rB );
+  //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+  var diffuseColor = new THREE.Color(rR, rG, rB).setHSL( rR, saturation, lightness );
+  var material = new THREE.MeshToonMaterial( {
+    map: imgTexture,
+    color: diffuseColor,
+    specular: specularColor,
+    reflectivity: beta,
+    shininess: 0.75, 
+    envMap: alphaIndex % 2 === 0 ? null : reflectionCube
+  } );
+
+var specularShininess = Math.pow( 2, alpha * 10 );
+var specularColor2 = new THREE.Color(rR2, rG2, rB2 );
+//var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+var diffuseColor2 = new THREE.Color(rR2, rG2, rB2).setHSL( rR2, saturation, lightness );
+var material2 = new THREE.MeshToonMaterial( {
+  map: imgTexture2,
+  color: diffuseColor2,
+  specular: specularColor2,
+  reflectivity: beta,
+  shininess: 0.75, //was 0.75
+  envMap: alphaIndex % 2 === 0 ? null : reflectionCube
+});
+
+var node2 = new THREE.Mesh( geometry, material );
+
+var pGeometry = new THREE.BufferGeometry();
+var color = new THREE.Color();
+
+//var pMaterial = new THREE.PointsMaterial( { size: 0.05, vertexColors: THREE.VertexColors } );
+//
+var spriteMap = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/lensflare/lensflare0_alpha.png' ); // new THREE.CanvasTexture( generateSprite() )
+var pMaterial = new THREE.SpriteMaterial( {
+          map: spriteMap,
+          blending: THREE.AdditiveBlending
+        } );
+
+init();
+
+function init() {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
+  renderer = new THREE.WebGLRenderer( { alpha: true } );
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+
+  controls = new THREE.OrbitControls( camera );
+
+  controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+  controls.dampingFactor = 0.25;
+  controls.panningMode = THREE.HorizontalPanning; // default is THREE.ScreenSpacePanning
+  controls.minDistance = 0;
+  controls.maxDistance = 500
+  controls.maxPolarAngle = Math.PI / 2;
+
+  camera.position.x = -2.5;
+  camera.position.y = 50;
+  camera.position.z = 40;
+
+  camera.lookAt( scene.position );
+
+  listener = new THREE.AudioListener();
+  camera.add( listener );
+
+  sound = new THREE.Audio( listener );
+  audioLoader = new THREE.AudioLoader();
+  audioLoader.load( '25 Mass Effect-Uncharted Worlds.mp3', function( buffer ) {
+  sound.setBuffer( buffer );
+  sound.setLoop( true );
+  sound.setVolume( 0.5 );
+  sound.play();
+
+  pGeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( [-1,0,0], 3 ) );
+  pGeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( [0,1,0], 3 ) );
+
+  pGeometry.computeBoundingSphere();
+
+  point2 = new THREE.Points(pGeometry, pMaterial);
+
+  node2.position.set(0,0,0);
+
+  scene.add(node2);
+});
+
+}
+
+/*  Sprites  */
 
 function generateSprite() {
         var canvas = document.createElement( 'canvas' );
@@ -268,14 +269,7 @@ function onDocumentMouseDown(event)
             showRequest(message);
            }
 
-            
-
-// envelope_xdr
-// fee_meta_xdr
-// hash
-//    id         
-// ledger_attr
-// paging_token
+          
             //S$("#description").append();
 
 
@@ -382,7 +376,6 @@ function setupTween(pos)
   tweenObject.start();
 
 }
-//////////
 
 function zoomToTarget(pos) {
   
@@ -403,10 +396,9 @@ tween.start();
 
 }
 
-
 //Trip manager object to manage trips and remove trips when lerp is complete -> controls animation
 function TripManager() {
-  this.trips = []; //array of trips
+  this.trips = [];
 }
 
 TripManager.prototype = {
@@ -441,20 +433,13 @@ TripManager.prototype = {
 
 
 function Trip(ledger, request, message) {
-  //Three js objects
   this.startNode = new THREE.Mesh( geometry2, material );
   this.endNode = new THREE.Mesh( geometry2, material2 );
-
-  this.edges = new THREE.EdgesGeometry( geometry2 );
-  this.line = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
-  this.edges2 = new THREE.EdgesGeometry( geometry2 );
-  this.line2 = new THREE.LineSegments( this.edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
 
   //initParticle(this.payload, 0);
 
   var rList = $('#request-list');
 
-  //API INFO
   if(message) {
     this.message = message;
 
@@ -520,31 +505,29 @@ function Trip(ledger, request, message) {
   //randomize initial pos
 
   var angle = Math.random() * Math.PI*2;
-  var radius = Math.random() * 10 + 20;
+  var radius = Math.random() * 15 + 20;
 
   var x1 = Math.cos(angle) * radius;
-  var y1 = Math.random() * 5 - 2.5;
+  var y1 = Math.random() * 20 - 10;
   var z1 = Math.sin(angle) * radius;
 
   var angle2 = Math.random() * Math.PI*2;
   var radius2 = Math.random() * 10 + 20;
 
   var x2 = Math.cos(angle2) * radius2;
-  var y2 = Math.random() * 5 - 2.5;
+  var y2 = Math.random() * 20 - 10;
   var z2 = Math.sin(angle2) * radius2;
 
   this.startNode.position.set(x1,y1,z1);
-  this.line.position.set(x1,y1,z1);
+  //this.line.position.set(x1,y1,z1);
 
   this.endNode.position.set(x2,y2,z2);
-  this.line2.position.set(x2,y2,z2);
+  //this.line2.position.set(x2,y2,z2);
 
   this.payload.position.set(-1,0,0);
 
   scene.add( this.startNode );
   scene.add( this.endNode);
-  //scene.add( this.line );
-  //scene.add( this.line2 );  
   scene.add( this.payload );
 
   //data
@@ -596,8 +579,6 @@ Trip.prototype = {
         scene.remove(this.startNode);
         scene.remove(this.endNode);
         scene.remove(this.payload);
-        scene.remove(this.line);
-        scene.remove(this.line2);
       }
   }
 
@@ -649,7 +630,6 @@ RequestStream.prototype = {
         } else if(message.asset_type) {
           payment.asset = message.asset_type; 
         }
-
 
         tripManager.addTrip(new Trip(node2.position, payment,  message));
       }
@@ -717,42 +697,6 @@ RequestStream.prototype = {
 
 }
 
-
-   function loadJSON(callback) {   
-
-    var xobj = new XMLHttpRequest();
-        xobj.overrideMimeType("application/json");
-    xobj.open('GET', 'operations.json', true); // Replace 'my_data' with the path to your file
-    xobj.onreadystatechange = function () {
-          if (xobj.readyState == 4 && xobj.status == "200") {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            callback(xobj.responseText);
-          }
-    };
-    xobj.send(null);  
- }
- 
-
-pGeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( [-1,0,0], 3 ) );
-pGeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( [0,1,0], 3 ) );
-
-pGeometry.computeBoundingSphere();
-
-point2 = new THREE.Points(pGeometry, pMaterial);
-
-//scene.add( line2 );
-
-node2.position.set(0,0,0);
-line2.position.set(0,0,0);
-
-scene.add(node2);
-
-//perspective new pos
-camera.position.x = -2.5;
-camera.position.y = 50;
-camera.position.z = 40;
-
-camera.lookAt( scene.position );
 
 var tripManager = new TripManager();
 
@@ -835,11 +779,7 @@ function animate() {
   }
 
   node2.rotation.y += 0.01;
-  line2.rotation.y += 0.01;
-  //render();
   renderer.render( scene, camera );
-  
-  //renderer.render( scene, camera );
 }
 
 animate();
