@@ -146,6 +146,11 @@ function init() {
 
   camera.lookAt( scene.position );
 
+  var light = new THREE.AmbientLight( 0xffffff, 1 );
+  light.position.set( 1, 1, 1 ).normalize();
+  scene.add( light );
+
+
   listener = new THREE.AudioListener();
   camera.add( listener );
 
@@ -211,9 +216,6 @@ function initParticle( particle, delay ) {
 /*    END Sprites */
 
 /* raycaster */
-var light = new THREE.DirectionalLight( 0xffffff, 1 );
-light.position.set( 1, 1, 1 ).normalize();
-scene.add( light );
 
 var reflectionCube = new THREE.CubeTextureLoader()
     .setPath( 'images/ss_skybox/' )
