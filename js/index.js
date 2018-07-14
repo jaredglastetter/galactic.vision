@@ -18,9 +18,16 @@ var sound;
 // load a sound and set it as the Audio object's buffer
 var audioLoader;
 var controls;
+var effect;
 
 var tripManager = new TripManager();
 var liveMode = new RequestStream();
+
+var reflectionCube = new THREE.CubeTextureLoader()
+    .setPath( 'images/ss_skybox/' )
+    .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
+  reflectionCube.format = THREE.RGBFormat;
+
 
 var particles, particle, particleCount = 0;
 var points;
@@ -64,8 +71,8 @@ var numberOfSphersPerSide = 5;
 var sphereRadius = 2;
 var sphereRadius2 = 1;
 var stepSize = 1.0 / numberOfSphersPerSide;
-var geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
-var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 32, 16 );
+var geometry = new THREE.SphereBufferGeometry( sphereRadius, 64, 32 );
+var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 64, 32 );
 var alpha = 0.5;
 var beta = 0.5;
 var gamma = 0.5;
@@ -131,6 +138,11 @@ function init() {
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
+  renderer.gammaInput = true;
+  renderer.gammaOutput = true;
+
+  effect = new THREE.OutlineEffect( renderer );
+
   controls = new THREE.OrbitControls( camera );
 
   controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
@@ -150,6 +162,7 @@ function init() {
   light.position.set( 1, 1, 1 ).normalize();
   scene.add( light );
 
+  scene.background = reflectionCube;
 
   listener = new THREE.AudioListener();
   camera.add( listener );
@@ -217,12 +230,6 @@ function initParticle( particle, delay ) {
 
 /* raycaster */
 
-var reflectionCube = new THREE.CubeTextureLoader()
-    .setPath( 'images/ss_skybox/' )
-    .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
-  reflectionCube.format = THREE.RGBFormat;
-  scene.background = reflectionCube;
-
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 document.addEventListener( 'mousedown', onDocumentMouseDown, false);
 window.addEventListener( 'resize', onWindowResize, false );
@@ -260,7 +267,6 @@ function onDocumentMouseDown(event)
           //setupTween(INTERSECTED.position);
           zoomToTarget(INTERSECTED.position);
 
-
            var length= 0;
            var dir = camera.position.clone().sub(intersects[0].point).normalize();
            camera.position = intersects[0].point.clone().add(dir);
@@ -269,19 +275,12 @@ function onDocumentMouseDown(event)
            // will add if for if ledger
            var message = tripManager.trips.find( t => t.line.id === INTERSECTED.id || t.line2.id === INTERSECTED.id).message;
 
-           
            if(message) {
             showRequest(message);
            }
-
-          
+        
             //S$("#description").append();
-
-
-
             //var result = _.findWhere(tripManager.trips, {line.id: INTERSECTED.id});
-
-
         }
       } 
       else 
@@ -354,11 +353,8 @@ function showRequest(message) {
 
     var selling_amount = Math.round(message.amount * 100) / 100;
     
-
-    
     info += "<h3>Buying Asset</h3><p>" + buying + "</p>";
     info += "<h3>Selling Asset</h3><p>" + selling + "</p>";
-
 
     if(message.amount) {
       info += "<h3>Offer Details</h3><p>" + "Buying " + buying_amount + " " + buying + " with " + selling_amount + " " + selling + "<br> at 1 " + selling + " = " + message.price + " " + buying + "</p>";
@@ -374,7 +370,6 @@ function setupTween(pos)
 {
   TWEEN.removeAll();
 
-  
   var tweenObject = new TWEEN.Tween(camera.position).to(pos, 2000);
   //tweenObject.easing(TWEEN.Easing.Elastic.InOut);
 
@@ -396,7 +391,6 @@ tween.onUpdate(function(){
 });
 
 tween.easing(TWEEN.Easing.Circular.InOut);
-
 tween.start();
 
 }
@@ -433,9 +427,6 @@ $(document).ready(function() {
     liveMode.operations();
     $("#create_account").toggleClass('selected');
   });
-
-
-
   var aList = $('#asset-list');
   $.each(asset_colours, function(asset, colour)
   {
@@ -477,8 +468,10 @@ function animate() {
     }
   }
 
+  effect.render( scene, camera );
+
   node2.rotation.y += 0.01;
-  renderer.render( scene, camera );
+  //renderer.render( scene, camera );
 }
 
 animate();
