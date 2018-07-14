@@ -68,7 +68,7 @@ var shininess = 50, specular = 0x333333, bumpScale = 1;
 var materials = [];
 var cubeWidth = 400;
 var numberOfSphersPerSide = 5;
-var sphereRadius = 2;
+var sphereRadius = 4;
 var sphereRadius2 = 1;
 var stepSize = 1.0 / numberOfSphersPerSide;
 var geometry = new THREE.SphereBufferGeometry( sphereRadius, 64, 32 );
