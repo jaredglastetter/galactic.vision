@@ -44,7 +44,7 @@ function Trip(ledger, request, message) {
 
   if(message) {
     this.message = message;
-
+    console.log(message);
     messageList.push(message);
 
     $(document).ready(function() {
@@ -99,7 +99,7 @@ function Trip(ledger, request, message) {
 
     //assign asset color to point
 
-    //2nd asset
+    //2nd asset console.log(this.startNode);
     this.payload2 = new THREE.Points(pGeometry, pMaterial);
 
   }*/
@@ -107,17 +107,17 @@ function Trip(ledger, request, message) {
   //randomize initial pos
 
   var angle = Math.random() * Math.PI*2;
-  var radius = Math.random() * 30 + 30;
+  var radius = Math.random() * 15 + 20;
 
   var x1 = Math.cos(angle) * radius;
-  var y1 = Math.random() * 40 - 20;
+  var y1 = Math.random() * 20 - 10;
   var z1 = Math.sin(angle) * radius;
 
   var angle2 = Math.random() * Math.PI*2;
   var radius2 = Math.random() * 10 + 20;
 
   var x2 = Math.cos(angle2) * radius2;
-  var y2 = Math.random() * 40 - 20;
+  var y2 = Math.random() * 20 - 10;
   var z2 = Math.sin(angle2) * radius2;
 
   this.startNode.position.set(x1,y1,z1);
@@ -131,6 +131,27 @@ function Trip(ledger, request, message) {
   scene.add( this.startNode );
   scene.add( this.endNode);
   scene.add( this.payload );
+
+  
+  if(message.from) {
+    //assign object ids to acconut ids
+    var account1 = new Object();
+    var account2 = new Object();
+
+    account1.id = this.startNode.id;
+    account2.id = this.endNode.id;
+    account1.account = message.from;
+    account2.account = message.to;
+
+    //console.log(account1);
+    //console.log(account2);
+
+    accountList.push(account1);
+    accountList.push(account2);
+  }
+
+  //console.log(this.startNode);
+  //console.log(this.endNode);
 
   //data
   //this.startPos = this.startNode.position;
