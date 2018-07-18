@@ -9,7 +9,7 @@ function RequestStream() {
     onmessage: function (message) {
       //console.log(message);
       console.log("initial transactions stream");
-      tripManager.addTrip(new Trip(node2.position, message));
+      tripManager.addTrip(new Trip(centerNode.position, message));
     }
   });*/
 
@@ -21,14 +21,17 @@ RequestStream.prototype = {
   constructor: RequestStream,
   transactions:function ()  {
     //this.es.close();
+
     this.stream = this.server.transactions()
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        //console.log(message);;
+        //console.log(message);
+        //var account = message.source_account;
+        
         var transaction = new Object();
         transaction.name = "transaction";
-        tripManager.addTrip(new Trip(node2.position));
+        tripManager.addTrip(new Trip(centerNode.position));
       }
     });
   },
@@ -47,7 +50,7 @@ RequestStream.prototype = {
           payment.asset = message.asset_type; 
         }
 
-        tripManager.addTrip(new Trip(node2.position, payment,  message));
+        tripManager.addTrip(new Trip(centerNode.position, payment,  message));
       }
     });
   },
@@ -58,20 +61,29 @@ RequestStream.prototype = {
     .stream({
       onmessage: function (message) {
         //console.log(message);
-        var trade = new Object();
-        trade.name = "trade";
-        if(message.buying_asset_code) {
-          trade.asset = message.buying_asset_code; 
-        } else {
-          trade.asset = message.buying_asset_type; 
+        //console.log("hi")
+        //test account info
+        //var account = message.from;
+        //console.log(account);
+        //console.log(this.server.accounts(account));
+        if(globalView) {
+          var trade = new Object();
+          trade.name = "trade";
+          if(message.asset_code != "DRA") {
+            if(message.buying_asset_code) {
+              trade.asset = message.buying_asset_code; 
+            } else {
+              trade.asset = message.buying_asset_type; 
+            }
+            if(message.selling_asset_code) {
+              trade.asset2 = message.selling_asset_code; 
+            } else {
+              trade.asset2 = message.selling_asset_type; 
+            }
+          }
+          //console.log(trade);
+          tripManager.addTrip(new Trip(centerNode.position, trade, message));
         }
-        if(message.selling_asset_code) {
-          trade.asset2 = message.selling_asset_code; 
-        } else {
-          trade.asset2 = message.selling_asset_type; 
-        }
-        //console.log(trade);
-        tripManager.addTrip(new Trip(node2.position, trade, message));
       }
     });
   },
@@ -94,7 +106,7 @@ RequestStream.prototype = {
           trade.asset2 = message.selling_asset_type; 
         }
         //console.log(trade);
-        tripManager.addTrip(new Trip(node2.position));
+        tripManager.addTrip(new Trip(centerNode.position));
       }
     });
   },
@@ -106,7 +118,7 @@ RequestStream.prototype = {
       onmessage: function (message) {
         //console.log(message);
        //console.log("effects stream");
-        tripManager.addTrip(new Trip(node2.position, message));
+        tripManager.addTrip(new Trip(centerNode.position, message));
       }
     });
   }

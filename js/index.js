@@ -18,16 +18,12 @@ var sound;
 // load a sound and set it as the Audio object's buffer
 var audioLoader;
 var controls;
-var effect;
 
 var tripManager = new TripManager();
 var liveMode = new RequestStream();
 
-var reflectionCube = new THREE.CubeTextureLoader()
-    .setPath( 'images/ss_skybox/' )
-    .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
-  reflectionCube.format = THREE.RGBFormat;
-
+var globalView = true;
+var accountView = false;
 
 var particles, particle, particleCount = 0;
 var points;
@@ -49,6 +45,7 @@ var asset_colours = {
 }
 
 var messageList = []; //list of all requests
+var accountList = []; //list that links all 3d object ids to account ids
 
 var imgTexture = new THREE.TextureLoader().load( "images/moon_1024.jpg" );
 var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
@@ -68,11 +65,11 @@ var shininess = 50, specular = 0x333333, bumpScale = 1;
 var materials = [];
 var cubeWidth = 400;
 var numberOfSphersPerSide = 5;
-var sphereRadius = 4;
+var sphereRadius = 2;
 var sphereRadius2 = 1;
 var stepSize = 1.0 / numberOfSphersPerSide;
-var geometry = new THREE.SphereBufferGeometry( sphereRadius, 64, 32 );
-var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 64, 32 );
+var geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
+var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 32, 16 );
 var alpha = 0.5;
 var beta = 0.5;
 var gamma = 0.5;
@@ -116,7 +113,7 @@ var material2 = new THREE.MeshToonMaterial( {
   envMap: alphaIndex % 2 === 0 ? null : reflectionCube
 });
 
-var node2 = new THREE.Mesh( geometry, material );
+var centerNode = new THREE.Mesh( geometry, material );
 
 var pGeometry = new THREE.BufferGeometry();
 var color = new THREE.Color();
@@ -138,11 +135,6 @@ function init() {
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
-  renderer.gammaInput = true;
-  renderer.gammaOutput = true;
-
-  effect = new THREE.OutlineEffect( renderer );
-
   controls = new THREE.OrbitControls( camera );
 
   controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
@@ -162,7 +154,6 @@ function init() {
   light.position.set( 1, 1, 1 ).normalize();
   scene.add( light );
 
-  scene.background = reflectionCube;
 
   listener = new THREE.AudioListener();
   camera.add( listener );
@@ -182,9 +173,16 @@ function init() {
 
   point2 = new THREE.Points(pGeometry, pMaterial);
 
-  node2.position.set(0,0,0);
+  centerNode.position.set(0,0,0);
 
-  scene.add(node2);
+  scene.add(centerNode);
+
+  console.log(centerNode);
+
+  var account = "GBX6DXELQKLHMKVX2G24E3TPQV6APUAQECIC3XUJJ77Y2NYDM66TDTVY";
+  var server = new StellarSdk.Server('https://horizon.stellar.org');
+  console.log(account);
+  console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
 });
 
 }
@@ -229,6 +227,12 @@ function initParticle( particle, delay ) {
 /*    END Sprites */
 
 /* raycaster */
+
+var reflectionCube = new THREE.CubeTextureLoader()
+    .setPath( 'images/ss_skybox/' )
+    .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
+  reflectionCube.format = THREE.RGBFormat;
+  scene.background = reflectionCube;
 
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 document.addEventListener( 'mousedown', onDocumentMouseDown, false);
@@ -275,10 +279,21 @@ function onDocumentMouseDown(event)
            // will add if for if ledger
            var message = tripManager.trips.find( t => t.line.id === INTERSECTED.id || t.line2.id === INTERSECTED.id).message;
 
+           
            if(message) {
             showRequest(message);
            }
-        
+
+           console.log(INTERSECTED.id);
+
+           var account = findAccount(INTERSECTED.id);
+
+           if(account) {
+            console.log("found matching account for object");
+            console.log(account);
+           }
+
+
             //S$("#description").append();
             //var result = _.findWhere(tripManager.trips, {line.id: INTERSECTED.id});
         }
@@ -370,6 +385,7 @@ function setupTween(pos)
 {
   TWEEN.removeAll();
 
+  
   var tweenObject = new TWEEN.Tween(camera.position).to(pos, 2000);
   //tweenObject.easing(TWEEN.Easing.Elastic.InOut);
 
@@ -380,17 +396,25 @@ function setupTween(pos)
 function zoomToTarget(pos) {
   
 var position = { x : camera.position.x, y: camera.position.y, z: camera.position.z };
-var target = pos;
+var target = { x : pos.x, y: pos.y, z: pos.z };
 
-var tween = new TWEEN.Tween(position).to(pos, 3000);
+target.z = target.z - 10;
+
+console.log(target);
+
+
+
+var tween = new TWEEN.Tween(position).to(target, 3000);
 
 tween.onUpdate(function(){
   camera.lookAt( pos );
   camera.position.x = position.x;
   camera.position.y = position.y;
+  camera.position.z = position.z
 });
 
 tween.easing(TWEEN.Easing.Circular.InOut);
+
 tween.start();
 
 }
@@ -427,6 +451,9 @@ $(document).ready(function() {
     liveMode.operations();
     $("#create_account").toggleClass('selected');
   });
+
+
+
   var aList = $('#asset-list');
   $.each(asset_colours, function(asset, colour)
   {
@@ -456,11 +483,26 @@ function findReq(msgID) {
   return null; // The object was not found
 }
 
+function findAccount(objID) {
+  for (var i = 0, len = accountList.length; i < len; i++) {
+    if (accountList[i].id === objID)
+      return accountList[i]; // Return as soon as the object is found
+    }
+  return null; // The object was not found
+}
+
 function animate() {
   requestAnimationFrame( animate );
 
-    
+  if(accountView) {
+    //do something to setup new view
+  }
+
+
   TWEEN.update();
+
+
+
 
   if(tripManager) {
     if(tripManager.hasTrips()) {
@@ -468,10 +510,8 @@ function animate() {
     }
   }
 
-  effect.render( scene, camera );
-
-  node2.rotation.y += 0.01;
-  //renderer.render( scene, camera );
+  centerNode.rotation.y += 0.01;
+  renderer.render( scene, camera );
 }
 
 animate();
