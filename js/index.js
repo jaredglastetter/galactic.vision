@@ -18,6 +18,12 @@ var sound;
 // load a sound and set it as the Audio object's buffer
 var audioLoader;
 var controls;
+var effect
+
+var reflectionCube = new THREE.CubeTextureLoader()
+    .setPath( 'images/ss_skybox/' )
+    .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
+  reflectionCube.format = THREE.RGBFormat;
 
 var tripManager = new TripManager();
 var liveMode = new RequestStream();
@@ -154,6 +160,9 @@ function init() {
   light.position.set( 1, 1, 1 ).normalize();
   scene.add( light );
 
+  scene.background = reflectionCube;
+
+  effect = new THREE.OutlineEffect( renderer );
 
   listener = new THREE.AudioListener();
   camera.add( listener );
@@ -227,12 +236,6 @@ function initParticle( particle, delay ) {
 /*    END Sprites */
 
 /* raycaster */
-
-var reflectionCube = new THREE.CubeTextureLoader()
-    .setPath( 'images/ss_skybox/' )
-    .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
-  reflectionCube.format = THREE.RGBFormat;
-  scene.background = reflectionCube;
 
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 document.addEventListener( 'mousedown', onDocumentMouseDown, false);
@@ -498,11 +501,7 @@ function animate() {
     //do something to setup new view
   }
 
-
   TWEEN.update();
-
-
-
 
   if(tripManager) {
     if(tripManager.hasTrips()) {
@@ -511,7 +510,7 @@ function animate() {
   }
 
   centerNode.rotation.y += 0.01;
-  renderer.render( scene, camera );
+  effect.render( scene, camera );
 }
 
 animate();
