@@ -108,16 +108,20 @@ function Trip(ledger, request, message) {
 
   var angle = Math.random() * Math.PI*2;
   var radius = Math.random() * 15 + 20;
+  var max = 30;
+  var min = 5;
 
-  var x1 = Math.cos(angle) * radius;
-  var y1 = Math.random() * 20 - 10;
+  var x1 = Math.random() * (max - min) + min;//Math.cos(angle) * radius;
+  var y1 = Math.cos(angle) * radius;//Math.random() * 20 - 10;
   var z1 = Math.sin(angle) * radius;
 
   var angle2 = Math.random() * Math.PI*2;
   var radius2 = Math.random() * 10 + 20;
+  var max2 = -5;
+  var min2 = -30;
 
-  var x2 = Math.cos(angle2) * radius2;
-  var y2 = Math.random() * 20 - 10;
+  var x2 = Math.random() * (max2 - min2) + min2;//Math.cos(angle2) * radius2;
+  var y2 = Math.cos(angle2) * radius2;//Math.random() * 20 - 10;
   var z2 = Math.sin(angle2) * radius2;
 
   this.startNode.position.set(x1,y1,z1);
