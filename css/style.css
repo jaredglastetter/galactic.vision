@@ -202,3 +202,13 @@ button {
 	overflow-y: scroll;
 	max-height: 300px;
 }
+
+.container {
+	position: absolute;
+	top: 0;
+	background: white;
+	width: 25vw !important;
+	margin: 1em !important;
+	border: 5px solid cyan;
+
+}

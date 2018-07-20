@@ -14,7 +14,13 @@
 
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js'></script>
 	<script src="./bower_components/stellar-sdk/stellar-sdk.min.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
 	<script src="js/dependencies/require.js"></script>
 	<script src="js/dependencies/underscore-min.js"></script>
 	<script src="js/webgl/OrbitControls.js"></script>
@@ -28,6 +34,7 @@
 	
 	<script  src="js/webgl/OutlineEffect.js"></script>
 	<script  src="js/webgl/shootingstar.js"></script>
+	<script  src="js/horizon.js"></script>
 	<script  src="js/stream.js"></script>
 	<script  src="js/trip.js"></script>
 	<script  src="js/index.js"></script>
@@ -42,6 +49,41 @@
 
 	
 	<img src="Stellar-Logo.png" class="stellar_logo">
+
+	<div class="container p-t-md">
+		<div id="assets"></div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Crypto</h3>
+					</div>
+					<table class="table table-striped table-bordered">
+					<tbody id="transactions">
+						<tr><th class="col-sm-3 active pll">Balance:</th><td><b><span class="pull-left pll" id="currency">XLM</span><span class="pull-right prl" id="balance"></span></b></td></tr>
+						<tr><th class="col-sm-3 active pll">BTC Value:</th><td><b><span class="pull-left pll"><i class="fa fa-btc" aria-hidden="true"></i></span><span class="pull-right prl" id="value_btc"></span></b></td></tr>
+				    </tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Fiat</h3>
+					</div>
+					<table class="table table-striped table-bordered">
+					<tbody id="transactions">
+						<tr><th class="col-sm-3 active pll">USD Value:</th><td><b><span class="pull-left pll"><i class="fa fa-usd" aria-hidden="true"></i></span><span class="pull-right prl" id="value_usd">0.7374</span></b></td></tr>
+						<tr><th class="col-sm-3 active pll">EUR Value:</th><td><b><span class="pull-left pll"><i class="fa fa-eur" aria-hidden="true"></i></span><span class="pull-right prl" id="value_eur">0.6327</span></b></td></tr>
+				    </tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div id="address"></div>
+	</div>
 
 	<div class="request-history">
 		<div class="request-title">Request History</div>
