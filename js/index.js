@@ -119,7 +119,8 @@ var material2 = new THREE.MeshToonMaterial( {
   envMap: alphaIndex % 2 === 0 ? null : reflectionCube
 });
 
-var centerNode = new THREE.Mesh( geometry, material );
+var centerNode;
+//var centerNode = new THREE.Mesh( geometry, material );
 
 var pGeometry = new THREE.BufferGeometry();
 var color = new THREE.Color();
@@ -182,11 +183,44 @@ function init() {
 
   point2 = new THREE.Points(pGeometry, pMaterial);
 
-  centerNode.position.set(0,0,0);
 
-  scene.add(centerNode);
+  var fbx;
 
-  console.log(centerNode);
+  // model
+  var loader = new THREE.FBXLoader();
+  loader.load( 'stellar 4.fbx', function ( object ) {
+
+    centerNode = object;
+    //centerNode.position.set(0,0,0);
+
+    //scene.add(centerNode);
+
+    console.log(centerNode.scale);
+    //centerNode.geometry.scale = {x: 0.9, y: 0.9, z: 0.9};
+     centerNode.scale.x = 0.1;
+     centerNode.scale.y = 0.1;
+     centerNode.scale.z = 0.1;
+
+    console.log(centerNode.scale);
+
+    scene.add(centerNode);
+
+    console.log(centerNode);
+    /*
+    object.traverse( function ( child ) {
+
+      console.log(child);
+      fbx = child;
+
+      scene.add(fbx);
+
+      if ( child.isMesh ) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    } );*/
+
+  } );
 
   var account = "GBX6DXELQKLHMKVX2G24E3TPQV6APUAQECIC3XUJJ77Y2NYDM66TDTVY";
   var server = new StellarSdk.Server('https://horizon.stellar.org');
@@ -509,7 +543,9 @@ function animate() {
     }
   }
 
-  centerNode.rotation.y += 0.01;
+  if(centerNode) {
+    centerNode.rotation.y += 0.01;
+  }
   effect.render( scene, camera );
 }
 
