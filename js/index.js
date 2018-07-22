@@ -190,8 +190,9 @@ function init() {
 
   var account = "GBX6DXELQKLHMKVX2G24E3TPQV6APUAQECIC3XUJJ77Y2NYDM66TDTVY";
   var server = new StellarSdk.Server('https://horizon.stellar.org');
-  console.log(account);
-  console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
+  //console.log(account);
+  //console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
+  //assets("GDDMFUC6BPAKNFAKQ2GRJHNQIWQIQBWMF3FEFIBHH532UNKHYIEPDM7M");
 });
 
 }
@@ -291,7 +292,7 @@ function onDocumentMouseDown(event)
            if(account) {
             console.log("found matching account for object");
             console.log(account.account);
-            address(account.account);
+            assets(account.account);
            }
 
 

@@ -206,9 +206,101 @@ button {
 .container {
 	position: absolute;
 	top: 0;
-	background: white;
-	width: 25vw !important;
+	background-color: rgba(50,50,50,.5);
+	width: 45vw !important;
 	margin: 1em !important;
 	border: 5px solid cyan;
+	border-radius: 1em;
 
 }
+
+.panel-title {
+	color: white;
+}
+
+#address {
+	color: white;
+	word-wrap: break-word;
+}
+
+#account-tabs .nav-tabs {
+    border: 1px solid #383f4b !important;
+}
+
+.nav-tabs {
+	margin-top: 15px;
+    border-bottom: 1px solid #ddd;
+    background-color: #212529;
+}
+
+.nav {
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+#account-tabs .nav-tabs li {
+    color: #96a2b4;
+}
+
+.nav-tabs > li {
+    float: left;
+    margin-bottom: -1px;
+}
+
+.nav > li, .nav > li > a {
+    position: relative;
+    display: block;
+}
+
+#account-tabs .nav-tabs > li.active > a {
+
+    border-bottom: 2px solid #fff;
+    color: #01c0c8;
+
+}
+#account-tabs .nav-tabs > li > a {
+
+    border-bottom: 2px solid;
+
+}
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+
+}
+
+a[id|="account-tabs-tab"][aria-selected="true"] {
+
+    color: #01c0c8 !important;
+
+}
+
+.nav-tabs > li > a {
+	color: white;
+    border-radius: 0;
+
+}
+.nav-tabs > li > a {
+
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+        border-bottom-color: transparent;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+    border-radius: 4px 4px 0 0;
+
+}
+.nav > li > a {
+    padding: 10px 15px;
+
+}
+.nav > li, .nav > li > a {
+    position: relative;
+    display: block;
+ }
