@@ -521,30 +521,30 @@ function zoomToTarget(pos) {
 }
 
 $(document).ready(function() {
-  $("#transaction_streams").click(function setLiveTransactions() {
+  $("#transactions").click(function setLiveTransactions() {
     //console.log(liveMode);
     liveMode.transactions();
-    $("#transactions_stream").toggleClass('selected');
+    $("#transactions").toggleClass('selected');
   });
 
-  $("#payments_stream").click(function setLivePayments() {
+  $("#payments").click(function setLivePayments() {
     liveMode.payments();
-    $("#payments_stream").toggleClass('selected');
+    $("#payments").toggleClass('selected');
   });
 
-  $("#operations_stream").click(function setLiveOperations() {
+  $("#operations").click(function setLiveOperations() {
     liveMode.operations();
-    $("#operations_stream").toggleClass('selected');
+    $("#operations").toggleClass('selected');
   });
 
-  $("#trades_stream").click(function setLiveTrades() {
+  $("#trades").click(function setLiveTrades() {
     liveMode.trades();
-    $("#trades_stream").toggleClass('selected');
+    $("#trades").toggleClass('selected');
   });
 
-  $("#effects_stream").click(function setLiveEffects() {
+  $("#effects").click(function setLiveEffects() {
     liveMode.effects();
-    $("#effects_stream").toggleClass('selected');
+    $("#effects").toggleClass('selected');
   });
 
   //Operations filters
