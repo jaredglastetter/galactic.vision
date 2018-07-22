@@ -224,8 +224,9 @@ function init() {
 
   var account = "GBX6DXELQKLHMKVX2G24E3TPQV6APUAQECIC3XUJJ77Y2NYDM66TDTVY";
   var server = new StellarSdk.Server('https://horizon.stellar.org');
-  console.log(account);
-  console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
+  //console.log(account);
+  //console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
+  //assets("GDDMFUC6BPAKNFAKQ2GRJHNQIWQIQBWMF3FEFIBHH532UNKHYIEPDM7M");
 });
 
 }
@@ -312,25 +313,25 @@ function onDocumentMouseDown(event)
            var dir = camera.position.clone().sub(intersects[0].point).normalize();
            camera.position = intersects[0].point.clone().add(dir);
            camera.lookAt(intersects[0].point);
-
-           // will add if for if ledger
-           var message = tripManager.trips.find( t => t.line.id === INTERSECTED.id || t.line2.id === INTERSECTED.id).message;
-
            
-           if(message) {
-            showRequest(message);
-           }
+           var objID = INTERSECTED.id;
 
-           console.log(INTERSECTED.id);
+           var account = findAccount(objID);
+
+           console.log("Printing intersection information");
+           console.log(INTERSECTED);
 
            var account = findAccount(INTERSECTED.id);
 
            if(account) {
             console.log("found matching account for object");
-            console.log(account);
+            console.log(account.account);
+            assets(account.account);
            }
 
 
+
+           var message = tripManager.trips.find( t => t.line.id === INTERSECTED.id || t.line2.id === INTERSECTED.id).message;
             //S$("#description").append();
             //var result = _.findWhere(tripManager.trips, {line.id: INTERSECTED.id});
         }
@@ -343,6 +344,71 @@ function onDocumentMouseDown(event)
             //$("#description").hide();
            
       }
+}
+
+function showAccount(account) {
+// var desc = document.getElementById("description");
+  // desc.style.display == "block";
+  var elem = document.getElementById("description_lines");
+  elem.innerHTML = "";
+
+  $("#description").show();
+  var info = "";
+
+  info += "<h3>Request Type</h3><p>" + message.type + "</p>";
+
+  info += "<h3>Source Wallet</h3><p>" + message.source_account + "</p>";
+
+  if(message.type == "payment") {
+    info += "<h3>Destination Wallet</h3><p>" + message.to + "</p>";
+    info += "<h3>Date</h3><p>" + message.created_at + "</p>";
+    if(message.asset_code) {
+      info += "<h3>Amount</h3><p>" + message.amount + " " + message.asset_code + "</p>";
+    } else {
+      info += "<h3>Amount</h3><p>" + message.amount + " " + message.asset_type + "</p>";
+    }
+  }
+
+  if(message.type == "manage_offer") {
+
+    var buying;
+    var selling;
+
+    if(message.buying_asset_code) {
+      buying = message.buying_asset_code; 
+    } else {
+      buying = message.buying_asset_type; 
+    }
+    if(message.selling_asset_code) {
+      selling = message.selling_asset_code; 
+    } else {
+      selling = message.selling_asset_type; 
+    }
+
+    if(buying == "native") {
+      buying = "XLM";
+    }
+
+    if(selling == "native") {
+      selling = "XLM";
+    }
+
+    var buying_amount = message.amount * message.price;
+    buying_amount = Math.round(buying_amount * 100) / 100;
+
+    var selling_amount = Math.round(message.amount * 100) / 100;
+    
+    info += "<h3>Buying Asset</h3><p>" + buying + "</p>";
+    info += "<h3>Selling Asset</h3><p>" + selling + "</p>";
+
+    if(message.amount) {
+      info += "<h3>Offer Details</h3><p>" + "Buying " + buying_amount + " " + buying + " with " + selling_amount + " " + selling + "<br> at 1 " + selling + " = " + message.price + " " + buying + "</p>";
+    }
+  }
+
+  info += "<h3>Transaction Hash ID</h3><p>" + message.transaction_hash +"</p>";
+
+  $("#description_lines").append(info);
 }
 
 function showRequest(message) {
@@ -432,27 +498,25 @@ function setupTween(pos)
 
 function zoomToTarget(pos) {
   
-var position = { x : camera.position.x, y: camera.position.y, z: camera.position.z };
-var target = { x : pos.x, y: pos.y, z: pos.z };
+  var position = { x : camera.position.x, y: camera.position.y, z: camera.position.z };
+  var target = { x : pos.x, y: pos.y, z: pos.z };
 
-target.z = target.z - 10;
+  target.z = target.z - 10;
 
-console.log(target);
+  //console.log(target);
 
+  var tween = new TWEEN.Tween(position).to(target, 3000);
 
+  tween.onUpdate(function(){
+    camera.lookAt( pos );
+    camera.position.x = position.x;
+    camera.position.y = position.y;
+    camera.position.z = position.z
+  });
 
-var tween = new TWEEN.Tween(position).to(target, 3000);
+  tween.easing(TWEEN.Easing.Circular.InOut);
 
-tween.onUpdate(function(){
-  camera.lookAt( pos );
-  camera.position.x = position.x;
-  camera.position.y = position.y;
-  camera.position.z = position.z
-});
-
-tween.easing(TWEEN.Easing.Circular.InOut);
-
-tween.start();
+  tween.start();
 
 }
 
@@ -526,6 +590,13 @@ function findAccount(objID) {
       return accountList[i]; // Return as soon as the object is found
     }
   return null; // The object was not found
+}
+
+function getAccountInfo(id){
+  var server = new StellarSdk.Server('https://horizon.stellar.org');
+  //get account info
+  console.log(id);
+  console.log(this.server.accounts(account));
 }
 
 function animate() {

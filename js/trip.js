@@ -44,7 +44,7 @@ function Trip(ledger, request, message) {
 
   if(message) {
     this.message = message;
-    console.log(message);
+    //console.log(message);
     messageList.push(message);
 
     $(document).ready(function() {
