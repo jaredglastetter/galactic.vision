@@ -325,6 +325,9 @@ a[id|="account-tabs-tab"]:hover {
  	color: cyan !important;
  }
 
- th{
+ #app {
+ 	color: cyan;
+ }
+th{
  	text-align: center !important;
  }
