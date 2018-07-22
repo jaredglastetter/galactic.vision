@@ -195,17 +195,17 @@ function init() {
 
     //scene.add(centerNode);
 
-    console.log(centerNode.scale);
+    //console.log(centerNode.scale);
     //centerNode.geometry.scale = {x: 0.9, y: 0.9, z: 0.9};
      centerNode.scale.x = 0.1;
      centerNode.scale.y = 0.1;
      centerNode.scale.z = 0.1;
 
-    console.log(centerNode.scale);
+    //console.log(centerNode.scale);
 
     scene.add(centerNode);
 
-    console.log(centerNode);
+    //console.log(centerNode);
     /*
     object.traverse( function ( child ) {
 
@@ -226,7 +226,7 @@ function init() {
   var server = new StellarSdk.Server('https://horizon.stellar.org');
   //console.log(account);
   //console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
-  //assets("GDDMFUC6BPAKNFAKQ2GRJHNQIWQIQBWMF3FEFIBHH532UNKHYIEPDM7M");
+  assets("GDDMFUC6BPAKNFAKQ2GRJHNQIWQIQBWMF3FEFIBHH532UNKHYIEPDM7M");
 });
 
 }
@@ -304,7 +304,7 @@ function onDocumentMouseDown(event)
           INTERSECTED = intersects[ 0 ].object;
           INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
           //INTERSECTED.material.color.setHex( 0xff0000 );
-          console.log(intersects.length);
+          //console.log(intersects.length);
 
           //setupTween(INTERSECTED.position);
           zoomToTarget(INTERSECTED.position);
@@ -575,6 +575,7 @@ $(document).ready(function() {
   });
 
 });
+
 
 function findReq(msgID) {
   for (var i = 0, len = messageList.length; i < len; i++) {

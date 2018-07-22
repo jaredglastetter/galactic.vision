@@ -163,7 +163,7 @@ function Trip(ledger, request, message) {
   this.ledger = ledger;
   this.alpha = 0;
   this.alpha2 = 0; //2nd asset
-  this.rate = Math.random() / 25;
+  this.rate = Math.random() % 0.025 + 0.0025;
   this.processed = false; //keeps track of status of trip false -> going to ledger true -> traveling to destination 
   this.processed2 = false;
 

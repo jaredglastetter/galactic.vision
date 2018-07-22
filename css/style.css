@@ -280,9 +280,25 @@ a[id|="account-tabs-tab"][aria-selected="true"] {
 
 }
 
+a[id|="account-tabs-tab"]:hover {
+    color: #01c0c8 !important;
+    background-color: #3c4452 !important;
+    border: 1px solid #3c4452;
+        border-top-color: rgb(60, 68, 82);
+        border-right-color: rgb(60, 68, 82);
+        border-bottom-color: rgb(60, 68, 82);
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-left-color: rgb(60, 68, 82);
+    border-bottom: 2px solid #01c0c8 !important;
+        border-bottom-color: rgb(1, 192, 200);
+    border-color: #3c4452 !important;
+}
+
 .nav-tabs > li > a {
 	color: white;
     border-radius: 0;
+    text-decoration: none;
 
 }
 .nav-tabs > li > a {
@@ -303,4 +319,8 @@ a[id|="account-tabs-tab"][aria-selected="true"] {
 .nav > li, .nav > li > a {
     position: relative;
     display: block;
+ }
+
+ .table-dark {
+ 	color: cyan !important;
  }

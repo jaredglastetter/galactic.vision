@@ -15,6 +15,8 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js'></script>
 	<script src="./bower_components/stellar-sdk/stellar-sdk.min.js"></script>
 
+	<script src="js/dependencies/jquery.min.js"></script>
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	
@@ -24,7 +26,6 @@
 	<script src="js/dependencies/require.js"></script>
 	<script src="js/dependencies/underscore-min.js"></script>
 	<script src="js/webgl/OrbitControls.js"></script>
-	<script src="js/dependencies/jquery.min.js"></script>
 	<script src="js/webgl/Projector.js"></script>
 	<script src="js/webgl/CanvasRenderer.js"></script>
 	<script src="js/dependencies/stats.min.js"></script>
@@ -43,21 +44,36 @@
 	
 	
 
-
+	
 	<div id="layout" class="stars">
 	 	<div id="ShootingStarParams"></div>
-	</div>
+	</div> 
 
 	
 	<!-- <img src="Stellar-Logo.png" class="stellar_logo"> -->
 
-	<div id="account" class="container p-t-md">
-		<div id="account-tabs" style="border-radius: 4px;">
-			
+	
 
-			<div id="assets"></div>
-			<div id="address"></div>
+
+	<div id="account" class="container p-t-md">
+
+		<div id="account-menu" style="border-radius: 4px;">
+			<ul role="tablist" class="nav nav-tabs" id="account-tabs">
+				<li role="presentation" class="nav-item active"><a id="account-tabs-tab-balances" class="nav-link active" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-balances" aria-selected="true" href="#balances">Balances</a></li>
+				<li role="presentation" class="nav-item"><a id="account-tabs-tab-payments" class="nav-link" href="#payments_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-payments" tabindex="-1" aria-selected="false">Payments</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-offers" class="nav-link" href="#offers" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-offers" tabindex="-1" aria-selected="false">Offers</a></li>
+				<li role="presentation" class="nav-item"><a id="account-tabs-tab-trades" href="#tab_trades" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-trades" tabindex="-1" aria-selected="false" href="#">Trades</a></li>
+				<li role="presentation" class="nav-item"><a id="account-tabs-tab-operations" data-url="?action=operations" role="tab" aria-controls="account-tabs-pane-operations" tabindex="-1" aria-selected="false" href="#">Operations</a></li>
+				<li role="presentation" class="nav-item"><a id="account-tabs-tab-transactions" data-url="?action=transactions" role="tab" aria-controls="account-tabs-pane-transactions" tabindex="-1" aria-selected="false" href="#">Transactions</a></li>
+			</ul>
+			<div class="tab-content">
+				<div id="balances" class="tab-pane active"></div>
+				<div id="payments_tab" class="tab-pane fade"></div>
+				<div id="operations" class="tab-pane fade"></div>
+			</div>
 		</div>
+		<div id="assets"></div>
+
+		<div id="address"></div>
 	</div>
 
 	<div class="request-history">
