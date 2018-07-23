@@ -77,7 +77,14 @@ function assets(address) {
 			}
 		}
 
-		payments_table += '</tbody></table></div>';
+
+		if(paymentArr.length < 1){
+  		   payments_table += '</tbody></table><p class="text-center">There are no payments to show for this account</p></div>'
+  		}
+  		else{
+  		   payments_table += '</tbody></table></div>';
+  		}
+
 		document.getElementById('payments_tab').innerHTML = payments_table;
 
 	    return '';
@@ -91,7 +98,7 @@ function assets(address) {
 
 
   	/**** Offers Tab Data ****/
-  	server.offers('accounts', 'GAOVLZQ6YVJMIE46EAA2ZAYUU6S3ETKHDDFASFINH4YLWUZKXAUBYBB2').call().then(function (account) {
+  	server.offers('accounts', address).call().then(function (account) {
     
 
     var offers_table = '<table id="offer-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="offers-buy">Buy Asset</th><th id="offers-sell">Sell Asset</th><th id="offers-amount">Amount</th><th id="offers-price">Price</th></tr></thead><tbody>'
@@ -139,8 +146,15 @@ function assets(address) {
   		 	offers_table += '<tr><td class="text-center"><b>' + buyType + '</b></td><td class="text-center"><b>' + sellType + '</b></td><td class="text-center"><b>' + amount + '</b></td><td class="text-center"><b>' + price + '</b></td></tr>';
 	
   		 }
+
+  		 if(offersArr < 1){
+  		 	offers_table += '</tbody></table><p class="text-center">There are no offers to show for this account</p></div>'
+  		 }
+  		 else{
+  		 	offers_table += '</tbody></table></div>';
+  		 }
   		 
-  		 offers_table += '</tbody></table></div>';
+  		 
 		 document.getElementById('offers_tab').innerHTML = offers_table;
 
   }).catch(function (err) {
@@ -154,40 +168,48 @@ function assets(address) {
 
 
   	/**** Trades Tab Data ****/
-  // 	server.trades().forAccount(address).call().then(function (account) {
+  	server.transactions().forAccount(address).call().then(function (account) {
 
-  // 		var trades_table = '<table id="trade-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="trades-header1">Account</th><th id="trades-header2">Fee</th><th id="trades-header3">Time</th></tr></thead><tbody>'
+  		var trades_table = '<table id="trade-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="trades-info">Trade Information</th><th id="trades-time">Time</th></tr></thead><tbody>'
 
-  // 		var tradesArr = account.records;
+  		var tradesArr = [];
+  		//var tradesArr = account.records;
 
-  // 		console.log("Printing Trade Records");
-  // 		console.log(tradesArr);
+  		//console.log("Printing Trade Records");
+  		//console.log(tradesArr);
 
-  // 		for(var i = 0; i < tradesArr.length; i++){
-  // 			//console.log("next transaction");
-  // 			//console.log(transactionsArr[i]);
+  		// for(var i = 0; i < tradesArr.length; i++){
+  		// 	//console.log("next transaction");
+  		// 	//console.log(transactionsArr[i]);
 
-  // 			var trade = tradesArr[i];
+  		// 	var trade = tradesArr[i];
 
 
-  // 			var type = trade.type;
+  		// 	//var type = trade.type;
   			
 
-  // 			trades_table += '<tr><td class="text-center"><b>' + [type] + '</b></td><td class="text-center"><b>' + [type1] + '</b></td><td class="text-center"><b>' + [type2] + '</b></td></tr>';
+  		// 	//trades_table += '<tr><td class="text-center"><b>' + [type] + '</b></td><td class="text-center"><b>' + [type1] + '</b></td><td class="text-center"><b>' + [type2] + '</b></td></tr>';
   			
 
-  // 		}
+  		// }
     
-  // 		trades_table += '</tbody></table></div>';
-		// document.getElementById('trades_tab').innerHTML = trades_table;
+  		if(tradesArr < 1){
+  		   trades_table += '</tbody></table><p class="text-center">There are no Trades to show for this account</p></div>'
+  		}
+  		else{
+  		   trades_table += '</tbody></table></div>';
+  		}
 
-  // }).catch(function (err) {
-  //   if(err.message.status == 404){
+  		trades_table += '</tbody></table></div>';
+		document.getElementById('trades_tab').innerHTML = trades_table;
+
+  }).catch(function (err) {
+    if(err.message.status == 404){
   			
-  // 		}
-  // 		console.log(err);
-  //   	console.error(err);
-  // });
+  		}
+  		console.log(err);
+    	console.error(err);
+  });
 //////////////////////////////////////////////////////
 
 
@@ -220,8 +242,14 @@ function assets(address) {
   			
 
   		}
-    
-  		operations_table += '</tbody></table></div>';
+
+  		if(operationsArr < 1){
+  		   operations_table += '</tbody></table><p class="text-center">There are no operations to show for this account</p></div>'
+  		}
+  		else{
+  		   operations_table += '</tbody></table></div>';
+  		}
+
 		document.getElementById('operations_tab').innerHTML = operations_table;
 
   }).catch(function (err) {
@@ -257,6 +285,14 @@ function assets(address) {
   			
 
   		}
+
+  		if(transactionsArr.length < 1){
+  		   transactions_table += '</tbody></table><p class="text-center">There are no transactions to show for this account</p></div>'
+  		}
+  		else{
+  		   transactions_table += '</tbody></table></div>';
+  		}
+
 
   		transactions_table += '</tbody></table></div>';
   		document.getElementById('transactions_tab').innerHTML = transactions_table;
