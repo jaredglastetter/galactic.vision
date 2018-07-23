@@ -200,7 +200,7 @@ function assets(address) {
   		   trades_table += '</tbody></table></div>';
   		}
 
-  		trades_table += '</tbody></table></div>';
+  		
 		document.getElementById('trades_tab').innerHTML = trades_table;
 
   }).catch(function (err) {
