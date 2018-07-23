@@ -87,6 +87,44 @@ function assets(address) {
   		console.log(err);
     	console.error(err);
   	});
+
+
+  	/**** Transactions Tab Data ****/
+  	server.transactions().forAccount(address).call().then(function(account){
+
+  		var transactions_table = '<table id="transaction-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="transactions-account">Account</th><th id="transactions-fee">Fee</th><th id="transactions-time">Time</th></tr></thead><tbody>'
+  		var transactionsArr = account.records;
+
+  		console.log("printing transaction recors");
+  		console.log(transactionsArr);
+
+  		for(var i = 0; i < transactionsArr.length; i++){
+  			console.log("next transaction");
+  			console.log(transactionsArr[i]);
+
+  			var transaction = transactionsArr[i];
+
+
+  			var fee = transaction.fee_paid;
+  			var id_hash = transaction.hash.substring(0,4);
+  			var time = transaction.created_at;
+
+  			transactions_table += '<tr><td class="text-center"><b>' + id_hash + '</b></td><td class="text-center"><b>' + fee + '</b></td><td class="text-center"><b>' + time + '</b></td></tr>';
+  			
+
+  		}
+
+  		transactions_table += '</tbody></table></div>';
+  		document.getElementById('transactions_tab').innerHTML = transactions_table;
+
+  	}).catch(function (err){
+  		if(err.message.status == 404){
+  			
+  		}
+  		console.log(err);
+    	console.error(err);
+  	});
+  	
 }
 
 /* transactions table tab*/
