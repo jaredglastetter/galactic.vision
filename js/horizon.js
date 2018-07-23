@@ -124,8 +124,8 @@ function assets(address) {
   		}
   		console.log(err);
     	console.error(err);
-  	})
-
+  	});
+  	
 }
 
 /* transactions table tab*/
