@@ -18,11 +18,15 @@
 	<script src="js/dependencies/jquery.min.js"></script>
 	<script src="js/dependencies/vue.js"></script>
 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+	<script src="https://unpkg.com/ionicons@4.2.4/dist/ionicons.js"></script>
 
 	<script src="js/dependencies/require.js"></script>
 	<script src="js/dependencies/underscore-min.js"></script>
@@ -52,8 +56,17 @@
 	<!-- <img src="Stellar-Logo.png" class="stellar_logo"> -->
 
 	<div id="app">
-		<div v-if="showAccountWindow" id="account" class="container p-t-md">
-			
+
+		<div class="icon-bar">
+		  <a class="active" href="#"><i class="fa fa-home"></i></a>
+		  <a href="#"><i class="fa fa-search"></i></a>
+		  <a v-on:click="showRequestHistoryWindow()" href="#"><i class="fa fa-history"></i></a>
+		  <a v-on:click="showAccountWindow()" href="#"><i class="fa fa-book"></i></a>
+		  <a v-on:click="showLegendWindow()" href="#"><i class="fa fa-question"></i></a>
+		</div>
+
+		<div v-show="showAccountWin" id="account" class="container p-t-md">
+			<ion-icon v-on:click="closeAccountWindow()" id="accountClose" name="close" style="float: right;"></ion-icon>
 			<div v-on:click="showText()">Show Text!</div>
 		 	<div v-if="showVue">
 		  		{{ message }}
@@ -87,14 +100,14 @@
 			<div id="address"></div>
 		</div>
 
-		<div class="request-history">
+		<div v-show="showRequestHistory" class="request-history">
 			<div class="request-title">Request History</div>
 			<div class='request-container'>
 			  <ul class='request-labels' id="request-list"></ul>
 			</div>
 		</div>
 
-		<div class='my-legend'>
+		<div v-show="showLegend" class='my-legend'>
 			<div class='legend-title'>Stellar Assets Legend</div>
 			<div class='legend-scale'>
 			  <ul class='legend-labels' id="asset-list"></ul>
@@ -133,7 +146,9 @@ var app = new Vue({
   data: {
     message: 'Hello Vue!',
     showVue: false,
-    showAccountWindow: true,
+    showAccountWin: false,
+    showRequestHistory: false,
+    showLegend: false,
     showTx: false,
     messageList: [],
 	accountList: [] 
@@ -141,6 +156,37 @@ var app = new Vue({
   methods: {
   	showText: function() {
   		this.showVue = !this.showVue;
+  	},
+  	showAccountWindow: function() {
+  		//fix the case where you toggle the window off then click on another planet
+  		this.hideAll();
+		this.showAccountWin = true;
+  		
+  	},
+  	closeAccountWindow: function() {
+  		this.showAccountWin = false;
+  	},
+  	showRequestHistoryWindow: function() {
+  		
+  		if(this.showRequestHistory) {
+  			this.showRequestHistory = false;
+  		} else {
+	  		this.hideAll();
+  			this.showRequestHistory = true;
+	  	}
+  	},
+  	showLegendWindow: function() {
+  		if(this.showLegend) {
+  			this.showLegend = false;
+  		} else {
+	  		this.hideAll();
+	  		this.showLegend = true;
+	  	}
+  	},
+  	hideAll: function() {
+  		this.showRequestHistory = false;
+  		this.showAccountWin = false;
+  		this.showLegend = false;
   	}
   }
 })

@@ -158,19 +158,22 @@ button {
 }
 
 .my-legend {
-	bottom: 0;
+	top: 0;
 	position: absolute;
-	right:0;
+	margin-left: 6em;
 	background-color: rgba(50,50,50,.5);
 	font: 300 1em 'Fira Sans', sans-serif;
 	color: white;
 	padding: 10px;
+	border: 5px solid cyan;
+	border-radius: 1em;
+	margin-top: 1em;
 }
 
 .request-history {
-	bottom: 50%;
+	top:0;
 	position: absolute;
-	right:0;
+	margin-left: 6em;
 	min-height: 300px;
 	max-height: 600px;
 	min-width: 200px;
@@ -178,6 +181,9 @@ button {
 	font: 300 1em 'Fira Sans', sans-serif;
 	color: white;
 	padding: 25px;
+	border: 5px solid cyan;
+	border-radius: 1em;
+	margin-top: 1em;
 }
 
 .request-history ul.request-labels li span {
@@ -211,6 +217,9 @@ button {
 	margin: 1em !important;
 	border: 5px solid cyan;
 	border-radius: 1em;
+	margin-left: 6em !important;
+	max-height: 90vh;
+	overflow: auto;
 
 }
 
@@ -332,3 +341,27 @@ a[id|="account-tabs-tab"]:hover {
  th {
  	text-align: center !important;
  }
+
+.icon-bar {
+    width: 90px; /* Set a specific width */
+    background-color: #555; /* Dark-grey background */
+    position: absolute;
+    top: 0;
+}
+
+.icon-bar a {
+    display: block; /* Make the links appear below each other instead of side-by-side */
+    text-align: center; /* Center-align text */
+    padding: 16px; /* Add some padding */
+    transition: all 0.3s ease; /* Add transition for hover effects */
+    color: white; /* White text color */
+    font-size: 36px; /* Increased font-size */
+}
+
+.icon-bar a:hover {
+    background-color: #000; /* Add a hover color */
+}
+
+.icon-bar .active {
+    background-color: cyan; /* Add an active/current color */
+}

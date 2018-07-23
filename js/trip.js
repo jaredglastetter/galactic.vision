@@ -45,6 +45,7 @@ function Trip(ledger, request, message) {
   if(message) {
     this.message = message;
     //console.log(message);
+    console.log(Object.assign({}, message));
     app.messageList.push(message);
 
     $(document).ready(function() {
@@ -132,11 +133,27 @@ function Trip(ledger, request, message) {
   scene.add( this.endNode);
   scene.add( this.payload );
 
-  
+  console.log(message.type);
+
+  var account1;
+  var account2;
+
+  if(message.source_account) {
+    account1 = new Object();
+
+    account1.id = this.startNode.id;
+    account1.account = message.source_account;
+
+    console.log("assigning an account from type: " + message.type);
+    console.log(account1);
+
+    app.accountList.push(account1);
+  }
+
   if(message.from) {
     //assign object ids to acconut ids
-    var account1 = new Object();
-    var account2 = new Object();
+    account1 = new Object();
+    account2 = new Object();
 
     account1.id = this.startNode.id;
     account2.id = this.endNode.id;
