@@ -239,11 +239,7 @@ function assets(address) {
   		var transactions_table = '<table id="transaction-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="transactions-account">Account</th><th id="transactions-fee">Fee</th><th id="transactions-time">Time</th></tr></thead><tbody>'
   		var transactionsArr = account.records;
 
-<<<<<<< HEAD
-  		//console.log("printing transaction recors");
-=======
   		//console.log("printing transaction records");
->>>>>>> origin/tab_contents
   		//console.log(transactionsArr);
 
   		for(var i = 0; i < transactionsArr.length; i++){
