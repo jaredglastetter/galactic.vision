@@ -168,48 +168,124 @@ function assets(address) {
 
 
   	/**** Trades Tab Data ****/
-  	server.transactions().forAccount(address).call().then(function (account) {
 
-  		var trades_table = '<table id="trade-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="trades-info">Trade Information</th><th id="trades-time">Time</th></tr></thead><tbody>'
-
-  		var tradesArr = [];
-  		//var tradesArr = account.records;
-
-  		//console.log("Printing Trade Records");
-  		//console.log(tradesArr);
-
-  		// for(var i = 0; i < tradesArr.length; i++){
-  		// 	//console.log("next transaction");
-  		// 	//console.log(transactionsArr[i]);
-
-  		// 	var trade = tradesArr[i];
-
-
-  		// 	//var type = trade.type;
-  			
-
-  		// 	//trades_table += '<tr><td class="text-center"><b>' + [type] + '</b></td><td class="text-center"><b>' + [type1] + '</b></td><td class="text-center"><b>' + [type2] + '</b></td></tr>';
-  			
-
-  		// }
+    var horizonUrl = 'https://horizon.stellar.org/accounts/' + address + '/trades';
     
-  		if(tradesArr < 1){
-  		   trades_table += '</tbody></table><p class="text-center">There are no Trades to show for this account</p></div>'
-  		}
-  		else{
-  		   trades_table += '</tbody></table></div>';
-  		}
+    $.ajax({
+        url: horizonUrl,
+        success: function(account){
+
+         var trades_table = '<table id="trade-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="trades-info">Trade Information</th><th id="trades-time">Time</th></tr></thead><tbody>'
+
+         //var tradesArr = [];
+         var tradesArr = account._embedded.records;
+
+         console.log("Printing Trade Records");
+         console.log(tradesArr);
+
+         for(var i = 0; i < tradesArr.length; i++){
+          //console.log("next transaction");
+          //console.log(transactionsArr[i]);
+
+         var trade = tradesArr[i];
+
+
+        // check base asset type
+        var baseAsset;
+        if(trade.base_asset_code) {
+                baseAsset = trade.base_asset_code;
+        } else {
+                baseAsset = trade.base_asset_type;
+        }
+
+        // check counter asset type
+        var counterAsset;
+        if(trade.counter_asset_code) {
+                counterAsset = trade.counter_asset_code;
+        } else {
+                counterAsset = trade.counter_asset_type;
+        }
+
+        //check for native asset
+        if(baseAsset == "native"){
+          baseAsset = "XLM";
+        }
+        if(counterAsset == "native"){
+          counterAsset = "XLM";
+        }
+
+
+
+
+         
+
+
+         var description = "[" + trade.base_account.substring(0,4) + "] " + trade.base_amount.substring(0,6) + " " + baseAsset   + " FOR " +  trade.counter_amount.substring(0,6) + " " + counterAsset + " [" + trade.counter_account.substring(0,4) + "] ";
+         var time = trade.ledger_close_time;
+          //var type = trade.type;
+            
+
+        trades_table += '<tr><td class="text-center"><b>' + description + '</b></td><td class="text-center"><b>' + time + '</b></td></tr>';
+            
+
+         }
+        
+         if(tradesArr < 1){
+            trades_table += '</tbody></table><p class="text-center">There are no Trades to show for this account</p></div>'
+         }
+         else{
+            trades_table += '</tbody></table></div>';
+         }
+
+          
+        document.getElementById('trades_tab').innerHTML = trades_table;
+
+
+
+        }
+    });
+  	// server.transactions().forAccount(address).call().then(function (account) {
+
+  // 		var trades_table = '<table id="trade-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="trades-info">Trade Information</th><th id="trades-time">Time</th></tr></thead><tbody>'
+
+  // 		var tradesArr = [];
+  // 		//var tradesArr = account.records;
+
+  // 		//console.log("Printing Trade Records");
+  // 		//console.log(tradesArr);
+
+  // 		// for(var i = 0; i < tradesArr.length; i++){
+  // 		// 	//console.log("next transaction");
+  // 		// 	//console.log(transactionsArr[i]);
+
+  // 		// 	var trade = tradesArr[i];
+
+
+  // 		// 	//var type = trade.type;
+  			
+
+  // 		// 	//trades_table += '<tr><td class="text-center"><b>' + [type] + '</b></td><td class="text-center"><b>' + [type1] + '</b></td><td class="text-center"><b>' + [type2] + '</b></td></tr>';
+  			
+
+  // 		// }
+    
+  // 		if(tradesArr < 1){
+  // 		   trades_table += '</tbody></table><p class="text-center">There are no Trades to show for this account</p></div>'
+  // 		}
+  // 		else{
+  // 		   trades_table += '</tbody></table></div>';
+  // 		}
 
   		
-		document.getElementById('trades_tab').innerHTML = trades_table;
+		// document.getElementById('trades_tab').innerHTML = trades_table;
 
-  }).catch(function (err) {
-    if(err.message.status == 404){
+  // }).catch(function (err) {
+  //   if(err.message.status == 404){
   			
-  		}
-  		console.log(err);
-    	console.error(err);
-  });
+  // 		}
+  // 		console.log(err);
+  //   	console.error(err);
+  // });
 //////////////////////////////////////////////////////
 
 
