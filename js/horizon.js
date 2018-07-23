@@ -3,7 +3,7 @@
 function assets(address) {
 	var server = new StellarSdk.Server('https://horizon.stellar.org');
 	server.accounts().accountId(address).call().then(function (account) {
-		console.log(account);
+		//console.log(account);
 		document.getElementById('address').innerHTML = account.account_id;
 		
 		//var account_tabs = '<ul role="tablist" class="nav nav-tabs" id="account-tabs"><li role="presentation" class="nav-item active"><a id="account-tabs-tab-balances" class="nav-link active" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-balances" aria-selected="true" href="#balances">Balances</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-payments" class="nav-link" href="#payments_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-payments" tabindex="-1" aria-selected="false">Payments</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-offers" class="nav-link" href="#offers" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-offers" tabindex="-1" aria-selected="false">Offers</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-trades" href="#tab_trades" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-trades" tabindex="-1" aria-selected="false" href="#">Trades</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-operations" data-url="?action=operations" role="tab" aria-controls="account-tabs-pane-operations" tabindex="-1" aria-selected="false" href="#">Operations</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-transactions" data-url="?action=transactions" role="tab" aria-controls="account-tabs-pane-transactions" tabindex="-1" aria-selected="false" href="#">Transactions</a></li></ul><div class="tab-content"><div id="balances" class="tab-pane active"></div><div id="payments_tab" class="tab-pane fade"></div><div id="operations" class="tab-pane fade"></div></div>';	
@@ -43,12 +43,12 @@ function assets(address) {
 		//console.log(account);
 
 		var payments_table = '<table id="payment-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="account">From</th><th id="to_account">To</th><th id="payment">Payment</th><th id="transaction">Transaction</th><th id="time">Time</th><th /></tr></thead><tbody>'
-		console.log("printing account records");
+		//console.log("printing account records");
 		var paymentArr = account.records;
-		console.log(paymentArr);
+		//console.log(paymentArr);
 		for(var i = 0; i < paymentArr.length; i++){
-			console.log("next loop");
-			console.log(paymentArr[i]);
+			//console.log("next loop");
+			//console.log(paymentArr[i]);
 			var payment = paymentArr[i];
 
 			//find out what type of payment
@@ -96,8 +96,8 @@ function assets(address) {
   		var transactions_table = '<table id="transaction-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="transactions-account">Account</th><th id="transactions-fee">Fee</th><th id="transactions-time">Time</th></tr></thead><tbody>'
   		var transactionsArr = account.records;
 
-  		console.log("printing transaction recors");
-  		console.log(transactionsArr);
+  		//console.log("printing transaction recors");
+  		//console.log(transactionsArr);
 
   		for(var i = 0; i < transactionsArr.length; i++){
   			console.log("next transaction");
@@ -125,7 +125,7 @@ function assets(address) {
   		console.log(err);
     	console.error(err);
   	});
-  	
+
 }
 
 /* transactions table tab*/

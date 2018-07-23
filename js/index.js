@@ -50,8 +50,6 @@ var asset_colours = {
   "OTHER": "#FF0" //red for now
 }
 
-var messageList = []; //list of all requests
-var accountList = []; //list that links all 3d object ids to account ids
 
 var imgTexture = new THREE.TextureLoader().load( "images/moon_1024.jpg" );
 var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
@@ -521,30 +519,30 @@ function zoomToTarget(pos) {
 }
 
 $(document).ready(function() {
-  $("#transactions").click(function setLiveTransactions() {
+  $("#transactions_stream").click(function setLiveTransactions() {
     //console.log(liveMode);
     liveMode.transactions();
-    $("#transactions").toggleClass('selected');
+    $("#transactions_stream").toggleClass('selected');
   });
 
-  $("#payments").click(function setLivePayments() {
+  $("#payments_stream").click(function setLivePayments() {
     liveMode.payments();
-    $("#payments").toggleClass('selected');
+    $("#payments_stream").toggleClass('selected');
   });
 
-  $("#operations").click(function setLiveOperations() {
+  $("#operations_stream").click(function setLiveOperations() {
     liveMode.operations();
-    $("#operations").toggleClass('selected');
+    $("#operations_stream").toggleClass('selected');
   });
 
-  $("#trades").click(function setLiveTrades() {
+  $("#trades_stream").click(function setLiveTrades() {
     liveMode.trades();
-    $("#trades").toggleClass('selected');
+    $("#trades_stream").toggleClass('selected');
   });
 
-  $("#effects").click(function setLiveEffects() {
+  $("#effects_stream").click(function setLiveEffects() {
     liveMode.effects();
-    $("#effects").toggleClass('selected');
+    $("#effects_stream").toggleClass('selected');
   });
 
   //Operations filters
@@ -578,17 +576,17 @@ $(document).ready(function() {
 
 
 function findReq(msgID) {
-  for (var i = 0, len = messageList.length; i < len; i++) {
-    if (messageList[i].id === msgID)
-      return messageList[i]; // Return as soon as the object is found
+  for (var i = 0, len = app.messageList.length; i < len; i++) {
+    if (app.messageList[i].id === msgID)
+      return app.messageList[i]; // Return as soon as the object is found
     }
   return null; // The object was not found
 }
 
 function findAccount(objID) {
-  for (var i = 0, len = accountList.length; i < len; i++) {
-    if (accountList[i].id === objID)
-      return accountList[i]; // Return as soon as the object is found
+  for (var i = 0, len = app.accountList.length; i < len; i++) {
+    if (app.accountList[i].id === objID)
+      return app.accountList[i]; // Return as soon as the object is found
     }
   return null; // The object was not found
 }

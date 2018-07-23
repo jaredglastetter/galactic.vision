@@ -45,7 +45,7 @@ function Trip(ledger, request, message) {
   if(message) {
     this.message = message;
     //console.log(message);
-    messageList.push(message);
+    app.messageList.push(message);
 
     $(document).ready(function() {
       var li = $('<li/>').text(message.id);
@@ -146,8 +146,8 @@ function Trip(ledger, request, message) {
     //console.log(account1);
     //console.log(account2);
 
-    accountList.push(account1);
-    accountList.push(account2);
+    app.accountList.push(account1);
+    app.accountList.push(account2);
   }
 
   //console.log(this.startNode);

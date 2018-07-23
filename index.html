@@ -96,11 +96,11 @@
 
 		<div class="buttons" >
 			<!-- <h1>Live Mode</h1> -->
-			<button id="transactions" class="raise">Transactions</button>
-			<button id="payments" class="raise" >Payments</button>
-			<button id="operations" class="raise">Operations</button>
-			<button id="trades" class="raise">Trades</button>
-			<button id="effects" class="raise">Effects</button>
+			<button id="transactions_stream" class="raise">Transactions</button>
+			<button id="payments_stream" class="raise" >Payments</button>
+			<button id="operations_stream" class="raise">Operations</button>
+			<button id="trades_stream" class="raise">Trades</button>
+			<button id="effects_stream" class="raise">Effects</button>
 		</div>
 	 
 		<div id="description" style="display:none">
@@ -127,7 +127,9 @@ var app = new Vue({
     message: 'Hello Vue!',
     showVue: false,
     showAccountWindow: true,
-    showTx: false
+    showTx: false,
+    messageList: [],
+	accountList: [] 
   },
   methods: {
   	showText: function() {
