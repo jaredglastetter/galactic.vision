@@ -224,7 +224,7 @@ function init() {
   var server = new StellarSdk.Server('https://horizon.stellar.org');
   //console.log(account);
   //console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
-  assets("GDDMFUC6BPAKNFAKQ2GRJHNQIWQIQBWMF3FEFIBHH532UNKHYIEPDM7M");
+  //assets("GDDMFUC6BPAKNFAKQ2GRJHNQIWQIQBWMF3FEFIBHH532UNKHYIEPDM7M");
 });
 
 }
@@ -322,6 +322,7 @@ function onDocumentMouseDown(event)
            var account = findAccount(INTERSECTED.id);
 
            if(account) {
+            app.showAccountWindow();
             console.log("found matching account for object");
             console.log(account.account);
             assets(account.account);
@@ -336,11 +337,16 @@ function onDocumentMouseDown(event)
       } 
       else 
       {
-        if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-        INTERSECTED = null;
+        if ( INTERSECTED ) {
+          INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+          INTERSECTED = null;
+        }
+
+        //hide window
+        //app.showAccountWindow = false;
             //maybe only hide on button click?
             //$("#description").hide();
-           
+          
       }
 }
 
