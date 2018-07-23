@@ -47,8 +47,8 @@ function assets(address) {
 		var paymentArr = account.records;
 		console.log(paymentArr);
 		for(var i = 0; i < paymentArr.length; i++){
-			console.log("next loop");
-			console.log(paymentArr[i]);
+			//console.log("next loop");
+			//console.log(paymentArr[i]);
 			var payment = paymentArr[i];
 
 			//find out what type of payment
@@ -90,18 +90,161 @@ function assets(address) {
   	});
 
 
+  	/**** Offers Tab Data ****/
+  	server.offers('accounts', 'GAOVLZQ6YVJMIE46EAA2ZAYUU6S3ETKHDDFASFINH4YLWUZKXAUBYBB2').call().then(function (account) {
+    
+
+    var offers_table = '<table id="offer-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="offers-buy">Buy Asset</th><th id="offers-sell">Sell Asset</th><th id="offers-amount">Amount</th><th id="offers-price">Price</th></tr></thead><tbody>'
+    var offersArr = account.records;
+
+    console.log("printing offers records");
+    console.log(offersArr);
+
+     for(var i = 0; i < offersArr.length; i++){
+  		// 	console.log("next offer");
+  		// 	console.log(offersArr[i]);
+
+  		 	var offer = offersArr[i];
+
+
+  		 	var amount = offer.amount;
+  		 	var price = offer.price;
+
+  		 	//buy asset
+  		 	var buyType;
+
+  		 	if(offer.buying.asset_code){
+  		 		buyType = offer.buying.asset_code;
+  		 	}else{
+  		 		buyType = offer.buying.asset_type;
+  		 	}
+
+  		 	//sell type
+  		 	var sellType;
+
+  		 	if(offer.selling.asset_code){
+  		 		sellType = offer.selling.asset_code;
+  		 	}else{
+  		 		sellType = offer.selling.asset_type;
+  		 	}
+
+  		 	if(sellType == "native"){
+  		 		sellType = "XLM";
+  		 	}
+
+  		 	if(buyType == "native"){
+  		 		buyType = "XLM";
+  		 	}
+
+  		 	offers_table += '<tr><td class="text-center"><b>' + buyType + '</b></td><td class="text-center"><b>' + sellType + '</b></td><td class="text-center"><b>' + amount + '</b></td><td class="text-center"><b>' + price + '</b></td></tr>';
+	
+  		 }
+  		 
+  		 offers_table += '</tbody></table></div>';
+		 document.getElementById('offers_tab').innerHTML = offers_table;
+
+  }).catch(function (err) {
+
+    if(err.message.status == 404){
+  			
+  		}
+  		console.log(err);
+    	console.error(err);
+  });
+
+
+  	/**** Trades Tab Data ****/
+  // 	server.trades().forAccount(address).call().then(function (account) {
+
+  // 		var trades_table = '<table id="trade-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="trades-header1">Account</th><th id="trades-header2">Fee</th><th id="trades-header3">Time</th></tr></thead><tbody>'
+
+  // 		var tradesArr = account.records;
+
+  // 		console.log("Printing Trade Records");
+  // 		console.log(tradesArr);
+
+  // 		for(var i = 0; i < tradesArr.length; i++){
+  // 			//console.log("next transaction");
+  // 			//console.log(transactionsArr[i]);
+
+  // 			var trade = tradesArr[i];
+
+
+  // 			var type = trade.type;
+  			
+
+  // 			trades_table += '<tr><td class="text-center"><b>' + [type] + '</b></td><td class="text-center"><b>' + [type1] + '</b></td><td class="text-center"><b>' + [type2] + '</b></td></tr>';
+  			
+
+  // 		}
+    
+  // 		trades_table += '</tbody></table></div>';
+		// document.getElementById('trades_tab').innerHTML = trades_table;
+
+  // }).catch(function (err) {
+  //   if(err.message.status == 404){
+  			
+  // 		}
+  // 		console.log(err);
+  //   	console.error(err);
+  // });
+//////////////////////////////////////////////////////
+
+
+  	/**** Operations Tab Data ****/
+
+  		server.operations().forAccount(address).call().then(function (account) {
+
+  		var operations_table = '<table id="operation-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="operations-account">Account</th><th id="operations-operation">Operation</th><th id="operations-transaction">Transaction</th><th id="operations-time">Time</th></tr></thead><tbody>';
+
+  		var operationsArr = account.records;
+
+  		console.log("Printing operation Records");
+  		console.log(operationsArr);
+
+  		for(var i = 0; i < operationsArr.length; i++){
+  			//console.log("next operation");
+  			//console.log(transactionsArr[i]);
+
+  			var operation = operationsArr[i];
+
+
+  			var time = operation.created_at;
+  			var accountID = operation.source_account.substring(0,4);
+  			var operationType = operation.type;
+  			var transaction= operation.transaction_hash.substring(0,4);
+
+  			
+
+  			operations_table += '<tr><td class="text-center"><b>' + accountID + '</b></td><td class="text-center"><b>' + operationType + '</b></td><td class="text-center"><b>' + transaction + '</b></td><td class="text-center"><b>' + time + '</b></td></tr>';
+  			
+
+  		}
+    
+  		operations_table += '</tbody></table></div>';
+		document.getElementById('operations_tab').innerHTML = operations_table;
+
+  }).catch(function (err) {
+    if(err.message.status == 404){
+  			
+  		}
+  		console.log(err);
+    	console.error(err);
+  });
+
+
   	/**** Transactions Tab Data ****/
   	server.transactions().forAccount(address).call().then(function(account){
 
   		var transactions_table = '<table id="transaction-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="transactions-account">Account</th><th id="transactions-fee">Fee</th><th id="transactions-time">Time</th></tr></thead><tbody>'
   		var transactionsArr = account.records;
 
-  		console.log("printing transaction recors");
-  		console.log(transactionsArr);
+  		//console.log("printing transaction records");
+  		//console.log(transactionsArr);
 
   		for(var i = 0; i < transactionsArr.length; i++){
-  			console.log("next transaction");
-  			console.log(transactionsArr[i]);
+  			//console.log("next transaction");
+  			//console.log(transactionsArr[i]);
 
   			var transaction = transactionsArr[i];
 
