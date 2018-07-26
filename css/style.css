@@ -365,3 +365,10 @@ a[id|="account-tabs-tab"]:hover {
 .icon-bar .active {
     background-color: cyan; /* Add an active/current color */
 }
+
+#back_button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 5px;
+}

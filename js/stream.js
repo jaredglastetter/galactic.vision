@@ -31,7 +31,9 @@ RequestStream.prototype = {
         
         var transaction = new Object();
         transaction.name = "transaction";
-        tripManager.addTrip(new Trip(centerNode.position));
+        if(!app.accountView) {
+          tripManager.addTrip(new Trip(centerNode.position));
+        }
       }
     });
   },
@@ -50,7 +52,9 @@ RequestStream.prototype = {
           payment.asset = message.asset_type; 
         }
 
-        tripManager.addTrip(new Trip(centerNode.position, payment,  message));
+        if(!app.accountView) {
+          tripManager.addTrip(new Trip(centerNode.position, payment,  message));
+        }
       }
     });
   },
@@ -82,7 +86,9 @@ RequestStream.prototype = {
             }
           }
           //console.log(trade);
-          tripManager.addTrip(new Trip(centerNode.position, trade, message));
+          if(!app.accountView) {
+            tripManager.addTrip(new Trip(centerNode.position, trade, message));
+          }
         }
       }
     });
@@ -106,7 +112,9 @@ RequestStream.prototype = {
           trade.asset2 = message.selling_asset_type; 
         }
         //console.log(trade);
-        tripManager.addTrip(new Trip(centerNode.position));
+        if(!app.accountView) {
+          tripManager.addTrip(new Trip(centerNode.position));
+        }
       }
     });
   },
@@ -118,7 +126,9 @@ RequestStream.prototype = {
       onmessage: function (message) {
         //console.log(message);
        //console.log("effects stream");
-        tripManager.addTrip(new Trip(centerNode.position, message));
+        if(!app.accountView) {
+          tripManager.addTrip(new Trip(centerNode.position, message));
+        }
       }
     });
   }

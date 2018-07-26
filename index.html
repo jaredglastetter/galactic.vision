@@ -45,9 +45,6 @@
 	<script  src="js/stream.js"></script>
 	<script  src="js/trip.js"></script>
 	<script  src="js/index.js"></script>
-	
-	
-	
 
 	
 	<div id="layout" class="stars">
@@ -64,6 +61,8 @@
 		  <a v-on:click="showAccountWindow()" href="#"><i class="fa fa-book"></i></a>
 		  <a v-on:click="showLegendWindow()" href="#"><i class="fa fa-question"></i></a>
 		</div>
+
+		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise">Back</button>
 
 		<div v-show="showAccountWin" id="account" class="container p-t-md">
 			<ion-icon v-on:click="closeAccountWindow()" id="accountClose" name="close" style="float: right;"></ion-icon>
@@ -152,7 +151,11 @@ var app = new Vue({
     showLegend: false,
     showTx: false,
     messageList: [],
-	accountList: [] 
+	accountList: [] ,
+	accountViewID: "",
+	accountViewObj: {},
+	accountView: false,
+	switchToGlobalView: false
   },
   methods: {
   	showText: function() {
@@ -188,6 +191,11 @@ var app = new Vue({
   		this.showRequestHistory = false;
   		this.showAccountWin = false;
   		this.showLegend = false;
+  	},
+  	globalView: function() {
+  		this.showAccountWin = false;
+  		this.accountView = false;
+  		this.switchToGlobalView = true;
   	}
   }
 })

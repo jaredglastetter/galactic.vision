@@ -20,7 +20,7 @@ TripManager.prototype = {
           this.trips = newTrips;
       },
       addTrip: function (trip) {
-        this.trips.push(trip);
+          this.trips.push(trip);
       },
       hasTrips: function () {
         if(this.trips) {
@@ -28,6 +28,12 @@ TripManager.prototype = {
         } else {
           return false;
         }
+      },
+      removeAll: function() {
+        this.trips.forEach(function(trip) { 
+          trip.remove();
+        });
+        this.trips = [];
       }
   }
 
@@ -45,7 +51,7 @@ function Trip(ledger, request, message) {
   if(message) {
     this.message = message;
     //console.log(message);
-    console.log(Object.assign({}, message));
+    //console.log(Object.assign({}, message));
     app.messageList.push(message);
 
     $(document).ready(function() {
@@ -133,7 +139,7 @@ function Trip(ledger, request, message) {
   scene.add( this.endNode);
   scene.add( this.payload );
 
-  console.log(message.type);
+  //console.log(message.type);
 
   var account1;
   var account2;
@@ -144,8 +150,8 @@ function Trip(ledger, request, message) {
     account1.id = this.startNode.id;
     account1.account = message.source_account;
 
-    console.log("assigning an account from type: " + message.type);
-    console.log(account1);
+    //console.log("assigning an account from type: " + message.type);
+    //console.log(account1);
 
     app.accountList.push(account1);
   }

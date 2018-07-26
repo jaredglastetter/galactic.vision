@@ -3,7 +3,12 @@ var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
 
 var camera;
+var altCamera;
+var cameraRig;
 var renderer;
+
+var SCREEN_HEIGHT;
+var SCREEN_WIDTH;
 
 // for interactive
 var mouse = new THREE.Vector2(), INTERSECTED;
@@ -29,7 +34,7 @@ var tripManager = new TripManager();
 var liveMode = new RequestStream();
 
 var globalView = true;
-var accountView = false;
+//var accountView = false;
 
 var particles, particle, particleCount = 0;
 var points;
@@ -51,7 +56,7 @@ var asset_colours = {
 }
 
 
-var imgTexture = new THREE.TextureLoader().load( "images/moon_1024.jpg" );
+var imgTexture = new THREE.TextureLoader().load( "images/2k_neptune.jpg" );
 var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
 
 var rR = Math.random();
@@ -146,12 +151,18 @@ function init() {
   controls.dampingFactor = 0.25;
   controls.panningMode = THREE.HorizontalPanning; // default is THREE.ScreenSpacePanning
   controls.minDistance = 0;
-  controls.maxDistance = 500
+  controls.maxDistance = 500;
   controls.maxPolarAngle = Math.PI / 2;
 
   camera.position.x = -2.5;
   camera.position.y = 50;
   camera.position.z = 40;
+
+  altCamera = new THREE.PerspectiveCamera( 50, 0.5 * aspect, 1, 10000 );
+
+  altCamera.lookAt( scene.position );
+
+  cameraRig = new THREE.Group();
 
   camera.lookAt( scene.position );
 
@@ -305,7 +316,6 @@ function onDocumentMouseDown(event)
           //console.log(intersects.length);
 
           //setupTween(INTERSECTED.position);
-          zoomToTarget(INTERSECTED.position);
 
            var length= 0;
            var dir = camera.position.clone().sub(intersects[0].point).normalize();
@@ -321,11 +331,34 @@ function onDocumentMouseDown(event)
 
            var account = findAccount(INTERSECTED.id);
 
-           if(account) {
+           var sceneObj;
+           var accountObj;
+
+           if(account && !app.accountView) {
+            zoomToTarget(INTERSECTED.position);
             app.showAccountWindow();
             console.log("found matching account for object");
             console.log(account.account);
             assets(account.account);
+            sceneObj = scene.getObjectById( objID, true );
+            accountObj = sceneObj.clone();
+            app.accountViewObj = accountObj;
+            scene.add(accountObj);
+            SCREEN_WIDTH = window.innerWidth;
+            SCREEN_HEIGHT = window.innerHeight;
+            var aspect = SCREEN_WIDTH / 2 / SCREEN_HEIGHT;
+
+            camera.aspect = aspect;
+            camera.updateProjectionMatrix();
+            //altCamera.aspect
+            //altCamera.updateProjectionMatrix();
+
+            //scene.add(altCamera);
+
+            //render left space background view
+            //renderer.setViewport( 0, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
+            //renderer.render( scene, altCamera );
+            app.accountView = true;
            }
 
 
@@ -350,70 +383,6 @@ function onDocumentMouseDown(event)
       }
 }
 
-function showAccount(account) {
-// var desc = document.getElementById("description");
-  // desc.style.display == "block";
-  var elem = document.getElementById("description_lines");
-  elem.innerHTML = "";
-
-  $("#description").show();
-  var info = "";
-
-  info += "<h3>Request Type</h3><p>" + message.type + "</p>";
-
-  info += "<h3>Source Wallet</h3><p>" + message.source_account + "</p>";
-
-  if(message.type == "payment") {
-    info += "<h3>Destination Wallet</h3><p>" + message.to + "</p>";
-    info += "<h3>Date</h3><p>" + message.created_at + "</p>";
-    if(message.asset_code) {
-      info += "<h3>Amount</h3><p>" + message.amount + " " + message.asset_code + "</p>";
-    } else {
-      info += "<h3>Amount</h3><p>" + message.amount + " " + message.asset_type + "</p>";
-    }
-  }
-
-  if(message.type == "manage_offer") {
-
-    var buying;
-    var selling;
-
-    if(message.buying_asset_code) {
-      buying = message.buying_asset_code; 
-    } else {
-      buying = message.buying_asset_type; 
-    }
-    if(message.selling_asset_code) {
-      selling = message.selling_asset_code; 
-    } else {
-      selling = message.selling_asset_type; 
-    }
-
-    if(buying == "native") {
-      buying = "XLM";
-    }
-
-    if(selling == "native") {
-      selling = "XLM";
-    }
-
-    var buying_amount = message.amount * message.price;
-    buying_amount = Math.round(buying_amount * 100) / 100;
-
-    var selling_amount = Math.round(message.amount * 100) / 100;
-    
-    info += "<h3>Buying Asset</h3><p>" + buying + "</p>";
-    info += "<h3>Selling Asset</h3><p>" + selling + "</p>";
-
-    if(message.amount) {
-      info += "<h3>Offer Details</h3><p>" + "Buying " + buying_amount + " " + buying + " with " + selling_amount + " " + selling + "<br> at 1 " + selling + " = " + message.price + " " + buying + "</p>";
-    }
-  }
-
-  info += "<h3>Transaction Hash ID</h3><p>" + message.transaction_hash +"</p>";
-
-  $("#description_lines").append(info);
-}
 
 function showRequest(message) {
 // var desc = document.getElementById("description");
@@ -423,15 +392,7 @@ function showRequest(message) {
 
   $("#description").show();
   var info = "";
-  /*
-  info += "<h3>Source</h3><p>" + message.source_account + "</p>";
-  info += "<h3>Date</h3><p>" + message.created_at + "</p>";
-  info += "<h3>Ledger</h3><p>" + message.ledger_attr + "</p>";
-  info += "<h3>envelope_xdr</h3><p>" + "blah blah blah these are too long" +"</p>";
-  info += "<h3>fee_meta_xdr</h3><p>" + "blah blah blah these are too long" + "</p>"
-  info += "<h3>hash</h3><p>" + message.hash +"</p>";
-  info += "<h3>ledger_attr</h3><p>" + message.ledger_attr+ "</p>";
-  info += "<h3>paging_token</h3><p>" + message.paging_token +"</p>";*/
+
   info += "<h3>Request Type</h3><p>" + message.type + "</p>";
 
   info += "<h3>Source Wallet</h3><p>" + message.source_account + "</p>";
@@ -506,6 +467,7 @@ function zoomToTarget(pos) {
   var target = { x : pos.x, y: pos.y, z: pos.z };
 
   target.z = target.z - 10;
+  target.x = target.x - 10;
 
   //console.log(target);
 
@@ -513,15 +475,22 @@ function zoomToTarget(pos) {
 
   tween.onUpdate(function(){
     camera.lookAt( pos );
+    controls.update();
     camera.position.x = position.x;
     camera.position.y = position.y;
     camera.position.z = position.z
   });
 
+
   tween.easing(TWEEN.Easing.Circular.InOut);
 
   tween.start();
 
+}
+
+function globalView() {
+  controls.target = scene.position;
+  effect.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 }
 
 $(document).ready(function() {
@@ -606,22 +575,38 @@ function getAccountInfo(id){
 
 function animate() {
   requestAnimationFrame( animate );
-
-  if(accountView) {
-    //do something to setup new view
-  }
-
   TWEEN.update();
 
-  if(tripManager) {
+  if(tripManager && !app.accountView) {
     if(tripManager.hasTrips()) {
       tripManager.travel();
     }
+  } else {
+    //hide all activity
+    tripManager.removeAll();
   }
 
   if(centerNode) {
     centerNode.rotation.y += 0.01;
   }
+  
+  controls.update();
+
+  if(app.accountView) {
+    controls.target = app.accountViewObj.position;
+    camera.lookAt(app.accountViewObj.position);
+    effect.setViewport( SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
+    effect.render( scene, camera );
+  }
+
+  if(app.switchToGlobalView) {
+    controls.target = centerNode.position;
+    effect.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
+    camera.aspect = aspect;
+    camera.updateProjectionMatrix();
+    app.switchToGlobalView = false;
+  }
+
   effect.render( scene, camera );
 }
 

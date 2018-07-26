@@ -104,8 +104,8 @@ function assets(address) {
     var offers_table = '<table id="offer-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="offers-buy">Buy Asset</th><th id="offers-sell">Sell Asset</th><th id="offers-amount">Amount</th><th id="offers-price">Price</th></tr></thead><tbody>'
     var offersArr = account.records;
 
-    console.log("printing offers records");
-    console.log(offersArr);
+    //console.log("printing offers records");
+    //console.log(offersArr);
 
      for(var i = 0; i < offersArr.length; i++){
   		// 	console.log("next offer");
@@ -180,8 +180,8 @@ function assets(address) {
          //var tradesArr = [];
          var tradesArr = account._embedded.records;
 
-         console.log("Printing Trade Records");
-         console.log(tradesArr);
+         //console.log("Printing Trade Records");
+         //console.log(tradesArr);
 
          for(var i = 0; i < tradesArr.length; i++){
           //console.log("next transaction");
@@ -213,12 +213,6 @@ function assets(address) {
         if(counterAsset == "native"){
           counterAsset = "XLM";
         }
-
-
-
-
-         
-
 
          var description = "[" + trade.base_account.substring(0,4) + "] " + trade.base_amount.substring(0,6) + " " + baseAsset   + " FOR " +  trade.counter_amount.substring(0,6) + " " + counterAsset + " [" + trade.counter_account.substring(0,4) + "] ";
          var time = trade.ledger_close_time;
