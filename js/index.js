@@ -1,6 +1,7 @@
 var scene;
 var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
+var dragCheck = false;
 
 var camera;
 var altCamera;
@@ -283,6 +284,7 @@ function initParticle( particle, delay ) {
 
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 document.addEventListener( 'mousedown', onDocumentMouseDown, false);
+document.addEventListener( 'mouseup', onDocumentMouseUp, false);
 window.addEventListener( 'resize', onWindowResize, false );
 
 function onWindowResize() 
@@ -300,10 +302,32 @@ function onDocumentMouseMove( event )
         event.preventDefault();
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        console.log("mouse x: " + mouse.x);
+        console.log("mouse y: " + mouse.y)
+
+
+
+
 }
 function onDocumentMouseDown(event)
 {
-  raycaster.setFromCamera( mouse, camera );
+  var x = event.screenX;
+  var y = event.screenY;
+  dragCheck = false;
+  $("body").on("mousemove", function(event){
+    if(Math.abs(x - event.screenX) > 5 || Math.abs(y - event.screenY) > 5){
+      dragCheck = true;
+    }
+  })
+
+
+}
+function onDocumentMouseUp(event)
+{
+  console.log(dragCheck ? "dragging" : "Not Dragging");
+  if(!dragCheck)
+  {
+      raycaster.setFromCamera( mouse, camera );
       var intersects = raycaster.intersectObjects( scene.children );
       if ( intersects.length > 0 ) 
       {
@@ -381,6 +405,8 @@ function onDocumentMouseDown(event)
             //$("#description").hide();
           
       }
+  }
+  
 }
 
 
