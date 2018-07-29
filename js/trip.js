@@ -46,7 +46,8 @@ function Trip(ledger, request, message) {
 
   //initParticle(this.payload, 0);
 
-  var rList = $('#request-list');
+  var rList = $('#request-body');
+  var excludeRequest = false;
 
   if(message) {
     this.message = message;
@@ -54,9 +55,30 @@ function Trip(ledger, request, message) {
     //console.log(Object.assign({}, message));
     app.messageList.push(message);
 
+    /*
     $(document).ready(function() {
-      var li = $('<li/>').text(message.id);
+      var li = $('<li/>').text(message.type);
       li.appendTo(rList);
+    });*/
+
+    $(document).ready(function() {
+      //exclude certain conditions
+      if(message.type == "manage_offer") {
+        if(message.amount == 0) {
+          excludeRequest = true;
+        }
+      }
+
+      if(!excludeRequest) {
+        var row = '<tr><td class="text-center"><b>' + message.type + '</b></td><td class="text-center"><b>' + app.operationMessage(message) + '</b></td><td class="text-center"><b>' + message.id.substring(0,12) + '</b></tr>';
+        $('#request-body').after(row);
+        
+        app.requestCount++;
+
+        if(app.requestCount > 100) {
+           $('#request-table tr:last').remove();
+        }
+      }
     });
   }
 

@@ -9,7 +9,7 @@ function assets(address) {
 		//var account_tabs = '<ul role="tablist" class="nav nav-tabs" id="account-tabs"><li role="presentation" class="nav-item active"><a id="account-tabs-tab-balances" class="nav-link active" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-balances" aria-selected="true" href="#balances">Balances</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-payments" class="nav-link" href="#payments_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-payments" tabindex="-1" aria-selected="false">Payments</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-offers" class="nav-link" href="#offers" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-offers" tabindex="-1" aria-selected="false">Offers</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-trades" href="#tab_trades" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-trades" tabindex="-1" aria-selected="false" href="#">Trades</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-operations" data-url="?action=operations" role="tab" aria-controls="account-tabs-pane-operations" tabindex="-1" aria-selected="false" href="#">Operations</a></li><li role="presentation" class="nav-item"><a id="account-tabs-tab-transactions" data-url="?action=transactions" role="tab" aria-controls="account-tabs-pane-transactions" tabindex="-1" aria-selected="false" href="#">Transactions</a></li></ul><div class="tab-content"><div id="balances" class="tab-pane active"></div><div id="payments_tab" class="tab-pane fade"></div><div id="operations" class="tab-pane fade"></div></div>';	
 		//document.getElementById('account-menu').innerHTML = account_tabs;
 
-		var assets_table = '<table class="table table-bordered table-dark"><thead><tr><th class="text-center active col-sm-2">Code</th><th class="text-center active col-sm-2">Balance</th></tr></thead><tbody>';
+		var assets_table = '<table class="table table-dark table-hover table-condensed"><thead><tr><th class="text-center active col-sm-2">Code</th><th class="text-center active col-sm-2">Balance</th></tr></thead><tbody>';
 
 
 		for(var row in account.balances){
@@ -291,8 +291,8 @@ function assets(address) {
 
   		var operationsArr = account.records;
 
-  		console.log("Printing operation Records");
-  		console.log(operationsArr);
+  		//console.log("Printing operation Records");
+  		//console.log(operationsArr);
 
   		for(var i = 0; i < operationsArr.length; i++){
   			//console.log("next operation");
