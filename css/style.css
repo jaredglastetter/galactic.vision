@@ -175,8 +175,8 @@ button {
 	position: absolute;
 	margin-left: 6em;
 	min-height: 300px;
-	max-height: 600px;
-	min-width: 200px;
+	max-height: 80vh;
+	min-width: 30vw;
 	background-color: rgba(50,50,50,.5);
 	font: 300 1em 'Fira Sans', sans-serif;
 	color: white;
@@ -184,6 +184,7 @@ button {
 	border: 5px solid cyan;
 	border-radius: 1em;
 	margin-top: 1em;
+	overflow-y: auto;
 }
 
 .request-history ul.request-labels li span {
@@ -371,4 +372,14 @@ a[id|="account-tabs-tab"]:hover {
 	top: 0;
 	right: 0;
 	margin: 5px;
+}
+
+div {
+	color: cyan;
+}
+
+.request-title {
+	font-size: 1.5em;
+	text-decoration: bold;
+	padding-bottom: 1em;
 }

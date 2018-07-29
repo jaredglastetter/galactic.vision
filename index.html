@@ -102,9 +102,10 @@
 
 		<div v-show="showRequestHistory" class="request-history">
 			<div class="request-title">Request History</div>
-			<div class='request-container'>
+			<!--<div class='request-container'>
 			  <ul class='request-labels' id="request-list"></ul>
-			</div>
+			</div> -->
+			<table id="request-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="request-operation">Operation</th><th id="request-details">Operation</th><th id="request-transaction">Transaction</th><!--<th id="request-time">Time</th>--></tr></thead><tbody id="request-body"> </tbody> </table>
 		</div>
 
 		<div v-show="showLegend" class='my-legend'>
@@ -155,7 +156,8 @@ var app = new Vue({
 	accountViewID: "",
 	accountViewObj: {},
 	accountView: false,
-	switchToGlobalView: false
+	switchToGlobalView: false,
+	requestCount: 0
   },
   methods: {
   	showText: function() {
@@ -196,6 +198,70 @@ var app = new Vue({
   		this.showAccountWin = false;
   		this.accountView = false;
   		this.switchToGlobalView = true;
+  	},
+  	operationMessage: function(message) {
+  		var type = message.type;
+  		var display;
+  		//print out basic message detailing operation
+  		if(type == "payment") {
+  			display = "[" + message.from.substring(0,4) + "]" + " sent " + message.amount + " " + this.assetString(message) + " to " + "[" + message.to.substring(0,4) + "]"; 
+  		} else if(type == "manage_offer") {
+  			display = "[" + message.source_account.substring(0,4) + "] " + " wants to trade " + message.amount.substring(0,6) + " " + this.sellingAssetString(message)   + " FOR " + this.buyingAssetAmount(message) + " " + this.buyingAssetString(message);
+  		} else {
+  			display = "idk lol";
+  		}
+
+  		return display;
+  	},
+  	assetString: function(message) {
+  		var asset;
+
+  		if(message.asset_code) {
+  			asset = message.asset_code;
+  		} else if(message.asset_type == "native") {
+  			asset = "XLM";
+  		} else {
+  			asset = message.asset_type;
+  		}
+
+  		return asset;
+  	},
+  	sellingAssetString: function(message) {
+  		var asset;
+
+  		if(message.selling_asset_code) {
+  			asset = message.selling_asset_code;
+  		} else if(message.selling_asset_type == "native") {
+  			asset = "XLM";
+  		} else {
+  			asset = message.selling_asset_type;
+  		}
+
+  		return asset;
+  	},
+  	buyingAssetString: function(message) {
+  		var asset;
+
+  		if(message.buying_asset_code) {
+  			asset = message.buying_asset_code;
+  		} else if(message.buying_asset_type == "native") {
+  			asset = "XLM";
+  		} else {
+  			asset = message.buying_asset_type;
+  		}
+
+  		return asset;
+  	},
+  	buyingAssetAmount: function(message) {
+  		var buying_amount = message.amount * message.price;
+
+  		if(buying_amount > 0.01) {
+    		buying_amount = Math.round(buying_amount * 100) / 100;
+  		} else {
+  			buying_amount = Math.round(buying_amount * 100000) / 100000;
+  		}
+
+    	return buying_amount;
   	}
   }
 })
