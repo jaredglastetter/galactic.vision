@@ -17,6 +17,15 @@ var raycaster = new THREE.Raycaster();
 var radius = 500;
 var theta = 0;
 
+//Window Focus
+var activeWindow = true;
+window.onfocus = function(){
+  activeWindow = true;
+}
+window.onblur = function(){
+  activeWindow = false;
+}
+
 // create an AudioListener and add it to the camera
 var listener;
 // create a global audio source
