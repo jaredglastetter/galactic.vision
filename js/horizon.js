@@ -2,7 +2,166 @@
 
 function assets(address) {
 	var server = new StellarSdk.Server('https://horizon.stellar.org');
+
+	app.payments_sent = 0;
+	app.payments_received = 0;
+
+	//calc total payments (limit 200 right now)
+	server.payments().forAccount(address).limit(200).call().then(function (account) {
+		var paymentArr = account.records;
+		//console.log(paymentArr);
+
+		console.log(paymentArr.length);
+
+		for(var i = 0; i < paymentArr.length; i++){
+
+			var payment = paymentArr[i];
+
+			if(payment.from == address) {
+				app.payments_sent++
+			} else {
+				app.payments_received++;
+			}
+		}
+	});
+
+
+	var horizonUrl = 'https://horizon.stellar.org/accounts/' + address + '/trades?limit=200';
+
+	//calc total trades (limit 200 right now)
+	$.ajax({
+        url: horizonUrl,
+        success: function(account) {
+        	app.trades_completed = account._embedded.records.length;
+        	console.log(app.trades_completed);
+
+        	var tradesArr = account._embedded.records;
+
+        	var assetObj = {};
+         	//console.log("Printing Trade Records");
+         	//console.log(tradesArr);
+
+        	for(var i = 0; i < tradesArr.length; i++) {
+	         	//console.log("next transaction");
+	        	//console.log(transactionsArr[i]);
+
+	        	var trade = tradesArr[i];
+
+		        // check base asset type
+		        var baseAsset;
+		        if(trade.base_asset_code) {
+		            baseAsset = trade.base_asset_code;
+		        } else {
+		            baseAsset = trade.base_asset_type;
+		        }
+
+		        // check counter asset type
+		        var counterAsset;
+		        if(trade.counter_asset_code) {
+		            counterAsset = trade.counter_asset_code;
+		        } else {
+		            counterAsset = trade.counter_asset_type;
+		        }
+
+		        //check for native asset
+		        if(baseAsset == "native"){
+		          baseAsset = "XLM";
+		        }
+		        if(counterAsset == "native"){
+		          counterAsset = "XLM";
+		        }
+
+
+		        //tally assets
+		        if(assetObj[baseAsset]) {
+		        	assetObj[baseAsset] += 1;
+		        } else {
+		        	assetObj[baseAsset] = 1;
+		        }
+
+		        if(assetObj[counterAsset]) {
+		        	assetObj[counterAsset] += 1;
+		        } else {
+		        	assetObj[counterAsset] = 1;
+		        }
+		    }
+
+		    var most_traded = "";
+		    var biggestCount = 0;
+		    var data = {};
+		    var datasets = [];
+		    var innerData = [];
+		    var backgroundColor = [];
+		    var labels = [];
+		    var colour = "";
+
+
+		    console.log(assetObj);
+		    for (var key in assetObj) {
+		    	var count = assetObj[key];
+		    	console.log("printing count value: " + count);
+
+		    	innerData.push(count);
+		    	labels.push(key);
+
+		    	if(asset_colours.hasOwnProperty(key)) {
+      				colour = asset_colours[key];
+      			} else {
+      				colour = "#FFFFFF";
+      			}
+
+      			backgroundColor.push(colour);
+
+
+		    	if(count > biggestCount) {
+		    		most_traded = key;
+		    		biggestCount = count;
+		    	}
+
+		    }
+
+		    app.most_traded = most_traded;
+
+		    /*
+		    //combine data
+		    datasets.push({ data: innerData, backgroundColor: backgroundColor});
+
+		    //data = { datasets: datasets[0], labels: labels };
+
+		    data = {
+			    datasets: [{
+			        data: innerData,
+			        backgroundColor: backgroundColor
+			    }],
+
+			    // These labels appear in the legend and in the tooltips when hovering different arcs
+			    labels: labels
+			};
+
+		    console.log(data);*/
+
+		    /*
+		    var ctx = $("#myChart");
+
+		    ctx.height = 350;
+		    ctx.width = 350;
+
+		    var myPieChart = new Chart(ctx,{
+			    type: 'pie',
+			    data: data,
+			    options: {
+					responsive: true,
+					maintainAspectRatio: false
+				}
+			});*/
+
+ 		}
+    });
+
 	server.accounts().accountId(address).call().then(function (account) {
+
+		var data = {};
+	    var datasets = [];
 		//console.log(account);
 		document.getElementById('address').innerHTML = account.account_id;
 		
@@ -11,9 +170,28 @@ function assets(address) {
 
 		var assets_table = '<table class="table table-dark table-hover table-condensed"><thead><tr><th class="text-center active col-sm-2">Code</th><th class="text-center active col-sm-2">Balance</th></tr></thead><tbody>';
 
+		app.buildPieChart(account.balances);
 
-		for(var row in account.balances){
+		for(var row in account.balances) {
 			var asset = account.balances[row];
+
+			var code;
+			var usd_value = 0;
+			var asset_id = "";
+			var ajax;
+
+			console.log(asset);
+
+			
+			if(asset.asset_code) {
+	            code = asset.asset_code;
+	        } else {
+	        	if(asset.asset_type == "native") {
+	        		code = "XLM";
+	        	} else {
+	        		code = asset.asset_type;
+	        	}      
+	        }
 
 			if(asset.asset_type == 'native'){
 				assets_table += '<tr><td class="text-center"><b>'+ "XLM" +'</b></td><td><b><span class="pull-right prl">'+numberWithCommas(asset.balance)+'</span></b></td></tr>';
@@ -21,11 +199,57 @@ function assets(address) {
 				assets_table += '<tr><td class="text-center"><b>'+asset.asset_code+'</b></td><td><b><span class="pull-right prl">'+numberWithCommas(asset.balance)+'</span></b></td></tr>';
 			}
 		}
-
+		
 		if(account.balances.length > 1){
 			assets_table += '</tbody></table></div>';
 			document.getElementById('balances').innerHTML = assets_table;
 		}
+
+		$( document ).ajaxComplete(function(event, xhr, settings) {
+			console.log(event);
+			console.log("num of requests so far: " + app.num_assets);
+			console.log("num total requests expected: " + app.num_expected);
+		    if(app.num_assets == app.num_expected) {
+		    	console.log("building pie chart");
+		    	console.log(app.innerData);
+		    	//combine data
+			    datasets.push({ data: app.innerData, backgroundColor: app.backgroundColor});
+
+			    //data = { datasets: datasets[0], labels: labels };
+
+			    data = {
+				    datasets: [{
+				        data: app.innerData,
+				        backgroundColor: app.backgroundColor
+				    }],
+
+				    // These labels appear in the legend and in the tooltips when hovering different arcs
+				    labels: app.labels
+				};
+
+			    console.log(data);
+
+			    $('#myChart').replaceWith('<canvas id="myChart"></canvas>');
+			     $('.chartjs-size-monitor').remove();
+
+
+			    var ctx = $("#myChart");
+
+			    ctx.height = 350;
+			    ctx.width = 350;
+
+			    var myPieChart = new Chart(ctx,{
+				    type: 'pie',
+				    data: data,
+				    options: {
+						responsive: true,
+						maintainAspectRatio: false
+					}
+				});
+			 }
+		});
+
+
 
 	    return '';
   	}).catch(function (err) {
@@ -169,7 +393,7 @@ function assets(address) {
 
   	/**** Trades Tab Data ****/
 
-    var horizonUrl = 'https://horizon.stellar.org/accounts/' + address + '/trades';
+    horizonUrl = 'https://horizon.stellar.org/accounts/' + address + '/trades';
     
     $.ajax({
         url: horizonUrl,
@@ -393,10 +617,12 @@ function address_tx(address, cursor){
 function capitalizeFirstLetter(string) {
     return string[0].toUpperCase() + string.slice(1);
 }
+
 function numberWithCommas(x) {
 	var parts = x.split(".");
 	return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (parts[1] ? "." + parts[1] : "");
 }
+
 function remove(id) {
     return (elem=document.getElementById(id)).parentNode.removeChild(elem);
 }
