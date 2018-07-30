@@ -19,13 +19,11 @@
 	<script src="js/dependencies/vue.js"></script>
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js%22%3E"</script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js%22%3E"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 	<script src="https://unpkg.com/ionicons@4.2.4/dist/ionicons.js"></script>
 
 	<script src="js/dependencies/require.js"></script>
@@ -66,9 +64,15 @@
 
 		<div v-show="showAccountWin" id="account" class="container p-t-md">
 			<ion-icon v-on:click="closeAccountWindow()" id="accountClose" name="close" style="float: right;"></ion-icon>
-			<div v-on:click="showText()">Show Text!</div>
-		 	<div v-if="showVue">
-		  		{{ message }}
+			<div class="account-title"> Account - {{ accountViewID  }}</div>
+			<div class="pie-chart">
+				<canvas id="myChart"></canvas>
+			</div>
+			<div class="account-info"> 
+				<span> <b>Payments sent:</b> {{ payments_sent }} </span>
+				<span> <b>Payments received:</b> {{ payments_received }} </span>
+				<span> <b>Trades completed:</b> {{ trades_completed }} </span>
+				<span> <b>Most Traded Asset:</b> {{ most_traded }} </span>
 			</div>
 
 			<div id="account-menu" style="border-radius: 4px;">
@@ -157,7 +161,20 @@ var app = new Vue({
 	accountViewObj: {},
 	accountView: false,
 	switchToGlobalView: false,
-	requestCount: 0
+	requestCount: 0,
+	payments_sent: 0,
+	payments_received: 0,
+	trades_completed: 0,
+	most_traded: "",
+	found: false,
+	assetID: "",
+	num_assets: 0,
+	num_expected: 0,
+	datasets: [],
+	innerData: [],
+	backgroundColor: [],
+	labels: []
+
   },
   methods: {
   	showText: function() {
@@ -262,7 +279,97 @@ var app = new Vue({
   		}
 
     	return buying_amount;
-  	}
+  	},
+  	buildPieChart: function(assets) {
+
+  		app.datasets = [];
+  		app.backgroundColor = [];
+  		app.innerData = [];
+  		app.labels = [];
+
+  		app.num_assets = 0;
+  		app.num_expected = assets.length;
+
+  		for(var a in assets) {
+
+			var asset = assets[a];
+
+			var code;
+			var usd_value = 0;
+			var asset_id = "";
+			var ajax;
+
+			console.log(asset);
+
+			
+			if(asset.asset_code) {
+	            code = asset.asset_code;
+	        } else {
+	        	if(asset.asset_type == "native") {
+	        		code = "XLM";
+	        	} else {
+	        		code = asset.asset_type;
+	        	}      
+	        }
+
+	        //asset_id = app.convertToUsd(code, asset.balance);
+
+	        app.assetToUsd(code, asset.balance);
+
+	        /*
+	        if(asset_id) {
+	        	usd_value = app.getUsdValue(asset_id);
+	        	console.log(usd_value);
+	        }*/
+	    } 
+
+
+  	},
+  	assetToUsd: function(asset, amount) {
+  		var usd_value = 0;
+
+  		$.ajax({
+	        url: "https://min-api.cryptocompare.com/data/price?fsym=" + asset + "&tsyms=USD",
+	        success: function(result) {
+	        	console.log(result);
+	        	app.num_assets++;
+	        		
+        		console.log("Searched cryptocompare for " + asset + " and found: " + result.USD);
+
+        		usd_value = result.USD * amount;
+
+        		usd_value = Math.round(usd_value * 100) / 100;
+    
+
+        		console.log(amount + " " + asset + " is worth $" + usd_value + " USD" );
+
+        		if(usd_value > 1) {
+        			app.addChartData(asset, amount, usd_value);
+        		}
+	        },
+	        error: function(result) {
+	        	app.num_assets++;
+	        }
+    	});
+  	},
+  	addChartData: function(asset, amount, usd_value) {
+  		var colour;
+
+  		app.innerData.push(usd_value);
+    	app.labels.push(asset);
+
+    	if(asset_colours.hasOwnProperty(asset)) {
+			colour = asset_colours[asset];
+		} else {
+			var x = Math.round(0xffffff * Math.random()).toString(16);
+			var y = (6-x.length);
+			var z = "000000";
+			var z1 = z.substring(0,y);
+			colour= "#" + z1 + x;
+		}
+
+		app.backgroundColor.push(colour);
+	}		
   }
 })
 

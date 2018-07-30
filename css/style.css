@@ -383,3 +383,28 @@ div {
 	text-decoration: bold;
 	padding-bottom: 1em;
 }
+
+.account-title {
+	font-size: 1.3em;
+	text-decoration: bold;
+	margin: 1em 0;
+	padding: 0.5em 0;
+	background: #212529;
+}
+
+.account-info {
+	margin: 1em 0;
+	padding: 0.5em 0;
+	background: #212529;
+}
+
+.pie-chart {
+	background: #212529;
+	height: 350px;
+	width: 350px;
+}
+
+#myChart {
+	height: 350px;
+	width: auto;
+}

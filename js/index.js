@@ -384,6 +384,7 @@ function onDocumentMouseUp(event)
            var accountObj;
 
            if(account && !app.accountView) {
+            app.accountViewID = account.account;
             zoomToTarget(INTERSECTED.position);
             app.showAccountWindow();
             console.log("found matching account for object");
