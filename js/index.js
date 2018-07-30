@@ -220,9 +220,14 @@ function init() {
      centerNode.scale.y = 0.1;
      centerNode.scale.z = 0.1;
 
+     centerNode.name = "Center Node";
+
     //console.log(centerNode.scale);
+    console.log("scene info");
+    console.log(centerNode);
 
     scene.add(centerNode);
+    
 
     //console.log(centerNode);
     /*
@@ -337,9 +342,11 @@ function onDocumentMouseUp(event)
   if(!dragCheck)
   {
       raycaster.setFromCamera( mouse, camera );
-      var intersects = raycaster.intersectObjects( scene.children );
+      var intersects = raycaster.intersectObjects( scene.children , true);
+      console.log(scene.children);
       if ( intersects.length > 0 ) 
       {
+
         if ( INTERSECTED != intersects[ 0 ].object ) 
         {
           if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
@@ -357,7 +364,16 @@ function onDocumentMouseUp(event)
            
            var objID = INTERSECTED.id;
 
-           var account = findAccount(objID);
+
+           if(INTERSECTED.parent.parent.parent.name == "Center Node"){
+             console.log("You have clicked the center node");
+             console.log("Printing intersection information");
+             console.log(INTERSECTED);
+             zoomToTarget(INTERSECTED.position);
+
+           }
+           else{
+            var account = findAccount(objID);
 
            console.log("Printing intersection information");
            console.log(INTERSECTED);
@@ -399,6 +415,8 @@ function onDocumentMouseUp(event)
            var message = tripManager.trips.find( t => t.line.id === INTERSECTED.id || t.line2.id === INTERSECTED.id).message;
             //S$("#description").append();
             //var result = _.findWhere(tripManager.trips, {line.id: INTERSECTED.id});
+           }
+           
         }
       } 
       else 
