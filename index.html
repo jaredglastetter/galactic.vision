@@ -66,7 +66,12 @@
 			<ion-icon v-on:click="closeAccountWindow()" id="accountClose" name="close" style="float: right;"></ion-icon>
 			<div class="account-title"> Account - {{ accountViewID  }}</div>
 			<div class="pie-chart">
+				Assets (USD)
 				<canvas id="myChart"></canvas>
+			</div>
+			<div class="pie-chart">
+				Trade Distribution
+				<canvas id="tradesChart"></canvas>
 			</div>
 			<div class="account-info"> 
 				<span> <b>Payments sent:</b> {{ payments_sent }} </span>
@@ -299,7 +304,7 @@ var app = new Vue({
 			var asset_id = "";
 			var ajax;
 
-			console.log(asset);
+			//console.log(asset);
 
 			
 			if(asset.asset_code) {
@@ -331,17 +336,17 @@ var app = new Vue({
   		$.ajax({
 	        url: "https://min-api.cryptocompare.com/data/price?fsym=" + asset + "&tsyms=USD",
 	        success: function(result) {
-	        	console.log(result);
+	        	//console.log(result);
 	        	app.num_assets++;
 	        		
-        		console.log("Searched cryptocompare for " + asset + " and found: " + result.USD);
+        		//console.log("Searched cryptocompare for " + asset + " and found: " + result.USD);
 
         		usd_value = result.USD * amount;
 
         		usd_value = Math.round(usd_value * 100) / 100;
     
 
-        		console.log(amount + " " + asset + " is worth $" + usd_value + " USD" );
+        		//console.log(amount + " " + asset + " is worth $" + usd_value + " USD" );
 
         		if(usd_value > 1) {
         			app.addChartData(asset, amount, usd_value);

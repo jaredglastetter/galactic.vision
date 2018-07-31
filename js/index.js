@@ -364,26 +364,26 @@ function onDocumentMouseUp(event)
            
            var objID = INTERSECTED.id;
 
-
-           if(INTERSECTED.parent.parent.parent.name == "Center Node"){
+          /*
+          if(INTERSECTED.parent.parent.parent.name == "Center Node"){
              console.log("You have clicked the center node");
              console.log("Printing intersection information");
              console.log(INTERSECTED);
              zoomToTarget(INTERSECTED.position);
 
            }
-           else{
+           else {*/
             var account = findAccount(objID);
 
-           console.log("Printing intersection information");
-           console.log(INTERSECTED);
+            console.log("Printing intersection information");
+            console.log(INTERSECTED);
 
-           var account = findAccount(INTERSECTED.id);
+            var account = findAccount(INTERSECTED.id);
 
-           var sceneObj;
-           var accountObj;
+            var sceneObj;
+            var accountObj;
 
-           if(account && !app.accountView) {
+            if(account && !app.accountView) {
             app.accountViewID = account.account;
             zoomToTarget(INTERSECTED.position);
             app.showAccountWindow();
@@ -409,7 +409,7 @@ function onDocumentMouseUp(event)
             //renderer.setViewport( 0, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
             //renderer.render( scene, altCamera );
             app.accountView = true;
-           }
+          // }
 
 
 

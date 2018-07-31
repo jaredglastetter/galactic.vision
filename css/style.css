@@ -402,6 +402,8 @@ div {
 	background: #212529;
 	height: 350px;
 	width: 350px;
+	display: inline-block;
+	text-align: center;
 }
 
 #myChart {

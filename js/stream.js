@@ -98,7 +98,7 @@ RequestStream.prototype = {
     this.stream = this.server.trades().cursor('now')
     .stream({
       onmessage: function (message) {
-        //console.log(message);
+        console.log(message);
         var trade = new Object();
         trade.name = "trade";
         if(message.buying_asset_code) {
@@ -124,10 +124,10 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        //console.log(message);
+        console.log(message);
        //console.log("effects stream");
         if(!app.accountView && $("#effects_stream").hasClass("selected") && activeWindow) {
-          tripManager.addTrip(new Trip(centerNode.position, message));
+          tripManager.addTrip(new Trip(centerNode.position));
         }
       }
     });

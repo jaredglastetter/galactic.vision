@@ -107,7 +107,11 @@ function assets(address) {
 		    	if(asset_colours.hasOwnProperty(key)) {
       				colour = asset_colours[key];
       			} else {
-      				colour = "#FFFFFF";
+      				var x = Math.round(0xffffff * Math.random()).toString(16);
+					var y = (6-x.length);
+					var z = "000000";
+					var z1 = z.substring(0,y);
+					colour= "#" + z1 + x;
       			}
 
       			backgroundColor.push(colour);
@@ -122,7 +126,7 @@ function assets(address) {
 
 		    app.most_traded = most_traded;
 
-		    /*
+		    
 		    //combine data
 		    datasets.push({ data: innerData, backgroundColor: backgroundColor});
 
@@ -138,10 +142,12 @@ function assets(address) {
 			    labels: labels
 			};
 
-		    console.log(data);*/
+			console.log("Printing trades chart data");
+		    console.log(data);
 
-		    /*
-		    var ctx = $("#myChart");
+		    $('#tradesChart').replaceWith('<canvas id="tradesChart"></canvas>');
+
+		    var ctx = $("#tradesChart");
 
 		    ctx.height = 350;
 		    ctx.width = 350;
@@ -153,7 +159,7 @@ function assets(address) {
 					responsive: true,
 					maintainAspectRatio: false
 				}
-			});*/
+			});
 
  		}
     });
@@ -206,9 +212,9 @@ function assets(address) {
 		}
 
 		$( document ).ajaxComplete(function(event, xhr, settings) {
-			console.log(event);
-			console.log("num of requests so far: " + app.num_assets);
-			console.log("num total requests expected: " + app.num_expected);
+			//console.log(event);
+			//console.log("num of requests so far: " + app.num_assets);
+			//console.log("num total requests expected: " + app.num_expected);
 		    if(app.num_assets == app.num_expected) {
 		    	console.log("building pie chart");
 		    	console.log(app.innerData);
