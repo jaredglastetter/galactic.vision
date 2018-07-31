@@ -363,27 +363,22 @@ function onDocumentMouseUp(event)
            camera.lookAt(intersects[0].point);
            
            var objID = INTERSECTED.id;
+           var account = findAccount(objID); 
 
+           if(account){
 
-           if(INTERSECTED.parent.parent.parent.name == "Center Node"){
-             console.log("You have clicked the center node");
-             console.log("Printing intersection information");
-             console.log(INTERSECTED);
-             zoomToTarget(INTERSECTED.position);
-
-           }
-           else{
-            var account = findAccount(objID);
+            //var account = findAccount(objID);
 
            console.log("Printing intersection information");
            console.log(INTERSECTED);
-
+           
            var account = findAccount(INTERSECTED.id);
 
            var sceneObj;
            var accountObj;
 
            if(account && !app.accountView) {
+            app.accountViewID = account.account;
             zoomToTarget(INTERSECTED.position);
             app.showAccountWindow();
             console.log("found matching account for object");
@@ -415,7 +410,16 @@ function onDocumentMouseUp(event)
            var message = tripManager.trips.find( t => t.line.id === INTERSECTED.id || t.line2.id === INTERSECTED.id).message;
             //S$("#description").append();
             //var result = _.findWhere(tripManager.trips, {line.id: INTERSECTED.id});
+
            }
+           else if(INTERSECTED.parent.parent.parent.name == "Center Node"){
+             console.log("You have clicked the center node");
+             console.log("Printing intersection information");
+             console.log(INTERSECTED);
+             zoomToTarget(INTERSECTED.position);
+
+           }
+           
            
         }
       } 
