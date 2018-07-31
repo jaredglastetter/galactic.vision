@@ -363,27 +363,21 @@ function onDocumentMouseUp(event)
            camera.lookAt(intersects[0].point);
            
            var objID = INTERSECTED.id;
+           var account = findAccount(objID); 
 
-          /*
-          if(INTERSECTED.parent.parent.parent.name == "Center Node"){
-             console.log("You have clicked the center node");
-             console.log("Printing intersection information");
-             console.log(INTERSECTED);
-             zoomToTarget(INTERSECTED.position);
+           if(account){
 
-           }
-           else {*/
-            var account = findAccount(objID);
+            //var account = findAccount(objID);
 
-            console.log("Printing intersection information");
-            console.log(INTERSECTED);
+           console.log("Printing intersection information");
+           console.log(INTERSECTED);
+           
+           var account = findAccount(INTERSECTED.id);
 
-            var account = findAccount(INTERSECTED.id);
+           var sceneObj;
+           var accountObj;
 
-            var sceneObj;
-            var accountObj;
-
-            if(account && !app.accountView) {
+           if(account && !app.accountView) {
             app.accountViewID = account.account;
             zoomToTarget(INTERSECTED.position);
             app.showAccountWindow();
@@ -409,14 +403,23 @@ function onDocumentMouseUp(event)
             //renderer.setViewport( 0, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
             //renderer.render( scene, altCamera );
             app.accountView = true;
-          // }
+           }
 
 
 
            var message = tripManager.trips.find( t => t.line.id === INTERSECTED.id || t.line2.id === INTERSECTED.id).message;
             //S$("#description").append();
             //var result = _.findWhere(tripManager.trips, {line.id: INTERSECTED.id});
+
            }
+           else if(INTERSECTED.parent.parent.parent.name == "Center Node"){
+             console.log("You have clicked the center node");
+             console.log("Printing intersection information");
+             console.log(INTERSECTED);
+             zoomToTarget(INTERSECTED.position);
+
+           }
+           
            
         }
       } 
