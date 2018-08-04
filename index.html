@@ -189,7 +189,44 @@ var app = new Vue({
 	backgroundColor: [],
 	labels: [],
 	wireframe: "",
-	imgArray: ["images/Oasis-EQUIRECTANGULAR-6-1024x512.png", "images/Ice-EQUIRECTANGULAR-1-1024x512.png", "images/Wetlands-Clouds-EQUIRECTANGULAR-1-1024x512.png"]
+	imgArray: ["images/Oasis-EQUIRECTANGULAR-6-1024x512.png", "images/Ice-EQUIRECTANGULAR-1-1024x512.png", "images/Wetlands-Clouds-EQUIRECTANGULAR-1-1024x512.png", "images/Volcanic-EQUIRECTANGULAR-3-2048x1024.png"],
+	textures: []
+  },
+  mounted: function() {
+  	var loader = new THREE.TextureLoader();
+
+  	imgArray = this.imgArray;
+
+  	console.log(this.imgArray);
+
+    for(var image in this.imgArray) {
+    	console.log("loading image");
+    	console.log(this.imgArray[image]);
+	    	// load a resource
+		loader.load(
+			// resource URL
+			imgArray[image],
+
+			// onLoad callback
+			function ( texture ) {
+				texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      			texture.anisotropy = 16;
+				// in this example we create the material when the texture is loaded
+				console.log(texture);
+				app.textures.push(texture);
+				console.log(app.textures);
+			},
+
+			// onProgress callback currently not supported
+			undefined,
+
+			// onError callback
+			function ( err ) {
+				console.error( 'An error happened.' );
+			}
+		);
+    }
+
   },
   methods: {
   	showText: function() {

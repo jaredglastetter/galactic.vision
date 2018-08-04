@@ -42,15 +42,20 @@ TripManager.prototype = {
 
 function Trip(ledger, request, message) {
 
-  //var imgTexture = new THREE.TextureLoader().load(app.imgArray[app.imgArray.length * Math.random()]); 
-  var imgTexture = new THREE.TextureLoader().load("images/Oasis-EQUIRECTANGULAR-6-1024x512.png");
+  
+  var t = Math.floor(Math.random() * app.textures.length);
+  var t2 = Math.floor(Math.random() * app.textures.length);
 
+  console.log(t);
+  console.log(t2);
+
+  //var imgTexture = new THREE.TextureLoader().load(app.imgArray[app.imgArray.length * Math.random()]); 
+  var imgTexture = app.textures[t];
 
   //var imgTexture = new THREE.TextureLoader().load( "images/Ice-EQUIRECTANGULAR-1-1024x512.png" );
-  var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
+  var imgTexture2 = app.textures[t2];
 
-  imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
-  imgTexture.anisotropy = 16;
+
   //imgTexture = null;
 
   var specularShininess = Math.pow( 2, alpha * 10 );

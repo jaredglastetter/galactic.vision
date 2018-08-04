@@ -65,16 +65,7 @@ var asset_colours = {
   "OTHER": "#FF0" //red for now
 }
 
-  
-  //var imgTexture = new THREE.TextureLoader().load(app.imgArray[app.imgArray.length * Math.random()]); 
-  var imgTexture = new THREE.TextureLoader().load("images/Oasis-EQUIRECTANGULAR-6-1024x512.png");
 
-
-  //var imgTexture = new THREE.TextureLoader().load( "images/Ice-EQUIRECTANGULAR-1-1024x512.png" );
-  var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
-
-  imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
-  imgTexture.anisotropy = 16;
   //imgTexture = null;
 
   var rR = Math.random();
@@ -103,7 +94,7 @@ var asset_colours = {
   var hue = Math.random();
   var planetMaterial;
 
-
+/*
   var specularShininess = Math.pow( 2, alpha * 10 );
   //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
   var specularColor = new THREE.Color(rR, rG, rB );
@@ -131,7 +122,7 @@ var asset_colours = {
     envMap: alphaIndex % 2 === 0 ? null : reflectionCube
   });
 
-
+  */
   //console.log("Red: " + rR);
   //console.log("Green: " + rG);
   //console.log("Blue: " + rB);
