@@ -66,48 +66,38 @@ var asset_colours = {
 }
 
 
-var imgTexture = new THREE.TextureLoader().load( "images/2k_neptune.jpg" );
-var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
+  //imgTexture = null;
 
-var rR = Math.random();
-var rG = Math.random();
-var rB = Math.random();
+  var rR = Math.random();
+  var rG = Math.random();
+  var rB = Math.random();
 
-var rR2 = Math.random();
-var rG2 = Math.random();
-var rB2 = Math.random();
+  var rR2 = Math.random();
+  var rG2 = Math.random();
+  var rB2 = Math.random();
 
-imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
-imgTexture.anisotropy = 16;
-//imgTexture = null;
-var shininess = 50, specular = 0x333333, bumpScale = 1;
-var materials = [];
-var cubeWidth = 400;
-var numberOfSphersPerSide = 5;
-var sphereRadius = 2;
-var sphereRadius2 = 1;
-var stepSize = 1.0 / numberOfSphersPerSide;
-var geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
-var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 32, 16 );
-var alpha = 0.5;
-var beta = 0.5;
-var gamma = 0.5;
-var alphaIndex = 1;
-var saturation = Math.random() / 2 + 0.5;
-var lightness = Math.random() / 2 + 0.4;
-var hue = Math.random();
-var planetMaterial;
+  var shininess = 50, specular = 0x333333, bumpScale = 1;
+  var materials = [];
+  var cubeWidth = 400;
+  var numberOfSphersPerSide = 5;
+  var sphereRadius = 2;
+  var sphereRadius2 = 1;
+  var stepSize = 1.0 / numberOfSphersPerSide;
+  var geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
+  var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 32, 16 );
+  var alpha = 0.5;
+  var beta = 0.5;
+  var gamma = 0.5;
+  var alphaIndex = 1;
+  var saturation = Math.random() / 2 + 0.5;
+  var lightness = Math.random() / 2 + 0.4;
+  var hue = Math.random();
+  var planetMaterial;
 
-console.log("Red: " + rR);
-console.log("Green: " + rG);
-console.log("Blue: " + rB);
-
-console.log("Hue: " + hue);
-console.log("Saturation: " + saturation);
-console.log("Lightness: " + lightness);
-var specularShininess = Math.pow( 2, alpha * 10 );
-//var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
-var specularColor = new THREE.Color(rR, rG, rB );
+/*
+  var specularShininess = Math.pow( 2, alpha * 10 );
+  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
+  var specularColor = new THREE.Color(rR, rG, rB );
   //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
   var diffuseColor = new THREE.Color(rR, rG, rB).setHSL( rR, saturation, lightness );
   var material = new THREE.MeshToonMaterial( {
@@ -119,18 +109,27 @@ var specularColor = new THREE.Color(rR, rG, rB );
     envMap: alphaIndex % 2 === 0 ? null : reflectionCube
   } );
 
-var specularShininess = Math.pow( 2, alpha * 10 );
-var specularColor2 = new THREE.Color(rR2, rG2, rB2 );
-//var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
-var diffuseColor2 = new THREE.Color(rR2, rG2, rB2).setHSL( rR2, saturation, lightness );
-var material2 = new THREE.MeshToonMaterial( {
-  map: imgTexture2,
-  color: diffuseColor2,
-  specular: specularColor2,
-  reflectivity: beta,
-  shininess: 0.75, //was 0.75
-  envMap: alphaIndex % 2 === 0 ? null : reflectionCube
-});
+  var specularShininess = Math.pow( 2, alpha * 10 );
+  var specularColor2 = new THREE.Color(rR2, rG2, rB2 );
+  //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+  var diffuseColor2 = new THREE.Color(rR2, rG2, rB2).setHSL( rR2, saturation, lightness );
+  var material2 = new THREE.MeshToonMaterial( {
+    map: imgTexture2,
+    color: diffuseColor2,
+    specular: specularColor2,
+    reflectivity: beta,
+    shininess: 0.75, //was 0.75
+    envMap: alphaIndex % 2 === 0 ? null : reflectionCube
+  });
+
+  */
+  //console.log("Red: " + rR);
+  //console.log("Green: " + rG);
+  //console.log("Blue: " + rB);
+
+  //console.log("Hue: " + hue);
+  //console.log("Saturation: " + saturation);
+  //console.log("Lightness: " + lightness);
 
 var centerNode;
 //var centerNode = new THREE.Mesh( geometry, material );
@@ -152,6 +151,7 @@ function init() {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
   renderer = new THREE.WebGLRenderer( { alpha: true } );
+  renderer.setClearColor( 0x000000, 0.0 );
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
@@ -228,7 +228,21 @@ function init() {
 
     scene.add(centerNode);
     
+    // THREE.Line ( WireframeGeometry, LineBasicMaterial ) - rendered with gl.LINE
 
+    /*
+    geo = new THREE.WireframeGeometry( geo );
+    matLineBasic = new THREE.LineBasicMaterial( { color: 0x4080ff } );
+    matLineDashed = new THREE.LineDashedMaterial( { scale: 0.1, dashSize: 1, gapSize: 1 } );
+    wireframe1 = new THREE.LineSegments( geo, matLineBasic );
+    wireframe1.computeLineDistances();
+    wireframe1.visible = false;
+    wireframe1.position = {x:0, y:0, z:0};
+    //scene.add( wireframe1 );*/
+
+
+    //wireframe1.position = {x:0, y:0, z:0};
+    //scene.add( wireframe1 );
     //console.log(centerNode);
     /*
     object.traverse( function ( child ) {
@@ -386,7 +400,41 @@ function onDocumentMouseUp(event)
             assets(account.account);
             sceneObj = scene.getObjectById( objID, true );
             accountObj = sceneObj.clone();
+
+            accountObj.material.transparent = true;
+            accountObj.material.opacity = 1;
+
             app.accountViewObj = accountObj;
+
+            //add wireframe
+
+            /*
+            var geo = new THREE.IcosahedronBufferGeometry( 18, 1 );
+            var wire = new THREE.WireframeGeometry2( geo );
+            matLine = new THREE.LineMaterial( {
+              color: 0x00ffff,
+              linewidth: 0.002, // in pixels
+              transparent: true,
+              //resolution:  // to be set by renderer, eventually
+              dashed: false
+            } );
+            wireframe = new THREE.Wireframe( wire, matLine );
+            wireframe.computeLineDistances();
+            wireframe.scale.set( 0.075, 0.075, 0.075);
+            wireframe.position.x = accountObj.position.x;
+            wireframe.position.y = accountObj.position.y;
+            wireframe.position.z = accountObj.position.z;
+
+            wireframe.material.transparent = true;
+            wireframe.material.opacity = 0.75;
+
+            app.wireframe = wireframe;
+
+            console.log(accountObj.position);
+            console.log(wireframe.position);
+
+            scene.add(wireframe);
+            */
             scene.add(accountObj);
             SCREEN_WIDTH = window.innerWidth;
             SCREEN_HEIGHT = window.innerHeight;
@@ -645,6 +693,11 @@ function animate() {
 
   if(centerNode) {
     centerNode.rotation.y += 0.01;
+  }
+
+  if(app.wireframe) {
+    app.wireframe.rotation.y += 0.002;
+    app.wireframe.rotation.x += 0.001;
   }
   
   controls.update();

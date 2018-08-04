@@ -33,6 +33,15 @@
 	<script src="js/webgl/CanvasRenderer.js"></script>
 	<script src="js/dependencies/stats.min.js"></script>
 	<script src="js/dependencies/tween.min.js"></script>
+	<script src='js/webgl/LineSegmentsGeometry.js'></script>
+	<script src='js/webgl/LineGeometry.js'></script>
+	<script src='js/webgl/WireframeGeometry2.js'></script>
+
+	<script src='js/webgl/LineMaterial.js'></script>
+
+	<script src='js/webgl/LineSegments2.js'></script>
+	<script src='js/webgl/Line2.js'></script>
+	<script src='js/webgl/Wireframe.js'></script>
 	
 	<!-- index -->
 	<script src="js/webgl/inflate.min.js"></script>
@@ -178,7 +187,45 @@ var app = new Vue({
 	datasets: [],
 	innerData: [],
 	backgroundColor: [],
-	labels: []
+	labels: [],
+	wireframe: "",
+	imgArray: ["images/Oasis-EQUIRECTANGULAR-6-1024x512.png", "images/Ice-EQUIRECTANGULAR-1-1024x512.png", "images/Wetlands-Clouds-EQUIRECTANGULAR-1-1024x512.png", "images/Volcanic-EQUIRECTANGULAR-3-2048x1024.png"],
+	textures: []
+  },
+  mounted: function() {
+  	var loader = new THREE.TextureLoader();
+
+  	imgArray = this.imgArray;
+
+  	console.log(this.imgArray);
+
+    for(var image in this.imgArray) {
+    	console.log("loading image");
+    	console.log(this.imgArray[image]);
+	    	// load a resource
+		loader.load(
+			// resource URL
+			imgArray[image],
+
+			// onLoad callback
+			function ( texture ) {
+				texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      			texture.anisotropy = 16;
+				// in this example we create the material when the texture is loaded
+				console.log(texture);
+				app.textures.push(texture);
+				console.log(app.textures);
+			},
+
+			// onProgress callback currently not supported
+			undefined,
+
+			// onError callback
+			function ( err ) {
+				console.error( 'An error happened.' );
+			}
+		);
+    }
 
   },
   methods: {
