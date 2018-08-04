@@ -1,8 +1,9 @@
 
 
-function assets(address) {
-	var server = new StellarSdk.Server('https://horizon.stellar.org');
+function assets(address, serverURL) {
+	var server = new StellarSdk.Server(serverURL);
 
+  console.log("assets server url: " + serverURL);
 	app.payments_sent = 0;
 	app.payments_received = 0;
 
@@ -26,8 +27,8 @@ function assets(address) {
 	});
 
 
-	var horizonUrl = 'https://horizon.stellar.org/accounts/' + address + '/trades?limit=200';
-
+	//var horizonUrl = 'https://horizon.stellar.org/accounts/' + address + '/trades?limit=200';
+  var horizonUrl = serverURL + '/accounts/' + address + '/trades?limit=200'; // not sure if the test net deals with this differently
 	//calc total trades (limit 200 right now)
 	$.ajax({
         url: horizonUrl,
@@ -399,7 +400,7 @@ function assets(address) {
 
   	/**** Trades Tab Data ****/
 
-    horizonUrl = 'https://horizon.stellar.org/accounts/' + address + '/trades';
+    horizonUrl = serverURL + '/accounts/' + address + '/trades';
     
     $.ajax({
         url: horizonUrl,
@@ -610,7 +611,7 @@ function assets(address) {
 /* transactions table tab*/
 
 function address_tx(address, cursor){
-	var server = new StellarSdk.Server('https://horizon.stellar.org');
+	var server = new StellarSdk.Server(curServer);  //[bm]
 	server.transactions().forAccount(address).cursor(cursor).order('desc').limit(25).call().then(function (transactions) {
 		if ($('#more').length > 0) { remove('more'); }
 		document.getElementById('txs').innerHTML += format_txs(transactions, 'address', address);

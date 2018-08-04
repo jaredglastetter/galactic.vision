@@ -1,6 +1,6 @@
 function RequestStream() {
 
-  this.server = new StellarSdk.Server('https://horizon.stellar.org');
+  this.server = new StellarSdk.Server(curServer);
 
   /*
   this.stream = this.server.transactions()

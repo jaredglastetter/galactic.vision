@@ -1,7 +1,10 @@
+var curServer = "https://horizon.stellar.org";
+
 var scene;
 var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
 var dragCheck = false;
+
 
 var camera;
 var altCamera;
@@ -247,7 +250,7 @@ function init() {
   } );
 
   var account = "GBX6DXELQKLHMKVX2G24E3TPQV6APUAQECIC3XUJJ77Y2NYDM66TDTVY";
-  var server = new StellarSdk.Server('https://horizon.stellar.org');
+  var server = new StellarSdk.Server(curServer);
   //console.log(account);
   //console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
   //assets("GDDMFUC6BPAKNFAKQ2GRJHNQIWQIQBWMF3FEFIBHH532UNKHYIEPDM7M");
@@ -383,7 +386,7 @@ function onDocumentMouseUp(event)
             app.showAccountWindow();
             console.log("found matching account for object");
             console.log(account.account);
-            assets(account.account);
+            assets(account.account, curServer);
             sceneObj = scene.getObjectById( objID, true );
             accountObj = sceneObj.clone();
             app.accountViewObj = accountObj;
@@ -551,6 +554,19 @@ function globalView() {
 }
 
 $(document).ready(function() {
+
+  $("#server_toggle").click(function toggleHorizonServer(){
+    if(curServer == "https://horizon.stellar.org"){
+      curServer = "https://horizon-testnet.stellar.org";
+      document.getElementById("server_toggle").innerHTML = "Switch to Main Net";
+    }
+    else{
+      curServer = "https://horizon.stellar.org";
+      document.getElementById("server_toggle").innerHTML = "Switch to Test Net";
+    }
+    console.log("server: " + curServer);
+  })
+
   $("#transactions_stream").click(function setLiveTransactions() {
     //console.log(liveMode);
     liveMode.transactions();
@@ -624,7 +640,7 @@ function findAccount(objID) {
 }
 
 function getAccountInfo(id){
-  var server = new StellarSdk.Server('https://horizon.stellar.org');
+  var server = new StellarSdk.Server(curServer);
   //get account info
   console.log(id);
   console.log(this.server.accounts(account));
