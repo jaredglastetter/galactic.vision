@@ -41,6 +41,46 @@ TripManager.prototype = {
 
 
 function Trip(ledger, request, message) {
+
+  //var imgTexture = new THREE.TextureLoader().load(app.imgArray[app.imgArray.length * Math.random()]); 
+  var imgTexture = new THREE.TextureLoader().load("images/Oasis-EQUIRECTANGULAR-6-1024x512.png");
+
+
+  //var imgTexture = new THREE.TextureLoader().load( "images/Ice-EQUIRECTANGULAR-1-1024x512.png" );
+  var imgTexture2 = new THREE.TextureLoader().load( "images/2k_jupiter.jpg" );
+
+  imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
+  imgTexture.anisotropy = 16;
+  //imgTexture = null;
+
+  var specularShininess = Math.pow( 2, alpha * 10 );
+  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
+  var specularColor = new THREE.Color(rR, rG, rB );
+  //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+  var diffuseColor = new THREE.Color(rR, rG, rB).setHSL( rR, saturation, lightness );
+  var material = new THREE.MeshToonMaterial( {
+    map: imgTexture,
+    color: diffuseColor,
+    specular: specularColor,
+    reflectivity: beta,
+    shininess: 0.75, 
+    envMap: alphaIndex % 2 === 0 ? null : reflectionCube
+  } );
+
+  var specularShininess = Math.pow( 2, alpha * 10 );
+  var specularColor2 = new THREE.Color(rR2, rG2, rB2 );
+  //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+  var diffuseColor2 = new THREE.Color(rR2, rG2, rB2).setHSL( rR2, saturation, lightness );
+  var material2 = new THREE.MeshToonMaterial( {
+    map: imgTexture2,
+    color: diffuseColor2,
+    specular: specularColor2,
+    reflectivity: beta,
+    shininess: 0.75, //was 0.75
+    envMap: alphaIndex % 2 === 0 ? null : reflectionCube
+  });
+
+
   this.startNode = new THREE.Mesh( geometry2, material );
   this.endNode = new THREE.Mesh( geometry2, material2 );
 

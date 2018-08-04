@@ -33,6 +33,15 @@
 	<script src="js/webgl/CanvasRenderer.js"></script>
 	<script src="js/dependencies/stats.min.js"></script>
 	<script src="js/dependencies/tween.min.js"></script>
+	<script src='js/webgl/LineSegmentsGeometry.js'></script>
+	<script src='js/webgl/LineGeometry.js'></script>
+	<script src='js/webgl/WireframeGeometry2.js'></script>
+
+	<script src='js/webgl/LineMaterial.js'></script>
+
+	<script src='js/webgl/LineSegments2.js'></script>
+	<script src='js/webgl/Line2.js'></script>
+	<script src='js/webgl/Wireframe.js'></script>
 	
 	<!-- index -->
 	<script src="js/webgl/inflate.min.js"></script>
@@ -178,8 +187,9 @@ var app = new Vue({
 	datasets: [],
 	innerData: [],
 	backgroundColor: [],
-	labels: []
-
+	labels: [],
+	wireframe: "",
+	imgArray: ["images/Oasis-EQUIRECTANGULAR-6-1024x512.png", "images/Ice-EQUIRECTANGULAR-1-1024x512.png", "images/Wetlands-Clouds-EQUIRECTANGULAR-1-1024x512.png"]
   },
   methods: {
   	showText: function() {
