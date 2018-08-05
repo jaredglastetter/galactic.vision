@@ -2,6 +2,7 @@
  * Stack Overflowing
  * @author Callum Prentice 2017 / http://callum.com/
  */
+var nodes;
 var camera, scene, renderer, controls, stats;
 var positions, colors, sizes;
 var line_positions;
@@ -23,12 +24,30 @@ var spline_point_cache = [];
 var all_tracks = [];
 
 function start_app() {
-    init();
-    animate();
-    console.log(nodes);
+
+    $.getJSON('http://anyorigin.com/go?url=https%3A//stellarbeat.io/nodes/raw&callback=?', function(data){
+      $('#output').html(data.contents);
+      console.log("output: " );
+      console.log(data.contents);
+      nodes = data.contents;
+
+      init();
+      animate();
+      console.log(nodes);
+
+    });
+
+    
 }
 
 function init() {
+
+
+    
+ 
+
+
+
 
     if (!Detector.webgl) {
 
