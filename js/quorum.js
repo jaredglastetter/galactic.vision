@@ -21,6 +21,7 @@ var cur_arc_distance_miles = 0;
 var changing_arc_distance_miles = 0;
 var spline_point_cache = [];
 var all_tracks = [];
+var node_tracks = [];
 
 function start_app() {
     init();
@@ -143,12 +144,17 @@ function generateControlPoints(radius) {
     for (var f = 0; f < nodes.length; ++f) {
 
         //grab 
-
+        var node = new Object();
 
         var start_lat = nodes[f].latitude;
         var start_lng = nodes[f].longitude;
 
+        nodes[f].connections = [];
+
         console.log(f);
+
+        //add node to side menu
+
 
         if(nodes[f].quorumSet) {
             var quorumSet = nodes[f].quorumSet.validators;
@@ -222,7 +228,15 @@ function generateControlPoints(radius) {
                         default_speed: speed,
                         speed: speed * track_point_speed_scale
                     };
+                    nodes[f].connections.push(track);
                     all_tracks.push(track);
+                }
+            }
+            //node_tracks.push(node);
+            if(nodes[f].connections) {
+                if(nodes[f].connections.length > 0 && nodes[f].name) {
+                    menu_node = '<a href="#" class="list-group-item list-group-item-dark">' + nodes[f].name + '</a>';
+                    $('#node_list').append(menu_node); 
                 }
             }
         }

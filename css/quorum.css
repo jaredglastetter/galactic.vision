@@ -112,3 +112,24 @@ h2 {
     opacity: 1;
     transition: opacity .5s ease-out;
 }
+
+.quorum-nav {
+    position: absolute;
+    top: 25px;
+    left: 0;
+}
+
+#node_list {
+    overflow: auto;
+    max-height: 90vh !important;
+}
+
+.list-group-item {
+    background: #333333 !important;
+    color: #FFF !important;
+}
+
+.list-group-item:hover {
+    
+    color: cyan !important;
+}
