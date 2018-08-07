@@ -21,12 +21,16 @@ var cur_arc_distance_miles = 0;
 var changing_arc_distance_miles = 0;
 var spline_point_cache = [];
 var all_tracks = [];
+var all_nodes = [];
 var node_tracks = [];
+var changing = false;
 
 function start_app() {
     init();
     animate();
     console.log(nodes);
+    all_nodes = all_tracks;
+    app.all_tracks = all_tracks;
 }
 
 function init() {
@@ -139,6 +143,83 @@ function init() {
     window.addEventListener('resize', onWindowResize, false);
 }
 
+function zoomToLocation(pos) {
+    var position = { x : camera.position.x, y: camera.position.y, z: camera.position.z };
+    var target = { x : pos.x, y: pos.y, z: pos.z };
+
+    target.z = target.z;
+    target.x = target.x;
+
+    //console.log(target);
+
+    var tween = new TWEEN.Tween(position).to(target, 3000);
+
+    tween.onUpdate(function(){
+        camera.lookAt( pos );
+        controls.update();
+        camera.position.x = position.x;
+        camera.position.y = position.y;
+        camera.position.z = position.z
+    });
+
+
+    tween.easing(TWEEN.Easing.Circular.InOut);
+
+    tween.start();
+}
+
+
+$(document).ready(function() {
+
+  $("#transactions_stream").click(function setLiveTransactions() {
+    //console.log(liveMode);
+    zoomToLocation(xyz_from_lat_lng(nodes[0].latitude, nodes[0].longitude, 1));
+    $("#transactions_stream").toggleClass('selected');
+  });
+
+});
+
+function setupTween(node) {
+    console.log("setting up tween");
+    console.log(node)
+    highlightLines(node);
+    zoomToLocation(xyz_from_lat_lng(node.latitude, node.longitude, 1));
+}
+
+function viewAll() {
+    scene.remove(track_lines_object);
+    scene.remove(track_points_object);
+    spline_point_cache = [];
+
+    all_tracks = all_nodes;
+    app.curr_nodes = all_tracks;
+    app.curr_tracks = all_tracks;
+
+    track_lines_object = generate_track_lines();
+    track_lines_object.material.opacity = 0.25;
+    scene.add(track_lines_object);
+
+    track_points_object = generate_track_point_cloud();
+    scene.add(track_points_object);
+}
+
+function highlightLines(node) {
+    scene.remove(track_lines_object);
+    scene.remove(track_points_object);
+    spline_point_cache = [];
+
+    all_tracks = node.connections;
+    app.curr_nodes = all_tracks;
+    app.curr_tracks = all_tracks;
+
+    track_lines_object = generate_track_lines();
+    track_lines_object.material.opacity = 0.5;
+    scene.add(track_lines_object);
+
+    track_points_object = generate_track_point_cloud();
+    scene.add(track_points_object);
+}
+
 function generateControlPoints(radius) {
 
     for (var f = 0; f < nodes.length; ++f) {
@@ -235,8 +316,9 @@ function generateControlPoints(radius) {
             //node_tracks.push(node);
             if(nodes[f].connections) {
                 if(nodes[f].connections.length > 0 && nodes[f].name) {
-                    menu_node = '<a href="#" class="list-group-item list-group-item-dark">' + nodes[f].name + '</a>';
+                    menu_node = '<a onclick="setupTween(nodes[' + f + '])" href="#" class="list-group-item list-group-item-dark">' + nodes[f].name + '</a>';
                     $('#node_list').append(menu_node); 
+                    app.nodes.push(nodes[f]);
                 }
             }
         }
@@ -535,6 +617,7 @@ function animate(time) {
         controls.update();
         update_track_point_cloud();
         stats.update();
+        TWEEN.update();
     }
 
     renderer.render(scene, camera);
