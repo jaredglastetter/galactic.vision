@@ -177,11 +177,15 @@ $(document).ready(function() {
     $("#transactions_stream").toggleClass('selected');
   });
 
+  $( "#node_list a" ).click(function() {
+    $( this ).toggleClass( "selected" );
+  });
+
 });
 
 function setupTween(node) {
-    console.log("setting up tween");
-    console.log(node)
+    app.curr_node = node;
+    addValidators();
     highlightLines(node);
     zoomToLocation(xyz_from_lat_lng(node.latitude, node.longitude, 1));
 }
@@ -220,6 +224,20 @@ function highlightLines(node) {
     scene.add(track_points_object);
 }
 
+function addValidators() {
+    var validator_node;
+    var validator;
+    quorumArr = app.curr_node.quorumArr;
+
+    $('#validator_list').empty(); 
+
+    for(var node in quorumArr) {
+        validator = quorumArr[node];
+        validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + validator.name + '</a>';
+        $('#validator_list').append(validator_node); 
+    }
+}
+
 function generateControlPoints(radius) {
 
     for (var f = 0; f < nodes.length; ++f) {
@@ -231,6 +249,7 @@ function generateControlPoints(radius) {
         var start_lng = nodes[f].longitude;
 
         nodes[f].connections = [];
+        nodes[f].listPos = f;
 
         console.log(f);
 
@@ -239,6 +258,8 @@ function generateControlPoints(radius) {
 
         if(nodes[f].quorumSet) {
             var quorumSet = nodes[f].quorumSet.validators;
+
+            nodes[f].quorumArr = [];
         
 
             //enter quorum set array loop and execute the next code per found quorum
@@ -252,7 +273,10 @@ function generateControlPoints(radius) {
                 console.log(validatorMatch);
 
                 if(validatorMatch.length > 0) {
-                
+                    
+                    //add validator node object to array
+                    nodes[f].quorumArr.push(validatorMatch[0]);
+
                     var end_lat = validatorMatch[0].latitude;
                     var end_lng = validatorMatch[0].longitude;
 

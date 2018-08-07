@@ -121,7 +121,13 @@ h2 {
 
 #node_list {
     overflow: auto;
-    max-height: 90vh !important;
+    max-height: 100vh !important;
+}
+
+#validator_list {
+    overflow: auto;
+    max-height: 40vh !important;
+    margin: 1em;
 }
 
 .list-group-item {
@@ -132,6 +138,7 @@ h2 {
 .list-group-item:hover {
     
     color: cyan !important;
+    background: #444444 !important;
 }
 
 .buttons h1 {
@@ -174,13 +181,24 @@ button {
 }
 
 .selected {
-  box-shadow: 0 0.5em 0.5em -0.4em;
-  transform: translateY(-0.25em);
-  color: #00FFFF;
+  color: cyan !important;
+  background: #444444 !important;
 }
 
 #fps {
     position: absolute;
     right: 0;
     bottom: 0;
+}
+
+.validators {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    height: 50vh;
+    width: 300px;
+    background-color: rgba(50,50,50,.5);
+    color: #FFF !important;
+    border-radius: 1em;
+    padding: 1em;
 }

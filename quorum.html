@@ -67,11 +67,12 @@
                 <div id="node_list" class="list-group">
                     <a onclick="viewAll()" href="#" class="list-group-item list-group-item-dark">View All</a>
                 </div> 
-            </div> 
-            <div class="buttons" >
-                <!-- <h1>Live Mode</h1> -->
-                <button id="transactions_stream" class="raise">Camera</button>
             </div>
+            <div class="validators">
+                Validators:
+                <div id="validator_list" class="list-group">
+                </div> 
+            </div> 
         </div>
     </body>
 </html>
@@ -82,6 +83,7 @@ var app = new Vue({
   data: {
     nodes: [],
     curr_nodes: [],
+    curr_node: {},
     curr_tracks: [],
     all_tracks: []
   },
