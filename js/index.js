@@ -7,6 +7,7 @@ var camera;
 var altCamera;
 var cameraRig;
 var renderer;
+var stats;
 
 var SCREEN_HEIGHT;
 var SCREEN_WIDTH;
@@ -265,6 +266,10 @@ function init() {
   //console.log(account);
   //console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
   //assets("GDDMFUC6BPAKNFAKQ2GRJHNQIWQIQBWMF3FEFIBHH532UNKHYIEPDM7M");
+  stats = new Stats();
+  stats.domElement.style.position = 'absolute';
+  stats.domElement.style.top = '0px';
+  document.body.appendChild(stats.domElement);
 });
 
 }
@@ -699,7 +704,9 @@ function animate() {
     app.wireframe.rotation.y += 0.002;
     app.wireframe.rotation.x += 0.001;
   }
-  
+  if(stats) {
+    stats.update();
+  }
   controls.update();
 
   if(app.accountView) {

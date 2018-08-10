@@ -202,3 +202,11 @@ button {
     border-radius: 1em;
     padding: 1em;
 }
+
+#test_window {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 200px;
+    width: 200px; 
+}

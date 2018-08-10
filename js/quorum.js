@@ -24,6 +24,9 @@ var all_tracks = [];
 var all_nodes = [];
 var node_tracks = [];
 var changing = false;
+var globe;
+var spriteMap;
+var node;
 
 function start_app() {
     init();
@@ -42,6 +45,8 @@ function init() {
 
     show_loading(true);
 
+    spriteMap = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/lensflare/lensflare0_alpha.png' );
+
     renderer = new THREE.WebGLRenderer({
         antialias: true
     });
@@ -49,6 +54,7 @@ function init() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
+
 
     scene = new THREE.Scene();
 
@@ -69,6 +75,8 @@ function init() {
 
     var segments = 64;
 
+    globe = new THREE.Object3D();
+
     loader.load(
         'images/earth.jpg',
         function(earth_texture) {
@@ -77,7 +85,7 @@ function init() {
                 'images/water.png',
                 function(water_texture) {
 
-                    scene.add(new THREE.Mesh(
+                    globe.add(new THREE.Mesh(
                         new THREE.SphereGeometry(radius, segments, segments),
                         new THREE.MeshPhongMaterial({
                             map: earth_texture,
@@ -85,6 +93,8 @@ function init() {
                             specular: new THREE.Color(0x999999)
                         })
                     ));
+
+                    //scene.add(globe);
 
                     generateControlPoints(radius);
 
@@ -141,6 +151,8 @@ function init() {
     document.body.appendChild(stats.domElement);
 
     window.addEventListener('resize', onWindowResize, false);
+
+    scene.add(globe);
 }
 
 function zoomToLocation(pos) {
@@ -186,6 +198,7 @@ $(document).ready(function() {
 function setupTween(node) {
     app.curr_node = node;
     addValidators();
+    changeTags();
     highlightLines(node);
     zoomToLocation(xyz_from_lat_lng(node.latitude, node.longitude, 1));
 }
@@ -224,6 +237,23 @@ function highlightLines(node) {
     scene.add(track_points_object);
 }
 
+function changeTags() {
+    nodes.forEach(function(node) {
+        if(node.tag) {
+            scene.remove(node.tag);
+        }
+    });
+
+    //add tags for each node in the scene
+    scene.add(app.curr_node.tag);
+
+    app.curr_node.quorumArr.forEach(function(node) {
+        if(node.tag) {
+            scene.add(node.tag);
+        }
+    });
+}
+
 function addValidators() {
     var validator_node;
     var validator;
@@ -243,7 +273,7 @@ function generateControlPoints(radius) {
     for (var f = 0; f < nodes.length; ++f) {
 
         //grab 
-        var node = new Object();
+        node = new Object();
 
         var start_lat = nodes[f].latitude;
         var start_lng = nodes[f].longitude;
@@ -251,16 +281,28 @@ function generateControlPoints(radius) {
         nodes[f].connections = [];
         nodes[f].listPos = f;
 
-        console.log(f);
-
-        //add node to side menu
+        //console.log(f);
+        
 
 
         if(nodes[f].quorumSet) {
             var quorumSet = nodes[f].quorumSet.validators;
 
             nodes[f].quorumArr = [];
-        
+            
+            var node_coord = xyz_from_lat_lng( start_lat, start_lng, 0.55);
+            //console.log(node_coord);
+            if(nodes[f].name) {
+                var spritey = makeTextSprite( " " + nodes[f].name + " ", { fontsize: 32, backgroundColor: {r:255, g:100, b:100, a:1} } );
+
+                spritey.position.x = node_coord.x;
+                spritey.position.y = node_coord.y;
+                spritey.position.z = node_coord.z;
+
+                console.log(spritey);
+                nodes[f].tag = spritey;
+                scene.add( spritey );
+            }
 
             //enter quorum set array loop and execute the next code per found quorum
             for(var j = 0; j < quorumSet.length; j++) {
@@ -270,7 +312,7 @@ function generateControlPoints(radius) {
                 //find validator key in nodes array
                 validatorMatch = _.where(nodes, {publicKey: validator});
 
-                console.log(validatorMatch);
+                //console.log(validatorMatch);
 
                 if(validatorMatch.length > 0) {
                     
@@ -279,6 +321,31 @@ function generateControlPoints(radius) {
 
                     var end_lat = validatorMatch[0].latitude;
                     var end_lng = validatorMatch[0].longitude;
+
+                    var material = new THREE.ShaderMaterial( {
+                        uniforms: {
+                            color:   { value: new THREE.Color( 0xffffff ) },
+                            texture: { value: spriteMap }
+                        }
+                    } );
+
+                    /*
+                    track_point_cloud_geom.addAttribute('position', new THREE.BufferAttribute(positions, 3));
+    track_point_cloud_geom.addAttribute('customColor', new THREE.BufferAttribute(colors, 3));
+    track_point_cloud_geom.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    track_point_cloud_geom.computeBoundingBox();*/
+
+                    var point = new THREE.Points();
+
+                    var coord = xyz_from_lat_lng( validatorMatch[0].latitude, validatorMatch[0].longitude, 1);
+
+                    point.position.x = coord.x;
+                    point.position.y = coord.y;
+                    point.position.z = coord.z + 0.5;
+
+                    point.geometry.size = 3;
+
+                    globe.add(point);
 
                     if (start_lat === end_lat && start_lng === end_lng) {
                         continue;
@@ -632,6 +699,77 @@ function show_loading(visible) {
 
 function handle_about() {
     show_about(true);
+}
+
+function makeTextSprite( message, parameters ) {
+    if ( parameters === undefined ) parameters = {};
+    
+    var fontface = parameters.hasOwnProperty("fontface") ? 
+        parameters["fontface"] : "Arial";
+    
+    var fontsize = parameters.hasOwnProperty("fontsize") ? 
+        parameters["fontsize"] : 18;
+    
+    var borderThickness = parameters.hasOwnProperty("borderThickness") ? 
+        parameters["borderThickness"] : 4;
+    
+    var borderColor = parameters.hasOwnProperty("borderColor") ?
+        parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+    
+    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+        parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+    //var spriteAlignment = parameters.hasOwnProperty("alignment") ?
+    //  parameters["alignment"] : THREE.SpriteAlignment.topLeft;
+    //var spriteAlignment = THREE.SpriteAlignment.topLeft;
+        
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    context.font = "Bold " + fontsize + "px " + fontface;
+    
+    // get size data (height depends only on font size)
+    var metrics = context.measureText( message );
+    var textWidth = metrics.width;
+    
+    // background color
+    context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+                                  + backgroundColor.b + "," + backgroundColor.a + ")";
+    // border color
+    context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+                                  + borderColor.b + "," + borderColor.a + ")";
+    context.lineWidth = borderThickness;
+    roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+    // 1.4 is extra height factor for text below baseline: g,j,p,q.
+    
+    // text color
+    context.fillStyle = "rgba(0, 0, 0, 1.0)";
+    context.fillText( message, borderThickness, fontsize + borderThickness);
+    
+    // canvas contents will be used for a texture
+    var texture = new THREE.Texture(canvas) 
+    texture.needsUpdate = true;
+    var spriteMaterial = new THREE.SpriteMaterial( 
+        { map: texture } );
+    var sprite = new THREE.Sprite( spriteMaterial );
+    sprite.scale.set(0.14,0.07,1.0);
+    console.log(sprite);
+    return sprite;  
+}
+
+function roundRect(ctx, x, y, w, h, r) 
+{
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.lineTo(x+w-r, y);
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r);
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h);
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r);
+    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();   
 }
 
 function animate(time) {
