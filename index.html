@@ -235,8 +235,15 @@ var app = new Vue({
   	},
   	showAccountWindow: function() {
   		//fix the case where you toggle the window off then click on another planet
-  		this.hideAll();
-		this.showAccountWin = true;
+  		//this.hideAll();
+		//this.showAccountWin = true;
+
+		if(this.showAccountWin == true){
+			this.showAccountWin = false;
+		}else{
+			this.hideAll();
+			this.showAccountWin = true;
+		}
   		
   	},
   	closeAccountWindow: function() {
