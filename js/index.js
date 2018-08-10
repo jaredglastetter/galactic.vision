@@ -332,6 +332,54 @@ function onDocumentMouseMove( event )
         mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
         //console.log("mouse x: " + mouse.x);
         //console.log("mouse y: " + mouse.y)
+        //
+        //
+        //
+        
+        // might need to find a better place for this
+        raycaster.setFromCamera( mouse, camera );
+        var intersects = raycaster.intersectObjects( scene.children );
+
+    // INTERSECTED = the object in the scene currently closest to the camera 
+    //      and intersected by the Ray projected from the mouse position    
+
+    // if there is one (or more) intersections
+    if ( intersects.length > 0 )
+    {
+        // if the closest object intersected is not the currently stored intersection object
+        if ( intersects[ 0 ].object != INTERSECTED )
+        {
+
+            
+              // restore previous intersection object (if it exists) to its original color
+            if ( INTERSECTED )
+                INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+
+
+            // store reference to closest object as current intersection object
+            INTERSECTED = intersects[ 0 ].object;
+
+            
+            // store color of closest object (for later restoration)
+            // 
+            INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+            var account = findAccount(INTERSECTED.id);
+            if(account){
+            // set a new color for closest object
+            INTERSECTED.material.color.setHex( 0xffff00 );
+          }
+            
+        }
+    }
+    else // there are no intersections
+    {
+        // restore previous intersection object (if it exists) to its original color
+        if ( INTERSECTED )
+            INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+        // remove previous intersection object reference
+        //     by setting current intersection object to "nothing"
+        INTERSECTED = null;
+    }
 
 
 
@@ -353,6 +401,11 @@ function onDocumentMouseDown(event)
 function onDocumentMouseUp(event)
 {
   //console.log(dragCheck ? "dragging" : "Not Dragging");
+  //
+  
+  if ( INTERSECTED )
+            INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+  INTERSECTED = null;
   if(!dragCheck)
   {
       raycaster.setFromCamera( mouse, camera );
@@ -679,6 +732,9 @@ function getAccountInfo(id){
 }
 
 function animate() {
+
+  
+
   requestAnimationFrame( animate );
   TWEEN.update();
 
