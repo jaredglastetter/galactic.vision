@@ -191,9 +191,19 @@ var app = new Vue({
 	labels: [],
 	wireframe: "",
 	imgArray: ["images/Oasis-EQUIRECTANGULAR-6-1024x512.png", "images/Ice-EQUIRECTANGULAR-1-1024x512.png", "images/Wetlands-Clouds-EQUIRECTANGULAR-1-1024x512.png", "images/Volcanic-EQUIRECTANGULAR-3-2048x1024.png"],
-	textures: []
+	textures: [],
+	generated_textures: []
   },
   mounted: function() {
+  	var rR;
+	  var rG;
+	  var rB;
+
+	  var specularShininess;
+	  var specularColor;
+	  var diffuseColor;
+	  var material;
+
   	var loader = new THREE.TextureLoader();
 
   	imgArray = this.imgArray;
@@ -204,28 +214,53 @@ var app = new Vue({
     	console.log("loading image");
     	console.log(this.imgArray[image]);
 	    	// load a resource
-		loader.load(
-			// resource URL
-			imgArray[image],
+			loader.load(
+				// resource URL
+				imgArray[image],
 
-			// onLoad callback
-			function ( texture ) {
-				texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-      			texture.anisotropy = 16;
-				// in this example we create the material when the texture is loaded
-				console.log(texture);
-				app.textures.push(texture);
-				console.log(app.textures);
-			},
+				// onLoad callback
+				function ( texture ) {
+					texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+	      			texture.anisotropy = 16;
+					// in this example we create the material when the texture is loaded
+					console.log(texture);
+					app.textures.push(texture);
+					console.log(app.textures);
 
-			// onProgress callback currently not supported
-			undefined,
+					//create instances of this texture
 
-			// onError callback
-			function ( err ) {
-				console.error( 'An error happened.' );
-			}
-		);
+					for(var i = 0; i < 15; i++) {
+
+						rR = Math.random();
+					  rG = Math.random();
+					  rB = Math.random();
+
+					  specularShininess = Math.pow( 2, alpha * 10 );
+					  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
+					  specularColor = new THREE.Color(rR, rG, rB );
+					  //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+					  diffuseColor = new THREE.Color(rR, rG, rB).setHSL( rR, saturation, lightness );
+					  material = new THREE.MeshToonMaterial( {
+					    map: texture,
+					    color: diffuseColor,
+					    specular: specularColor,
+					    reflectivity: beta,
+					    shininess: 0.75, 
+					    envMap: alphaIndex % 2 === 0 ? null : reflectionCube
+					  } );
+
+					  app.generated_textures.push(material);
+					}
+				},
+
+				// onProgress callback currently not supported
+				undefined,
+
+				// onError callback
+				function ( err ) {
+					console.error( 'An error happened.' );
+				}
+			);
     }
 
   },

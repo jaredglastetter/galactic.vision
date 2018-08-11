@@ -204,6 +204,7 @@ function setupTween(node) {
 }
 
 function viewAll() {
+    changeTags();
     scene.remove(track_lines_object);
     scene.remove(track_points_object);
     spline_point_cache = [];
@@ -301,7 +302,7 @@ function generateControlPoints(radius) {
 
                 console.log(spritey);
                 nodes[f].tag = spritey;
-                scene.add( spritey );
+                //scene.add( spritey );
             }
 
             //enter quorum set array loop and execute the next code per found quorum

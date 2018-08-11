@@ -165,9 +165,10 @@ button {
 	font: 300 1em 'Fira Sans', sans-serif;
 	color: white;
 	padding: 10px;
-	border: 5px solid cyan;
+	border: 2px solid cyan;
 	border-radius: 1em;
 	margin-top: 1em;
+	box-shadow: 0px 0px 13px cyan;
 }
 
 .request-history {
@@ -181,10 +182,11 @@ button {
 	font: 300 1em 'Fira Sans', sans-serif;
 	color: white;
 	padding: 25px;
-	border: 5px solid cyan;
+	border: 2px solid cyan;
 	border-radius: 1em;
 	margin-top: 1em;
 	overflow-y: auto;
+	box-shadow: 0px 0px 13px cyan;
 }
 
 .request-history ul.request-labels li span {
@@ -216,12 +218,12 @@ button {
 	background-color: rgba(50,50,50,.5);
 	width: 45vw !important;
 	margin: 1em !important;
-	border: 5px solid cyan;
+	border: 2px solid cyan;
 	border-radius: 1em;
 	margin-left: 6em !important;
 	max-height: 90vh;
 	overflow: auto;
-
+	box-shadow: 0px 0px 13px cyan;
 }
 
 .panel-title {
