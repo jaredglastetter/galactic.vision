@@ -449,6 +449,7 @@ function generateControlPoints(radius) {
                 
                 labelCanvas = createLabel(text.toUpperCase(), opts.fontSize, opts.labelColor, opts.font);
                 labelTexture = new THREE.Texture(labelCanvas);
+                labelTexture.minFilter = THREE.LinearFilter;
                 labelTexture.needsUpdate = true;
 
                 labelMaterial = new THREE.SpriteMaterial({
@@ -486,6 +487,7 @@ function generateControlPoints(radius) {
                 var topSprite;
 
                 topTexture = new THREE.Texture(createTopCanvas(pinOpts.topColor));
+                topTexture.minFilter = THREE.LinearFilter;
                 topTexture.needsUpdate = true;
                 topMaterial = new THREE.SpriteMaterial({map: topTexture, depthTest: true, fog: true, opacity: 1});
                 topSprite = new THREE.Sprite(topMaterial);
