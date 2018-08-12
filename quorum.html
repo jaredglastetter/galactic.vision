@@ -44,6 +44,7 @@
         </script>
     </head>
     <body>
+
         <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", start_app, false);
         </script>
@@ -69,9 +70,24 @@
                 </div> 
             </div>
             <div class="validators">
-                Validators:
+                <h3 id="node_header"></h3>
+                <span>
+                    Location: 
+                    <div id="node_location"></div>
+                </span>
+                <span>
+                    Rating: 
+                    <div id="rating"></div>
+                </span>
+                Trusted
                 <div id="validator_list" class="list-group">
                 </div> 
+                Trusted By
+                <div id="trusted_by_list" class="list-group">
+                </div> 
+                
+                    <!-- <div class="force-overflow"></div> -->
+              
             </div> 
         </div>
     </body>
@@ -85,7 +101,9 @@ var app = new Vue({
     curr_nodes: [],
     curr_node: {},
     curr_tracks: [],
-    all_tracks: []
+    all_tracks: [],
+    all_nodes: [],
+    node_list: []
   },
   methods: {
     setupTween: function(node) {

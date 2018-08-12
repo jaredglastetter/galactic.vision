@@ -69,10 +69,6 @@ var asset_colours = {
 
   //imgTexture = null;
 
-  var rR = Math.random();
-  var rG = Math.random();
-  var rB = Math.random();
-
   var rR2 = Math.random();
   var rG2 = Math.random();
   var rB2 = Math.random();
@@ -94,6 +90,10 @@ var asset_colours = {
   var lightness = Math.random() / 2 + 0.4;
   var hue = Math.random();
   var planetMaterial;
+
+
+  //imgTexture = null;
+
 
 /*
   var specularShininess = Math.pow( 2, alpha * 10 );

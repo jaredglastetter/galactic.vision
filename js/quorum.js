@@ -28,10 +28,16 @@ var globe;
 var spriteMap;
 var node;
 
+// for interactive
+var INTERSECTED;
+var mouse;
+var raycaster; 
+var theta = 0;
+
 function start_app() {
     init();
     animate();
-    console.log(nodes);
+    //console.log(nodes);
     all_nodes = all_tracks;
     app.all_tracks = all_tracks;
 }
@@ -44,6 +50,9 @@ function init() {
     }
 
     show_loading(true);
+
+    mouse = new THREE.Vector2();
+    raycaster = new THREE.Raycaster();
 
     spriteMap = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/lensflare/lensflare0_alpha.png' );
 
@@ -196,15 +205,19 @@ $(document).ready(function() {
 });
 
 function setupTween(node) {
+    clearTag();
     app.curr_node = node;
     addValidators();
-    changeTags();
+    //changeTags();
+    changePins();
     highlightLines(node);
-    zoomToLocation(xyz_from_lat_lng(node.latitude, node.longitude, 1));
+    zoomToLocation(xyz_from_lat_lng(node.latitude, node.longitude, 1.25));
 }
 
 function viewAll() {
-    changeTags();
+    clearTag();
+    app.curr_node = {};
+    addAllPins();
     scene.remove(track_lines_object);
     scene.remove(track_points_object);
     spline_point_cache = [];
@@ -222,11 +235,17 @@ function viewAll() {
 }
 
 function highlightLines(node) {
+    var outgoing_connections;
+    var incoming_connections;
+
     scene.remove(track_lines_object);
     scene.remove(track_points_object);
     spline_point_cache = [];
 
-    all_tracks = node.connections;
+    outgoing_connections = addOutgoingTag(node.connections);
+    incoming_connections = addIncomingTag(node.trusted_connections)
+
+    all_tracks = outgoing_connections.concat(incoming_connections);
     app.curr_nodes = all_tracks;
     app.curr_tracks = all_tracks;
 
@@ -239,6 +258,8 @@ function highlightLines(node) {
 }
 
 function changeTags() {
+    var tags = app.curr_node.quorumArr.concat(app.curr_node.trusted_by);
+
     nodes.forEach(function(node) {
         if(node.tag) {
             scene.remove(node.tag);
@@ -248,9 +269,48 @@ function changeTags() {
     //add tags for each node in the scene
     scene.add(app.curr_node.tag);
 
-    app.curr_node.quorumArr.forEach(function(node) {
+    tags.forEach(function(node) {
         if(node.tag) {
             scene.add(node.tag);
+        }
+    });
+}
+
+function clearTag() {
+    if(app.curr_node.tag) {
+        app.curr_node.tag.visible = false;
+    }
+}
+
+function addAllPins() {
+    nodes.forEach(function(node) {
+        if(node.pin) {
+            node.pin.line.visible = false;
+            node.pin.top.visible = false;
+        }
+    });
+}
+
+function changePins() {
+    var tags = app.curr_node.quorumArr.concat(app.curr_node.trusted_by);
+
+    nodes.forEach(function(node) {
+        if(node.pin) {
+            node.pin.line.visible = false;
+            node.pin.top.visible = false;
+        }
+    });
+
+    //add tags for each node in the scene
+    app.curr_node.pin.line.visible = true;
+    app.curr_node.pin.top.visible = true;
+    app.curr_node.tag.visible = true;
+
+
+    tags.forEach(function(node) {
+        if(node.pin) {
+            node.pin.line.visible = true;
+            node.pin.top.visible = true;
         }
     });
 }
@@ -259,17 +319,79 @@ function addValidators() {
     var validator_node;
     var validator;
     quorumArr = app.curr_node.quorumArr;
+    var trusted_by = app.curr_node.trusted_by;
+    var curr_node = app.curr_node;
 
-    $('#validator_list').empty(); 
+    $('#node_header').empty();
+    $('#node_location').empty();
+    $('#rating').empty();
+    $('#validator_list').empty();
+    $('#trusted_by_list').empty();
+
+    $('#node_header').append(getNodeName(curr_node)); 
+    $('#node_location').append(getNodeLocation(curr_node)); 
+    $('#rating').append(curr_node.activeRating); 
 
     for(var node in quorumArr) {
+        //nodes it trusted
         validator = quorumArr[node];
-        validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + validator.name + '</a>';
+        validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + getNodeName(validator) + '</a>';
         $('#validator_list').append(validator_node); 
+    }
+
+    for(var node in trusted_by) {
+        validator = trusted_by[node];
+        validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + getNodeName(validator) + '</a>';
+        $('#trusted_by_list').append(validator_node); 
     }
 }
 
+function addOutgoingTag(tracks) {
+    for(var i = 0; i < tracks.length; i++) {
+        tracks[i].connection_type = "outgoing";
+    }
+
+    return tracks;
+}
+
+function addIncomingTag(tracks) {
+
+    for(var i = 0; i < tracks.length; i++) {
+        tracks[i].connection_type = "incoming";
+    }
+
+    return tracks;
+}
+
+function addToTrusted(track, nodePos) {
+    nodes[nodePos].trusted_connections.push(track);
+}
+
+function getNodeName(node) {
+    var name;
+
+    name = node.name ? node.name : node.publicKey.substring(0,16);
+
+    return name
+}
+
+function getNodeLocation(node) {
+    var location;
+
+    location = node.city ? node.city + ", " + node.country : node.country;
+
+    return location
+}
+
 function generateControlPoints(radius) {
+    var v_index;
+
+    for (var i = 0; i < nodes.length; ++i) {
+        nodes[i].listPos = i;
+        nodes[i].trusted_by = [];
+        nodes[i].trusted_connections = [];
+    }
+
 
     for (var f = 0; f < nodes.length; ++f) {
 
@@ -280,10 +402,6 @@ function generateControlPoints(radius) {
         var start_lng = nodes[f].longitude;
 
         nodes[f].connections = [];
-        nodes[f].listPos = f;
-
-        //console.log(f);
-        
 
 
         if(nodes[f].quorumSet) {
@@ -291,18 +409,123 @@ function generateControlPoints(radius) {
 
             nodes[f].quorumArr = [];
             
-            var node_coord = xyz_from_lat_lng( start_lat, start_lng, 0.55);
-            //console.log(node_coord);
+            var coords = xyz_from_lat_lng( start_lat, start_lng, 0.5);
+
+            var node_coord = new THREE.Vector3( coords.x, coords.y, coords.z );
+
+            var label_coord = node_coord.clone();
+
+            label_coord.multiplyScalar(1.1);
+
             if(nodes[f].name) {
+                /*
                 var spritey = makeTextSprite( " " + nodes[f].name + " ", { fontsize: 32, backgroundColor: {r:255, g:100, b:100, a:1} } );
 
                 spritey.position.x = node_coord.x;
                 spritey.position.y = node_coord.y;
                 spritey.position.z = node_coord.z;
 
-                console.log(spritey);
                 nodes[f].tag = spritey;
                 //scene.add( spritey );
+                */
+
+                
+                var labelCanvas;
+                var labelTexture;
+                var labelMaterial;
+                var labelSprite;
+                var altitude = 0.05;
+                var text = nodes[f].name;
+                var opts = {
+                    lineColor: "#FFCC00",
+                    lineWidth: 1,
+                    markerColor: "#FFCC00",
+                    labelColor: "#FFF",
+                    font: "Segoe",
+                    fontSize: 20,
+                    drawTime: 2000,
+                    lineSegments: 150
+                }
+                
+                labelCanvas = createLabel(text.toUpperCase(), opts.fontSize, opts.labelColor, opts.font);
+                labelTexture = new THREE.Texture(labelCanvas);
+                labelTexture.needsUpdate = true;
+
+                labelMaterial = new THREE.SpriteMaterial({
+                    map : labelTexture,
+                    opacity: 1,
+                    depthTest: true,
+                    fog: true
+                });
+
+                labelSprite = new THREE.Sprite(labelMaterial);
+                labelSprite.position.x = label_coord.x * 1.1;
+                labelSprite.position.y = label_coord.y * 1.1;
+                labelSprite.position.z = label_coord.z * 1.1;
+                labelSprite.scale.set(labelCanvas.width / 1500, labelCanvas.height / 1500);
+                labelSprite.visible = false;
+                scene.add(labelSprite);
+
+                nodes[f].tag = labelSprite;
+                
+
+                var pinOpts = {
+                    lineColor: "#8FD8D8",
+                    lineWidth: 1,
+                    topColor: "#8FD8D8",
+                    smokeColor: "#FFF",
+                    labelColor: "#FFF",
+                    font: "Inconsolata",
+                    showLabel: (text.length > 0),
+                    showTop: (text.length > 0),
+                    showSmoke: (text.length > 0)
+                }
+
+                var topTexture;
+                var topMaterial;
+                var topSprite;
+
+                topTexture = new THREE.Texture(createTopCanvas(pinOpts.topColor));
+                topTexture.needsUpdate = true;
+                topMaterial = new THREE.SpriteMaterial({map: topTexture, depthTest: true, fog: true, opacity: 1});
+                topSprite = new THREE.Sprite(topMaterial);
+                topSprite.scale.set(0.02, 0.02);
+                topSprite.position.set(node_coord.x * 1.1, node_coord.y * 1.1, node_coord.z * 1.1);
+
+                scene.add(topSprite);
+
+
+                var lineGeometry;
+                var lineMaterial;
+                var line;
+
+                lineGeometry = new THREE.Geometry();
+                lineMaterial = new THREE.LineBasicMaterial({
+                    color: pinOpts.lineColor,
+                    linewidth: pinOpts.lineWidth
+                });
+
+                lineGeometry.vertices.push(new THREE.Vector3(node_coord.x, node_coord.y, node_coord.z));
+                lineGeometry.vertices.push(new THREE.Vector3(node_coord.x * 1.1, node_coord.y * 1.1, node_coord.z * 1.1));
+                line = new THREE.Line(lineGeometry, lineMaterial);
+
+                scene.add(line);
+
+                var pinObj = new Object();
+
+                pinObj.line = line;
+                pinObj.top = topSprite;
+
+                nodes[f].pin = pinObj;
+
+                //add node to nodeList to assign pin to node label
+                var nodePin = new Object();
+
+                nodePin.id = topSprite.id;
+                nodePin.node = nodes[f];
+
+                app.node_list.push(nodePin);
+
             }
 
             //enter quorum set array loop and execute the next code per found quorum
@@ -316,6 +539,13 @@ function generateControlPoints(radius) {
                 //console.log(validatorMatch);
 
                 if(validatorMatch.length > 0) {
+
+                    //add current node to validator nodes trusted nodes array
+                    v_index = validatorMatch[0].listPos;
+
+                    //console.log("validator index: " + v_index);
+
+                    nodes[v_index].trusted_by.push(nodes[f]);
                     
                     //add validator node object to array
                     nodes[f].quorumArr.push(validatorMatch[0]);
@@ -336,17 +566,7 @@ function generateControlPoints(radius) {
     track_point_cloud_geom.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
     track_point_cloud_geom.computeBoundingBox();*/
 
-                    var point = new THREE.Points();
-
-                    var coord = xyz_from_lat_lng( validatorMatch[0].latitude, validatorMatch[0].longitude, 1);
-
-                    point.position.x = coord.x;
-                    point.position.y = coord.y;
-                    point.position.z = coord.z + 0.5;
-
-                    point.geometry.size = 3;
-
-                    globe.add(point);
+            
 
                     if (start_lat === end_lat && start_lng === end_lng) {
                         continue;
@@ -401,6 +621,7 @@ function generateControlPoints(radius) {
                         default_speed: speed,
                         speed: speed * track_point_speed_scale
                     };
+                    addToTrusted(track, v_index);
                     nodes[f].connections.push(track);
                     all_tracks.push(track);
                 }
@@ -415,6 +636,7 @@ function generateControlPoints(radius) {
             }
         }
     }
+    app.all_nodes = nodes;
 }
 
 function xyz_from_lat_lng(lat, lng, radius) {
@@ -467,7 +689,7 @@ function lat_lng_inter_point(lat1, lng1, lat2, lng2, offset) {
 }
 
 function generate_track_point_cloud() {
-
+    var color;
     var num_points = 0;
     for (var i = 0; i < all_tracks.length; ++i) {
         num_points += all_tracks[i].num_points;
@@ -483,7 +705,16 @@ function generate_track_point_cloud() {
 
     for (i = 0; i < all_tracks.length; ++i) {
 
-        var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.6, 0.6);
+        //var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.6, 0.6);
+        if(all_tracks[i].connection_type) {
+            if(all_tracks[i].connection_type == "outgoing") {
+                color = new THREE.Color(0x00ff00);
+            } else {
+                color = new THREE.Color(0x00ffff);
+            }
+        } else {
+            color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.9, 0.8);
+        }
 
         for (var j = 0; j < all_tracks[i].point_positions.length; ++j) {
 
@@ -605,8 +836,17 @@ function generate_track_lines() {
     var colors = new Float32Array(all_tracks.length * 3 * 2 * settings.num_track_line_control_points);
 
     for (var i = 0; i < all_tracks.length; ++i) {
-
-        var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.9, 0.8);
+        var color
+        //var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.9, 0.8);
+        if(all_tracks[i].connection_type) {
+            if(all_tracks[i].connection_type == "outgoing") {
+                color = new THREE.Color(0x00ff00);
+            } else {
+                color = new THREE.Color(0x00ffff);
+            }
+        } else {
+            color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.9, 0.8);
+        }
 
         for (var j = 0; j < settings.num_track_line_control_points - 1; ++j) {
 
@@ -627,6 +867,7 @@ function generate_track_lines() {
             colors[(i * settings.num_track_line_control_points + j) * 6 + 4] = color.g;
             colors[(i * settings.num_track_line_control_points + j) * 6 + 5] = color.b;
         }
+        //console.log(i);
     }
 
     geometry.addAttribute('position', new THREE.BufferAttribute(line_positions, 3));
@@ -752,8 +993,83 @@ function makeTextSprite( message, parameters ) {
         { map: texture } );
     var sprite = new THREE.Sprite( spriteMaterial );
     sprite.scale.set(0.14,0.07,1.0);
-    console.log(sprite);
+    //console.log(sprite);
     return sprite;  
+}
+
+function createLabel(text, size, color, font, underlineColor) {
+
+      var canvas = document.createElement("canvas");
+      var context = canvas.getContext("2d");
+      context.font = size + "pt " + "Arial";
+
+      var textWidth = context.measureText(text).width;
+
+      canvas.width = textWidth;
+      canvas.height = size + 10;
+
+      // better if canvases have even heights
+      if(canvas.width % 2){
+          canvas.width++;
+      }
+      if(canvas.height % 2){
+          canvas.height++;
+      }
+
+      if(underlineColor){
+          canvas.height += 30;
+      }
+      context.font = size + "pt " + "Arial";;
+
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+
+      context.strokeStyle = 'black';
+
+      context.miterLimit = 2;
+      context.lineJoin = 'circle';
+      context.lineWidth = 6;
+
+      context.strokeText(text, canvas.width / 2, canvas.height / 2);
+
+      context.lineWidth = 2;
+
+      context.fillStyle = color;
+      context.fillText(text, canvas.width / 2, canvas.height / 2);
+
+      if(underlineColor){
+          context.strokeStyle=underlineColor;
+          context.lineWidth=4;
+          context.beginPath();
+          context.moveTo(0, canvas.height-10);
+          context.lineTo(canvas.width-1, canvas.height-10);
+          context.stroke();
+      }
+
+      return canvas;
+
+}
+
+function createTopCanvas(color) {
+    var markerWidth = 20,
+    markerHeight = 20;
+
+    return renderToCanvas(markerWidth, markerHeight, function(ctx){
+        ctx.fillStyle=color;
+        ctx.beginPath();
+        ctx.arc(markerWidth/2, markerHeight/2, markerWidth/4, 0, 2* Math.PI);
+        ctx.fill();
+    });
+
+}
+
+function renderToCanvas(width, height, renderFunction) {
+    var buffer = document.createElement('canvas');
+    buffer.width = width;
+    buffer.height = height;
+    renderFunction(buffer.getContext('2d'));
+
+    return buffer;
 }
 
 function roundRect(ctx, x, y, w, h, r) 
@@ -771,6 +1087,65 @@ function roundRect(ctx, x, y, w, h, r)
     ctx.closePath();
     ctx.fill();
     ctx.stroke();   
+}
+
+document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+function onDocumentMouseMove( event ) {
+    event.preventDefault();
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    var pin;
+    // might need to find a better place for this
+    raycaster.setFromCamera( mouse, camera );
+    var intersects = raycaster.intersectObjects( scene.children );
+
+    if ( intersects.length > 0 )
+    {
+        // if the closest object intersected is not the currently stored intersection object
+        if ( intersects[ 0 ].object != INTERSECTED )
+        {   
+            // restore previous intersection object (if it exists) to its original color
+            if ( INTERSECTED ) {
+                pin = findNode(INTERSECTED.id);
+                if(pin){
+                    // set a new color for closest object
+                    //console.log(pin);
+                    pin.node.tag.visible = false;
+                } 
+            }
+
+
+            // store reference to closest object as current intersection object
+            INTERSECTED = intersects[ 0 ].object;
+
+            // store color of closest object (for later restoration)
+
+            pin = findNode(INTERSECTED.id);
+            if(pin){
+                // set a new color for closest object
+                //console.log(pin);
+                pin.node.tag.visible = true;
+            } 
+        }
+    }
+    else
+    {
+        // restore previous intersection object (if it exists) to its original color
+        if ( INTERSECTED )
+            //INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+        INTERSECTED = null;
+    }
+
+}
+
+function findNode(objID) {
+    for (var i = 0, len = app.node_list.length; i < len; i++) {
+        if (app.node_list[i].id === objID)
+            return app.node_list[i]; // Return as soon as the object is found
+    }
+
+    return null; // The object was not found
 }
 
 function animate(time) {
