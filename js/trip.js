@@ -49,12 +49,8 @@ function Trip(ledger, request, message) {
 
   var material2 = app.generated_textures[t2];
 
-
-
   this.startNode = new THREE.Mesh( geometry2, material );
   this.endNode = new THREE.Mesh( geometry2, material2 );
-
-  //initParticle(this.payload, 0);
 
   var rList = $('#request-body');
   var excludeRequest = false;
@@ -197,6 +193,21 @@ function Trip(ledger, request, message) {
     account2.id = this.endNode.id;
     account1.account = message.from;
     account2.account = message.to;
+
+    //console.log(account1);
+    //console.log(account2);
+
+    app.accountList.push(account1);
+    app.accountList.push(account2);
+  } else if (message.base_account) {
+    //assign object ids to acconut ids
+    account1 = new Object();
+    account2 = new Object();
+
+    account1.id = this.startNode.id;
+    account2.id = this.endNode.id;
+    account1.account = message.base_account;
+    account2.account = message.counter_account;
 
     //console.log(account1);
     //console.log(account2);
