@@ -48,16 +48,16 @@
 	<script src="js/webgl/inflate.min.js"></script>
 	<script src="js/loaders/FBXLoader.js"></script>
 	<script  src="js/webgl/OutlineEffect.js"></script>
-	<script  src="js/webgl/shootingstar.js"></script>
+	<!-- <script  src="js/webgl/shootingstar.js"></script> -->
 	<script  src="js/horizon.js"></script>
 	<script  src="js/stream.js"></script>
 	<script  src="js/trip.js"></script>
 	<script  src="js/index.js"></script>
 
-	
+	<!--
 	<div id="layout" class="stars">
 	 	<div id="ShootingStarParams"></div>
-	</div> 
+	</div> -->
 	<!-- <img src="Stellar-Logo.png" class="stellar_logo"> -->
 
 	<div id="app">
@@ -135,12 +135,11 @@
 		</div>
 
 		<div class="buttons" >
-			<!-- <h1>Live Mode</h1> -->
-			<button id="transactions_stream" class="raise">Transactions</button>
+			<!-- <button id="transactions_stream" class="raise">Transactions</button> -->
 			<button id="payments_stream" class="raise" >Payments</button>
 			<button id="operations_stream" class="raise">Operations</button>
 			<button id="trades_stream" class="raise">Trades</button>
-			<button id="effects_stream" class="raise">Effects</button>
+			<!-- <button id="effects_stream" class="raise">Effects</button> --->
 		</div>
 	 
 		<div id="description" style="display:none">
@@ -192,7 +191,11 @@ var app = new Vue({
 	wireframe: "",
 	imgArray: ["images/Oasis-EQUIRECTANGULAR-6-1024x512.png", "images/Ice-EQUIRECTANGULAR-1-1024x512.png", "images/Wetlands-Clouds-EQUIRECTANGULAR-1-1024x512.png", "images/Volcanic-EQUIRECTANGULAR-3-2048x1024.png"],
 	textures: [],
-	generated_textures: []
+	generated_textures: [],
+	trades: [],
+	tradeCount: 0,
+	numTrades: 0, //number of trades inserted last
+	currTrades: []
   },
   mounted: function() {
   	var rR;
@@ -310,6 +313,7 @@ var app = new Vue({
   		this.showAccountWin = false;
   		this.accountView = false;
   		this.switchToGlobalView = true;
+  		scene.remove(this.accountViewObj);
   	},
   	operationMessage: function(message) {
   		var type = message.type;
@@ -319,6 +323,8 @@ var app = new Vue({
   			display = "[" + message.from.substring(0,4) + "]" + " sent " + message.amount + " " + this.assetString(message) + " to " + "[" + message.to.substring(0,4) + "]"; 
   		} else if(type == "manage_offer") {
   			display = "[" + message.source_account.substring(0,4) + "] " + " wants to trade " + message.amount.substring(0,6) + " " + this.sellingAssetString(message)   + " FOR " + this.buyingAssetAmount(message) + " " + this.buyingAssetString(message);
+  		} else if(type == "trade") {
+  			display = "[" + message.base_account.substring(0,4) + "] " + " traded " + message.base_amount.substring(0,6) + " " + this.baseAssetString(message)   + " FOR " + this.counterAssetAmount(message) + " " + this.counterAssetString(message) + " [" + message.counter_account.substring(0,4) + "]";
   		} else {
   			display = "idk lol";
   		}
@@ -366,6 +372,43 @@ var app = new Vue({
   	},
   	buyingAssetAmount: function(message) {
   		var buying_amount = message.amount * message.price;
+
+  		if(buying_amount > 0.01) {
+    		buying_amount = Math.round(buying_amount * 100) / 100;
+  		} else {
+  			buying_amount = Math.round(buying_amount * 100000) / 100000;
+  		}
+
+    	return buying_amount;
+  	},
+  	baseAssetString: function(message) {
+  		var asset;
+
+  		if(message.base_asset_code) {
+  			asset = message.base_asset_code;
+  		} else if(message.base_asset_type == "native") {
+  			asset = "XLM";
+  		} else {
+  			asset = message.base_asset_type;
+  		}
+
+  		return asset;
+  	},
+  	counterAssetString: function(message) {
+  		var asset;
+
+  		if(message.counter_asset_code) {
+  			asset = message.counter_asset_code;
+  		} else if(message.counter_asset_type == "native") {
+  			asset = "XLM";
+  		} else {
+  			asset = message.counter_asset_type;
+  		}
+
+  		return asset;
+  	},
+  	counterAssetAmount: function(message) {
+  		var buying_amount = message.counter_amount;
 
   		if(buying_amount > 0.01) {
     		buying_amount = Math.round(buying_amount * 100) / 100;

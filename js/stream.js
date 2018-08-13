@@ -44,16 +44,19 @@ RequestStream.prototype = {
     .stream({
       onmessage: function (message) {
         //console.log(message);
-        var payment = new Object();
-        payment.name = "payment";
-        if(message.asset_code) {
-          payment.asset = message.asset_code; 
-        } else if(message.asset_type) {
-          payment.asset = message.asset_type; 
-        }
+        //only send if it is a payment
+        if(message.type == "payment") {
+          var payment = new Object();
+          payment.name = "payment";
+          if(message.asset_code) {
+            payment.asset = message.asset_code; 
+          } else if(message.asset_type) {
+            payment.asset = message.asset_type; 
+          }
 
-        if(!app.accountView && $("#payments_stream").hasClass("selected") && activeWindow) {
-          tripManager.addTrip(new Trip(centerNode.position, payment,  message));
+          if(!app.accountView && $("#payments_stream").hasClass("selected") && activeWindow) {
+            tripManager.addTrip(new Trip(centerNode.position, payment,  message));
+          }
         }
       }
     });
@@ -94,28 +97,75 @@ RequestStream.prototype = {
     });
   },
   trades: function () {
-    //this.es.close();
-    this.stream = this.server.trades().cursor('now')
-    .stream({
-      onmessage: function (message) {
-        console.log(message);
-        var trade = new Object();
-        trade.name = "trade";
-        if(message.buying_asset_code) {
-          trade.asset = message.buying_asset_code; 
+    setInterval(function() {
+      liveMode.getTrades();
+    }, 2000);
+
+  },
+  getTrades: function () {
+    //manual stream 
+    var tradesUrl = "https://horizon.stellar.org/trades?order=desc";
+    var currentTime;
+    var lastTrade;
+    var lastRecord;
+    var newTrades;
+
+
+    $.ajax({
+      url: tradesUrl,
+
+      success: function(trades) {
+
+        var newTrades;
+        var allTrades;
+
+        trades = trades._embedded.records;
+
+        var count = app.trades.length;
+
+        if(app.trades.length == 0) {
+          app.trades = app.trades.concat(trades);
+          app.numTrades = app.trades.length - count;
+          newTrades = app.trades;
         } else {
-          trade.asset = message.buying_asset_type; 
+          app.trades = app.trades.concat(trades);
+          allTrades = _.uniq(app.trades, 'id');
+
+          app.trades = allTrades;
+
+          app.numTrades = app.trades.length - count;
+          newTrades = allTrades.slice(allTrades.length - app.numTrades - 1,  allTrades.length - 1)
+
+          app.currTrades = newTrades;
         }
-        if(message.selling_asset_code) {
-          trade.asset2 = message.selling_asset_code; 
-        } else {
-          trade.asset2 = message.selling_asset_type; 
+
+        for(var i = 0; i < newTrades.length; i++) {
+          newTrades[i].type = "trade";
+          //setup trade object
+          var trade = new Object();
+          trade.name = "trade";
+
+          if(newTrades[i].counter_amount > 0.0001) {
+            if(newTrades[i].buying_asset_code) {
+              trade.asset = newTrades[i].base_asset_code; 
+            } else {
+              trade.asset = newTrades[i].base_asset_type; 
+            }
+            if(newTrades[i].selling_asset_code) {
+              trade.asset2 = newTrades[i].counter_asset_code; 
+            } else {
+              trade.asset2 = newTrades[i].counter_asset_type; 
+            }
+
+            tripManager.addTrip(new Trip(centerNode.position, trade, newTrades[i]));
+          }
         }
-        //console.log(trade);
-        if(!app.accountView && $("#trades_stream").hasClass("selected") && activeWindow) {
-          tripManager.addTrip(new Trip(centerNode.position));
-        }
+
+        //console.log("num of trades inserted: " + app.numTrades);
+        //console.log("Inserting: " + newTrades.length + " new trades");
+        //console.log("Total trades: " + allTrades.length);
       }
+      
     });
   },
   effects: function () {
