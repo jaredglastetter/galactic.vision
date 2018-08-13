@@ -213,7 +213,7 @@ function init() {
     centerNode = object;
     //centerNode.position.set(0,0,0);
 
-    //scene.add(centerNode);
+    scene.add(centerNode);
 
     //console.log(centerNode.scale);
     //centerNode.geometry.scale = {x: 0.9, y: 0.9, z: 0.9};
@@ -227,7 +227,7 @@ function init() {
     console.log("scene info");
     console.log(centerNode);
 
-    scene.add(centerNode);
+    //scene.add(centerNode);
     
     // THREE.Line ( WireframeGeometry, LineBasicMaterial ) - rendered with gl.LINE
 
@@ -260,6 +260,8 @@ function init() {
     } );*/
 
   } );
+
+  //centerNode = new THREE.Mesh( geometry2 );
 
   var account = "GBX6DXELQKLHMKVX2G24E3TPQV6APUAQECIC3XUJJ77Y2NYDM66TDTVY";
   var server = new StellarSdk.Server('https://horizon.stellar.org');
@@ -738,9 +740,16 @@ function getAccountInfo(id){
 
 function animate() {
 
-  
-
   requestAnimationFrame( animate );
+  render();
+
+  if(stats) {
+    stats.update();
+  }
+  controls.update();
+}
+
+function render() {
   TWEEN.update();
 
   if(tripManager && !app.accountView) {
@@ -760,16 +769,12 @@ function animate() {
     app.wireframe.rotation.y += 0.002;
     app.wireframe.rotation.x += 0.001;
   }
-  if(stats) {
-    stats.update();
-  }
-  controls.update();
 
   if(app.accountView) {
     controls.target = app.accountViewObj.position;
     camera.lookAt(app.accountViewObj.position);
     effect.setViewport( SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
-    effect.render( scene, camera );
+    //effect.render( scene, camera );
   }
 
   if(app.switchToGlobalView) {
@@ -778,6 +783,7 @@ function animate() {
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
     app.switchToGlobalView = false;
+    console.log("running asdad");
   }
 
   effect.render( scene, camera );

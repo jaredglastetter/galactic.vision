@@ -44,16 +44,19 @@ RequestStream.prototype = {
     .stream({
       onmessage: function (message) {
         //console.log(message);
-        var payment = new Object();
-        payment.name = "payment";
-        if(message.asset_code) {
-          payment.asset = message.asset_code; 
-        } else if(message.asset_type) {
-          payment.asset = message.asset_type; 
-        }
+        //only send if it is a payment
+        if(message.type == "payment") {
+          var payment = new Object();
+          payment.name = "payment";
+          if(message.asset_code) {
+            payment.asset = message.asset_code; 
+          } else if(message.asset_type) {
+            payment.asset = message.asset_type; 
+          }
 
-        if(!app.accountView && $("#payments_stream").hasClass("selected") && activeWindow) {
-          tripManager.addTrip(new Trip(centerNode.position, payment,  message));
+          if(!app.accountView && $("#payments_stream").hasClass("selected") && activeWindow) {
+            tripManager.addTrip(new Trip(centerNode.position, payment,  message));
+          }
         }
       }
     });

@@ -48,16 +48,16 @@
 	<script src="js/webgl/inflate.min.js"></script>
 	<script src="js/loaders/FBXLoader.js"></script>
 	<script  src="js/webgl/OutlineEffect.js"></script>
-	<script  src="js/webgl/shootingstar.js"></script>
+	<!-- <script  src="js/webgl/shootingstar.js"></script> -->
 	<script  src="js/horizon.js"></script>
 	<script  src="js/stream.js"></script>
 	<script  src="js/trip.js"></script>
 	<script  src="js/index.js"></script>
 
-	
+	<!--
 	<div id="layout" class="stars">
 	 	<div id="ShootingStarParams"></div>
-	</div> 
+	</div> -->
 	<!-- <img src="Stellar-Logo.png" class="stellar_logo"> -->
 
 	<div id="app">
@@ -135,12 +135,11 @@
 		</div>
 
 		<div class="buttons" >
-			<!-- <h1>Live Mode</h1> -->
-			<button id="transactions_stream" class="raise">Transactions</button>
+			<!-- <button id="transactions_stream" class="raise">Transactions</button> -->
 			<button id="payments_stream" class="raise" >Payments</button>
 			<button id="operations_stream" class="raise">Operations</button>
 			<button id="trades_stream" class="raise">Trades</button>
-			<button id="effects_stream" class="raise">Effects</button>
+			<!-- <button id="effects_stream" class="raise">Effects</button> --->
 		</div>
 	 
 		<div id="description" style="display:none">
@@ -310,6 +309,7 @@ var app = new Vue({
   		this.showAccountWin = false;
   		this.accountView = false;
   		this.switchToGlobalView = true;
+  		scene.remove(this.accountViewObj);
   	},
   	operationMessage: function(message) {
   		var type = message.type;
