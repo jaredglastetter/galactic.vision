@@ -153,13 +153,15 @@ function init() {
   camera.add( listener );
 
   sound = new THREE.Audio( listener );
+  /*
   audioLoader = new THREE.AudioLoader();
   audioLoader.load( '25 Mass Effect-Uncharted Worlds.mp3', function( buffer ) {
-  sound.setBuffer( buffer );
-  sound.setLoop( true );
-  sound.setVolume( 0.5 );
-  sound.play();
-
+    sound.setBuffer( buffer );
+    sound.setLoop( true );
+    sound.setVolume( 0.5 );
+    sound.play();
+  });
+*/
   pGeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( [-1,0,0], 3 ) );
   pGeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( [0,1,0], 3 ) );
 
@@ -234,7 +236,6 @@ function init() {
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.top = '0px';
   document.body.appendChild(stats.domElement);
-});
 
 }
 
