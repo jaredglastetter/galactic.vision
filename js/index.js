@@ -283,6 +283,10 @@ document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 document.addEventListener( 'mousedown', onDocumentMouseDown, false);
 document.addEventListener( 'mouseup', onDocumentMouseUp, false);
 window.addEventListener( 'resize', onWindowResize, false );
+window.addEventListener('load', function(){
+  var load_screen = document.getElementById("load_screen");
+  document.body.removeChild(load_screen);
+});
 
 function onWindowResize() 
 {

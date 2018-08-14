@@ -17,4 +17,4 @@ var Opening_Sound = new Audio("sounds/loading_sound.mp3");
 
 var Focus_Planet_sound = new Audio("sounds/focus_planet.mp3");
 
-var Focus_Station_Sound = = new Audio("sounds/focus_station.mp3");
+var Focus_Station_Sound = new Audio("sounds/focus_station.mp3");
