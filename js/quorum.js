@@ -113,6 +113,9 @@ function init() {
                     track_points_object = generate_track_point_cloud();
                     scene.add(track_points_object);
 
+                    track_lines_object.material.opacity = 0.25;
+
+                    /*
                     var gui = new dat.GUI();
 
                     gui.add(this, 'changing_arc_distance_miles', min_arc_distance_miles, max_arc_distance_miles).name("Max Distance Miles").onFinishChange(function(value) {
@@ -139,7 +142,7 @@ function init() {
                         }
                         track_points_object.geometry.attributes.size.needsUpdate = true;
                     });
-                    gui.add(this, "handle_about").name("About & Credits");
+                    gui.add(this, "handle_about").name("About & Credits");*/
 
                     show_loading(false);
                 });

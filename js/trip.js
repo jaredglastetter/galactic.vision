@@ -75,6 +75,10 @@ function Trip(ledger, request, message) {
         }
       }
 
+      if(message.type != "manage_offer" && message.type != "payment" && message.type != "trade") {
+        excludeRequest = true;
+      }
+
       if(!excludeRequest) {
         var row = '<tr><td class="text-center"><b>' + message.type + '</b></td><td class="text-center"><b>' + app.operationMessage(message) + '</b></td><td class="text-center"><b>' + message.id.substring(0,12) + '</b></tr>';
         $('#request-body').after(row);

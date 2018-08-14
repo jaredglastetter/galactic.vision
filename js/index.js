@@ -4,8 +4,6 @@ var aspect = window.innerWidth / window.innerHeight;
 var dragCheck = false;
 
 var camera;
-var altCamera;
-var cameraRig;
 var renderer;
 var stats;
 
@@ -45,7 +43,6 @@ var tripManager = new TripManager();
 var liveMode = new RequestStream();
 
 var globalView = true;
-//var accountView = false;
 
 var particles, particle, particleCount = 0;
 var points;
@@ -66,71 +63,28 @@ var asset_colours = {
   "OTHER": "#FF0" //red for now
 }
 
+var rR2 = Math.random();
+var rG2 = Math.random();
+var rB2 = Math.random();
 
-  //imgTexture = null;
+var shininess = 50, specular = 0x333333, bumpScale = 1;
+var materials = [];
+var cubeWidth = 400;
+var numberOfSphersPerSide = 5;
+var sphereRadius = 2;
+var sphereRadius2 = 1;
+var stepSize = 1.0 / numberOfSphersPerSide;
+var geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
+var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 32, 16 );
+var alpha = 0.5;
+var beta = 0.5;
+var gamma = 0.5;
+var alphaIndex = 1;
+var saturation = Math.random() / 2 + 0.5;
+var lightness = Math.random() / 2 + 0.4;
+var hue = Math.random();
+var planetMaterial;
 
-  var rR2 = Math.random();
-  var rG2 = Math.random();
-  var rB2 = Math.random();
-
-  var shininess = 50, specular = 0x333333, bumpScale = 1;
-  var materials = [];
-  var cubeWidth = 400;
-  var numberOfSphersPerSide = 5;
-  var sphereRadius = 2;
-  var sphereRadius2 = 1;
-  var stepSize = 1.0 / numberOfSphersPerSide;
-  var geometry = new THREE.SphereBufferGeometry( sphereRadius, 32, 16 );
-  var geometry2 = new THREE.SphereBufferGeometry( sphereRadius2, 32, 16 );
-  var alpha = 0.5;
-  var beta = 0.5;
-  var gamma = 0.5;
-  var alphaIndex = 1;
-  var saturation = Math.random() / 2 + 0.5;
-  var lightness = Math.random() / 2 + 0.4;
-  var hue = Math.random();
-  var planetMaterial;
-
-
-  //imgTexture = null;
-
-
-/*
-  var specularShininess = Math.pow( 2, alpha * 10 );
-  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
-  var specularColor = new THREE.Color(rR, rG, rB );
-  //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
-  var diffuseColor = new THREE.Color(rR, rG, rB).setHSL( rR, saturation, lightness );
-  var material = new THREE.MeshToonMaterial( {
-    map: imgTexture,
-    color: diffuseColor,
-    specular: specularColor,
-    reflectivity: beta,
-    shininess: 0.75, 
-    envMap: alphaIndex % 2 === 0 ? null : reflectionCube
-  } );
-
-  var specularShininess = Math.pow( 2, alpha * 10 );
-  var specularColor2 = new THREE.Color(rR2, rG2, rB2 );
-  //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
-  var diffuseColor2 = new THREE.Color(rR2, rG2, rB2).setHSL( rR2, saturation, lightness );
-  var material2 = new THREE.MeshToonMaterial( {
-    map: imgTexture2,
-    color: diffuseColor2,
-    specular: specularColor2,
-    reflectivity: beta,
-    shininess: 0.75, //was 0.75
-    envMap: alphaIndex % 2 === 0 ? null : reflectionCube
-  });
-
-  */
-  //console.log("Red: " + rR);
-  //console.log("Green: " + rG);
-  //console.log("Blue: " + rB);
-
-  //console.log("Hue: " + hue);
-  //console.log("Saturation: " + saturation);
-  //console.log("Lightness: " + lightness);
 
 var centerNode;
 //var centerNode = new THREE.Mesh( geometry, material );
@@ -169,11 +123,6 @@ function init() {
   camera.position.y = 50;
   camera.position.z = 40;
 
-  altCamera = new THREE.PerspectiveCamera( 50, 0.5 * aspect, 1, 10000 );
-
-  altCamera.lookAt( scene.position );
-
-  cameraRig = new THREE.Group();
 
   camera.lookAt( scene.position );
 
@@ -183,7 +132,8 @@ function init() {
 
   scene.background = reflectionCube;
 
-  effect = new THREE.OutlineEffect( renderer );
+  //effect = new THREE.OutlineEffect( renderer );
+  effect = renderer;
 
   listener = new THREE.AudioListener();
   camera.add( listener );
@@ -265,9 +215,7 @@ function init() {
 
   var account = "GBX6DXELQKLHMKVX2G24E3TPQV6APUAQECIC3XUJJ77Y2NYDM66TDTVY";
   var server = new StellarSdk.Server('https://horizon.stellar.org');
-  //console.log(account);
-  //console.log(server.operations().forAccount(account).call().then(function(r){ console.log(r); }));
-  //assets("GDDMFUC6BPAKNFAKQ2GRJHNQIWQIQBWMF3FEFIBHH532UNKHYIEPDM7M");
+
   stats = new Stats();
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.top = '0px';
@@ -294,24 +242,24 @@ function generateSprite() {
       }
 
 function initParticle( particle, delay ) {
-        var particle = this instanceof THREE.Sprite ? this : particle;
-        var delay = delay !== undefined ? delay : 0;
-        particle.position.set( 0, 0, 0 );
-        //particle.scale.x = particle.scale.y = Math.random() * 32 + 16;
-        new TWEEN.Tween( particle )
-          .delay( delay )
-          .to( {}, 10000 )
-          .onComplete( initParticle )
-          .start();
-        new TWEEN.Tween( particle.position )
-          .delay( delay )
-          .to( { x: Math.random() * 4000 - 2000, y: Math.random() * 1000 - 500, z: Math.random() * 4000 - 2000 }, 10000 )
-          .start();
-        new TWEEN.Tween( particle.scale )
-          .delay( delay )
-          .to( { x: 0.01, y: 0.01 }, 10000 )
-          .start();
-      }
+  var particle = this instanceof THREE.Sprite ? this : particle;
+  var delay = delay !== undefined ? delay : 0;
+  particle.position.set( 0, 0, 0 );
+  //particle.scale.x = particle.scale.y = Math.random() * 32 + 16;
+  new TWEEN.Tween( particle )
+    .delay( delay )
+    .to( {}, 10000 )
+    .onComplete( initParticle )
+    .start();
+  new TWEEN.Tween( particle.position )
+    .delay( delay )
+    .to( { x: Math.random() * 4000 - 2000, y: Math.random() * 1000 - 500, z: Math.random() * 4000 - 2000 }, 10000 )
+    .start();
+  new TWEEN.Tween( particle.scale )
+    .delay( delay )
+    .to( { x: 0.01, y: 0.01 }, 10000 )
+    .start();
+}
 
 /*    END Sprites */
 
@@ -337,12 +285,7 @@ function onDocumentMouseMove( event )
         event.preventDefault();
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-        //console.log("mouse x: " + mouse.x);
-        //console.log("mouse y: " + mouse.y)
-        //
-        //
-        //
-        
+
         // might need to find a better place for this
         raycaster.setFromCamera( mouse, camera );
         var intersects = raycaster.intersectObjects( scene.children );
@@ -356,19 +299,15 @@ function onDocumentMouseMove( event )
         // if the closest object intersected is not the currently stored intersection object
         if ( intersects[ 0 ].object != INTERSECTED )
         {
-
-            
-              // restore previous intersection object (if it exists) to its original color
+            // restore previous intersection object (if it exists) to its original color
             if ( INTERSECTED )
-                INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-
+              INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
 
             // store reference to closest object as current intersection object
             INTERSECTED = intersects[ 0 ].object;
 
             
             // store color of closest object (for later restoration)
-            // 
             INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
             var account = findAccount(INTERSECTED.id);
             if(account){
@@ -387,11 +326,8 @@ function onDocumentMouseMove( event )
         //     by setting current intersection object to "nothing"
         INTERSECTED = null;
     }
-
-
-
-
 }
+
 function onDocumentMouseDown(event)
 {
   var x = event.screenX;
@@ -426,10 +362,6 @@ function onDocumentMouseUp(event)
           if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
           INTERSECTED = intersects[ 0 ].object;
           INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-          //INTERSECTED.material.color.setHex( 0xff0000 );
-          //console.log(intersects.length);
-
-          //setupTween(INTERSECTED.position);
 
            var length= 0;
            var dir = camera.position.clone().sub(intersects[0].point).normalize();
@@ -440,9 +372,6 @@ function onDocumentMouseUp(event)
            var account = findAccount(objID); 
 
            if(account){
-
-            //var account = findAccount(objID);
-
            console.log("Printing intersection information");
            console.log(INTERSECTED);
            
@@ -495,6 +424,7 @@ function onDocumentMouseUp(event)
 
             scene.add(wireframe);
             */
+
             scene.add(accountObj);
             SCREEN_WIDTH = window.innerWidth;
             SCREEN_HEIGHT = window.innerHeight;
@@ -502,14 +432,6 @@ function onDocumentMouseUp(event)
 
             camera.aspect = aspect;
             camera.updateProjectionMatrix();
-            //altCamera.aspect
-            //altCamera.updateProjectionMatrix();
-
-            //scene.add(altCamera);
-
-            //render left space background view
-            //renderer.setViewport( 0, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
-            //renderer.render( scene, altCamera );
             app.accountView = true;
            }
 
@@ -521,8 +443,8 @@ function onDocumentMouseUp(event)
 
            }
            else if(INTERSECTED.parent.parent.parent.name == "Center Node"){
-             console.log("You have clicked the center node");
-             console.log("Printing intersection information");
+             //console.log("You have clicked the center node");
+             //console.log("Printing intersection information");
              console.log(INTERSECTED);
              zoomToTarget(INTERSECTED.position);
 
