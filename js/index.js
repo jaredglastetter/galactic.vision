@@ -1,3 +1,17 @@
+//sounds
+var Button_Click_Sound = new Audio();//"sounds/button_click.mp3");
+var Button_Hover_Sound = new Audio();//"sounds/button_hover.mp3");
+Button_Hover_Sound.src = "sounds/button_hover.mp3";
+Button_Click_Sound.src = "sounds/button_click.mp3";
+
+var Opening_Sound = new Audio("sounds/loading_sound.mp3");
+
+var Focus_Planet_sound = new Audio("sounds/focus_planet.mp3");
+
+var Focus_Station_Sound = new Audio("sounds/focus_station.mp3");
+
+//
+
 var scene;
 var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
@@ -312,7 +326,8 @@ function onDocumentMouseMove( event )
             var account = findAccount(INTERSECTED.id);
             if(account){
             // set a new color for closest object
-            INTERSECTED.material.color.setHex( 0xffff00 );
+            INTERSECTED.material.color.setHex( 0xffff00 ); 
+            Button_Hover_Sound.play();
           }
             
         }
@@ -433,6 +448,8 @@ function onDocumentMouseUp(event)
             camera.aspect = aspect;
             camera.updateProjectionMatrix();
             app.accountView = true;
+
+            Focus_Planet_sound.play();
            }
 
 
@@ -447,6 +464,8 @@ function onDocumentMouseUp(event)
              //console.log("Printing intersection information");
              console.log(INTERSECTED);
              zoomToTarget(INTERSECTED.position);
+
+             Focus_Station_Sound.play();
 
            }
            

@@ -68,14 +68,14 @@
 	<div id="app">
 
 		<div class="icon-bar">
-		  <a class="active" href="#"><i class="fa fa-home"></i></a>
-		  <a href="#"><i class="fa fa-search"></i></a>
-		  <a v-on:click="showRequestHistoryWindow()" href="#"><i class="fa fa-history"></i></a>
-		  <a v-on:click="showAccountWindow()" href="#"><i class="fa fa-book"></i></a>
-		  <a v-on:click="showLegendWindow()" href="#"><i class="fa fa-question"></i></a>
+		  <a class="active" href="#"><i class="fa fa-home" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"></i></a>
+		  <a href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-search"></i></a>
+		  <a v-on:click="showRequestHistoryWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" ><i class="fa fa-history"></i></a>
+		  <a v-on:click="showAccountWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-book"></i></a>
+		  <a v-on:click="showLegendWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-question"></i></a>
 		</div>
 
-		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise">Back</button>
+		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Back</button>
 
 		<div v-show="showAccountWin" id="account" class="container p-t-md">
 			<ion-icon v-on:click="closeAccountWindow()" id="accountClose" name="close" style="float: right;"></ion-icon>
@@ -141,10 +141,10 @@
 
 		<div class="buttons" >
 			<!-- <button id="transactions_stream" class="raise">Transactions</button> -->
-			<button id="payments_stream" class="raise" >Payments</button>
-			<button id="operations_stream" class="raise">Operations</button>
-			<button id="trades_stream" class="raise">Trades</button>
-			<!-- <button id="effects_stream" class="raise">Effects</button> --->
+			<button id="payments_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" >Payments</button>
+			<button id="operations_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Operations</button>
+			<button id="trades_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Trades</button>
+			<!-- <button id="effects_stream" class="raise">Effects</button> -->
 		</div>
 	 
 		<div id="description" style="display:none">
