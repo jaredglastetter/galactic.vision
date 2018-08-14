@@ -68,60 +68,73 @@
 	<div id="app">
 
 		<div class="icon-bar">
-		  <a class="active" href="#"><i class="fa fa-home" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"></i></a>
-		  <a href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-search"></i></a>
+		  <!-- <a class="active" href="#"><i class="fa fa-home" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"></i></a> -->
+		  <!-- <a href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-search"></i></a> -->
 		  <a v-on:click="showRequestHistoryWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" ><i class="fa fa-history"></i></a>
-		  <a v-on:click="showAccountWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-book"></i></a>
+		  <!-- <a v-on:click="showAccountWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-book"></i></a> -->
 		  <a v-on:click="showLegendWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-question"></i></a>
 		</div>
 
 		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Back</button>
 
 		<div v-show="showAccountWin" id="account" class="container p-t-md">
-			<ion-icon v-on:click="closeAccountWindow()" id="accountClose" name="close" style="float: right;"></ion-icon>
 			<div class="account-title"> Account - {{ accountViewID  }}</div>
-			<div class="pie-chart">
-				Assets (USD)
-				<canvas id="myChart"></canvas>
-			</div>
-			<div class="pie-chart">
-				Trade Distribution
-				<canvas id="tradesChart"></canvas>
-			</div>
-			<div class="account-info"> 
-				<span> <b>Payments sent:</b> {{ payments_sent }} </span>
-				<span> <b>Payments received:</b> {{ payments_received }} </span>
-				<span> <b>Trades completed:</b> {{ trades_completed }} </span>
-				<span> <b>Most Traded Asset:</b> {{ most_traded }} </span>
-			</div>
 
-			<div id="account-menu" style="border-radius: 4px;">
-				<ul role="tablist" class="nav nav-tabs" id="account-tabs">
-					<li role="presentation" class="nav-item active"><a id="account-tabs-tab-balances" class="nav-link active" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-balances" aria-selected="true" href="#balances">Balances</a></li>
-
-					<li role="presentation" class="nav-item"><a id="account-tabs-tab-payments" class="nav-link" href="#payments_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-payments" tabindex="-1" aria-selected="false">Payments</a></li>
-
-					<li role="presentation" class="nav-item"><a id="account-tabs-tab-offers" class="nav-link" href="#offers_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-offers" tabindex="-1" aria-selected="false">Offers</a></li>
-
-					<li role="presentation" class="nav-item"><a id="account-tabs-tab-trades" class="nav-link" href="#trades_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-trades" tabindex="-1" aria-selected="false" >Trades</a></li>
-
-					<li role="presentation" class="nav-item"><a id="account-tabs-tab-operations" class="nav-link" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-operations" tabindex="-1" aria-selected="false" href="#operations_tab">Operations</a></li>
-
-					<li role="presentation" class="nav-item"><a id="account-tabs-tab-transactions" class="nav-link" data-toggle="tab" data-url="?action=transactions" role="tab" aria-controls="account-tabs-pane-transactions" tabindex="-1" aria-selected="false" href="#transactions_tab">Transactions</a></li>
+			<div class="tab-content" style="background: #212529;">
+				<ul class="nav nav-tabs">
+					<li role="presentation" class="nav-item"><a id="account-tabs-tab-history" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-balances" aria-selected="true" href="#account_history" class="nav-link active">History</a></li>
+					<li role="presentation" class="nav-item"><a id="account-tabs-tab-stats" href="#account_stats" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-payments" tabindex="-1" aria-selected="false" class="nav-link">Stats</a></li>
 				</ul>
-				<div class="tab-content">
-					<div id="balances" class="tab-pane active"></div>
-					<div id="payments_tab" class="tab-pane fade"></div>
-					<div id="offers_tab" class="tab-pane fade"></div>
-					<div id="operations_tab" class="tab-pane fade"></div>
-					<div id="transactions_tab" class ="tab-pane fade"></div>
-					<div id="trades_tab" class="tab-pane fade"> </div>
+
+				<!-- Account History table tab -->
+				<div id="account_history" class="tab-pane active">
+					<div class="account_container">
+						<div id="account-menu" style="border-radius: 4px;">
+							<ul role="tablist" class="nav nav-tabs" id="account-tabs">
+								<li role="presentation" class="nav-item active"><a id="account-tabs-tab-balances" class="nav-link active" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-balances" aria-selected="true" href="#balances">Balances</a></li>
+								<li role="presentation" class="nav-item"><a id="account-tabs-tab-payments" class="nav-link" href="#payments_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-payments" tabindex="-1" aria-selected="false">Payments</a></li>
+								<li role="presentation" class="nav-item"><a id="account-tabs-tab-offers" class="nav-link" href="#offers_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-offers" tabindex="-1" aria-selected="false">Offers</a></li>
+								<li role="presentation" class="nav-item"><a id="account-tabs-tab-trades" class="nav-link" href="#trades_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-trades" tabindex="-1" aria-selected="false" >Trades</a></li>
+								<li role="presentation" class="nav-item"><a id="account-tabs-tab-operations" class="nav-link" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-operations" tabindex="-1" aria-selected="false" href="#operations_tab">Operations</a></li>
+								<li role="presentation" class="nav-item"><a id="account-tabs-tab-transactions" class="nav-link" data-toggle="tab" data-url="?action=transactions" role="tab" aria-controls="account-tabs-pane-transactions" tabindex="-1" aria-selected="false" href="#transactions_tab">Transactions</a></li>
+							</ul>
+							<div class="tab-content">
+								<div id="balances" class="tab-pane active"></div>
+								<div id="payments_tab" class="tab-pane fade"></div>
+								<div id="offers_tab" class="tab-pane fade"></div>
+								<div id="operations_tab" class="tab-pane fade"></div>
+								<div id="transactions_tab" class ="tab-pane fade"></div>
+								<div id="trades_tab" class="tab-pane fade"> </div>
+							</div>
+						</div>
+						<div id="assets"></div>
+						<div id="address"></div>	
+					</div>				
+				</div>
+
+				<!-- Stats Tab -->
+				<div id="account_stats" class="tab-pane fade">
+
+					<div class="chart_container">
+						<div class="pie-chart">
+							Assets (USD)
+							<canvas id="myChart"></canvas>
+						</div>
+						<div class="pie-chart">
+							Trade Distribution
+							<canvas id="tradesChart"></canvas>
+						</div>
+					</div>
+
+					<div class="account-info"> 
+						<span> <b>Payments sent:</b> {{ payments_sent }} </span>
+						<span> <b>Payments received:</b> {{ payments_received }} </span>
+						<span> <b>Trades completed:</b> {{ trades_completed }} </span>
+						<span> <b>Most Traded Asset:</b> {{ most_traded }} </span>
+					</div>
 
 				</div>
 			</div>
-			<div id="assets"></div>
-
-			<div id="address"></div>
 		</div>
 
 		<div v-show="showRequestHistory" class="request-history">
@@ -142,7 +155,7 @@
 		<div class="buttons" >
 			<!-- <button id="transactions_stream" class="raise">Transactions</button> -->
 			<button id="payments_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" >Payments</button>
-			<button id="operations_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Operations</button>
+			<button id="operations_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Offers</button>
 			<button id="trades_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Trades</button>
 			<!-- <button id="effects_stream" class="raise">Effects</button> -->
 		</div>

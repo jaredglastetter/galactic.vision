@@ -573,8 +573,8 @@ function zoomToTarget(pos) {
   var position = { x : camera.position.x, y: camera.position.y, z: camera.position.z };
   var target = { x : pos.x, y: pos.y, z: pos.z };
 
-  target.z = target.z - 10;
-  target.x = target.x - 10;
+  target.z = target.z - 2.5;
+  target.x = target.x - 2.5;
 
   //console.log(target);
 

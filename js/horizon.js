@@ -149,8 +149,7 @@ function assets(address) {
 
 		    var ctx = $("#tradesChart");
 
-		    ctx.height = 350;
-		    ctx.width = 350;
+		    ctx.height = 250;
 
 		    var myPieChart = new Chart(ctx,{
 			    type: 'pie',
@@ -241,8 +240,7 @@ function assets(address) {
 
 			    var ctx = $("#myChart");
 
-			    ctx.height = 350;
-			    ctx.width = 350;
+			    ctx.height = 250;
 
 			    var myPieChart = new Chart(ctx,{
 				    type: 'pie',

@@ -186,7 +186,7 @@ button {
 	position: absolute;
 	margin-left: 1em;
 	min-height: 300px;
-	max-height: 80vh;
+	max-height: 85vh;
 	min-width: 30vw;
 	background-color: rgba(50,50,50,.5);
 	font: 300 1em 'Fira Sans', sans-serif;
@@ -356,7 +356,7 @@ a[id|="account-tabs-tab"]:hover {
  }
 
 .icon-bar {
-    width: 75%;
+    width: 33%;
     overflow: auto;
     background-color: #555; /* Dark-grey background */
     position: absolute;
@@ -366,7 +366,7 @@ a[id|="account-tabs-tab"]:hover {
 
 .icon-bar a {
     float: left;
-    width: 20%;
+    width: 50%;
     text-align: center; /* Center-align text */
     transition: all 0.3s ease; /* Add transition for hover effects */
     color: white; /* White text color */
@@ -413,14 +413,29 @@ div {
 }
 
 .pie-chart {
-	background: #212529;
-	height: 350px;
-	width: 350px;
-	display: inline-block;
+	height: 300px;
+	width: 300px;
 	text-align: center;
+	margin: 0 15px;
 }
 
 #myChart {
-	height: 350px;
+	height: 300px;
 	width: auto;
+}
+
+#myTrades {
+	height: 300px;
+	width: auto;
+}
+
+.chart_container {
+	background: #212529;
+	display: flex;
+	justify-content: center;
+	min-height: 350px;
+}
+
+.account_container {
+	background: #212529;
 }
