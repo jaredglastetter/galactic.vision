@@ -1,0 +1,5 @@
+zapsplat_science_fiction_console_button_harsh_negative = button_hover
+science_fiction_console_computer_alert_tone_warning = focus_station
+zapsplat_science_fiction_console_system_incoming_message_alert = loading_sound
+zapsplat_science_fiction_console_feedback_tone = button_click
+technology_data_read_out_burst_004 = focus_planet
