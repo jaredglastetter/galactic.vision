@@ -176,7 +176,7 @@ function zoomToLocation(pos) {
 
     //console.log(target);
 
-    var tween = new TWEEN.Tween(position).to(target, 3000);
+    var tween = new TWEEN.Tween(position).to(target, 1500);
 
     tween.onUpdate(function(){
         camera.lookAt( pos );
@@ -187,7 +187,7 @@ function zoomToLocation(pos) {
     });
 
 
-    tween.easing(TWEEN.Easing.Circular.InOut);
+    tween.easing(TWEEN.Easing.Quadratic.InOut);
 
     tween.start();
 }

@@ -94,8 +94,6 @@ var alpha = 0.5;
 var beta = 0.5;
 var gamma = 0.5;
 var alphaIndex = 1;
-var saturation = Math.random() / 2 + 0.5;
-var lightness = Math.random() / 2 + 0.4;
 var hue = Math.random();
 var planetMaterial;
 

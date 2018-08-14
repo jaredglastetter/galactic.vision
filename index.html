@@ -220,6 +220,9 @@ var app = new Vue({
 	  var rG;
 	  var rB;
 
+	  var saturation;
+		var lightness;
+
 	  var specularShininess;
 	  var specularColor;
 	  var diffuseColor;
@@ -250,11 +253,13 @@ var app = new Vue({
 
 					//create instances of this texture
 
-					for(var i = 0; i < 15; i++) {
+					for(var i = 0; i < 25; i++) {
 
 						rR = Math.random();
 					  rG = Math.random();
 					  rB = Math.random();
+					  saturation = Math.random() / 2 + 0.5;
+						lightness = Math.random() / 2 + 0.5;
 
 					  specularShininess = Math.pow( 2, alpha * 10 );
 					  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
