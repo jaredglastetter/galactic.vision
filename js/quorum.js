@@ -214,7 +214,7 @@ function setupTween(node) {
     //changeTags();
     changePins();
     highlightLines(node);
-    zoomToLocation(xyz_from_lat_lng(node.latitude, node.longitude, 1.25));
+    zoomToLocation(xyz_from_lat_lng(node.latitude, node.longitude, 1.3));
 }
 
 function viewAll() {
