@@ -197,9 +197,9 @@ function assets(address) {
 	        }
 
 			if(asset.asset_type == 'native'){
-				assets_table += '<tr><td class="text-center"><b>'+ "XLM" +'</b></td><td><b><span class="pull-right prl">'+numberWithCommas(asset.balance)+'</span></b></td></tr>';
+				assets_table += '<tr><td class="text-center"><b>'+ "XLM" +'</b></td><td class="text-center"><b>' + numberWithCommas(asset.balance ) + '</b></td></tr>';
 			} else {
-				assets_table += '<tr><td class="text-center"><b>'+asset.asset_code+'</b></td><td><b><span class="pull-right prl">'+numberWithCommas(asset.balance)+'</span></b></td></tr>';
+				assets_table += '<tr><td class="text-center"><b>'+asset.asset_code+'</b></td><td class="text-center"><b>' + numberWithCommas(asset.balance) + '</b></td></tr>';
 			}
 		}
 		
