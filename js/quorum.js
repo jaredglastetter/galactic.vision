@@ -30,6 +30,7 @@ var node;
 
 // for interactive
 var INTERSECTED;
+var INTERSECTED_CLICK;
 var mouse;
 var raycaster; 
 var theta = 0;
@@ -209,12 +210,7 @@ function zoomToLocation(pos) {
 
 $(document).ready(function() {
 
-  $("#transactions_stream").click(function setLiveTransactions() {
-    //console.log(liveMode);
-    zoomToLocation(xyz_from_lat_lng(nodes[0].latitude, nodes[0].longitude, 1));
-    $("#transactions_stream").toggleClass('selected');
-  });
-
+ 
   $( "#node_list a" ).click(function() {
     $( this ).toggleClass( "selected" );
   });
@@ -1109,6 +1105,59 @@ function roundRect(ctx, x, y, w, h, r)
 }
 
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+document.addEventListener('mouseup', onDocumentMouseup, false);
+
+function onDocumentMouseup(event){
+    console.log("click");
+    var pin;
+    
+    raycaster.setFromCamera( mouse, camera );
+    var intersects = raycaster.intersectObjects( scene.children );
+
+    if ( intersects.length > 0 )
+    {
+        // if the closest object intersected is not the currently stored intersection object
+        if ( intersects[ 0 ].object != INTERSECTED_CLICK )
+        {   
+            // restore previous intersection object (if it exists) to its original color
+            if ( INTERSECTED_CLICK ) {
+                pin = findNode(INTERSECTED_CLICK.id);
+                if(pin){
+                    // set a new color for closest object
+                    //console.log(pin);
+                    pin.node.tag.visible = false;
+                } 
+            }
+
+
+            // store reference to closest object as current intersection object
+            INTERSECTED_CLICK = intersects[ 0 ].object;
+            console.log("intersect:");
+            console.log(INTERSECTED_CLICK);
+            // store color of closest object (for later restoration)
+
+            pin = findNode(INTERSECTED_CLICK.id);
+            console.log(pin);
+            if(pin){
+                // set a new color for closest object
+                
+                console.log("should tween to pin");
+                setupTween(pin.node);
+                app.cur_node_pin = pin.id;
+                pin.node.tag.visible = true;
+            } 
+        }
+    }
+    else
+    {
+        // restore previous intersection object (if it exists) to its original color
+        if ( INTERSECTED_CLICK )
+        INTERSECTED_CLICK = null;
+    }
+
+
+
+}
 
 function onDocumentMouseMove( event ) {
     event.preventDefault();
@@ -1130,7 +1179,10 @@ function onDocumentMouseMove( event ) {
                 if(pin){
                     // set a new color for closest object
                     //console.log(pin);
-                    pin.node.tag.visible = false;
+                    if(app.cur_node_pin != pin.id){
+                        pin.node.tag.visible = false;
+                    }
+                    
                 } 
             }
 
@@ -1145,6 +1197,7 @@ function onDocumentMouseMove( event ) {
                 // set a new color for closest object
                 //console.log(pin);
                 pin.node.tag.visible = true;
+                
             } 
         }
     }
