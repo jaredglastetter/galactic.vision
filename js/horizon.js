@@ -152,7 +152,7 @@ function assets(address) {
 		    ctx.height = 250;
 
 		    var myPieChart = new Chart(ctx,{
-			    type: 'pie',
+			    type: 'doughnut',
 			    data: data,
 			    options: {
 					responsive: true,
@@ -243,13 +243,17 @@ function assets(address) {
 			    ctx.height = 250;
 
 			    var myPieChart = new Chart(ctx,{
-				    type: 'pie',
+				    type: 'doughnut',
 				    data: data,
 				    options: {
 						responsive: true,
 						maintainAspectRatio: false
 					}
 				});
+
+          //Break pie chart loop
+          app.num_assets = -1;
+
 			 }
 		});
 

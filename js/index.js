@@ -94,6 +94,8 @@ var alpha = 0.5;
 var beta = 0.5;
 var gamma = 0.5;
 var alphaIndex = 1;
+var saturation = Math.random() / 2 + 0.5;
+var lightness = Math.random() / 2 + 0.4;
 var hue = Math.random();
 var planetMaterial;
 
@@ -151,15 +153,15 @@ function init() {
   camera.add( listener );
 
   sound = new THREE.Audio( listener );
-  /*
   audioLoader = new THREE.AudioLoader();
-  audioLoader.load( '25 Mass Effect-Uncharted Worlds.mp3', function( buffer ) {
-    sound.setBuffer( buffer );
-    sound.setLoop( true );
-    sound.setVolume( 0.5 );
-    sound.play();
-  });
-*/
+  // audioLoader.load( '25 Mass Effect-Uncharted Worlds.mp3', function( buffer ) {
+  // sound.setBuffer( buffer );
+  // sound.setLoop( true );
+  // sound.setVolume( 0.5 );
+  // sound.play();
+
+  // });
+
   pGeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( [-1,0,0], 3 ) );
   pGeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( [0,1,0], 3 ) );
 
@@ -235,6 +237,7 @@ function init() {
   stats.domElement.style.top = '0px';
   document.body.appendChild(stats.domElement);
 
+
 }
 
 /*  Sprites  */
@@ -282,6 +285,11 @@ document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 document.addEventListener( 'mousedown', onDocumentMouseDown, false);
 document.addEventListener( 'mouseup', onDocumentMouseUp, false);
 window.addEventListener( 'resize', onWindowResize, false );
+
+window.addEventListener('load', function(){
+  var load_screen = document.getElementById("load_screen");
+  document.body.removeChild(load_screen);
+});
 
 function onWindowResize() 
 {
@@ -571,8 +579,8 @@ function zoomToTarget(pos) {
   var position = { x : camera.position.x, y: camera.position.y, z: camera.position.z };
   var target = { x : pos.x, y: pos.y, z: pos.z };
 
-  target.z = target.z - 2.5;
-  target.x = target.x - 2.5;
+  target.z = target.z - 10;
+  target.x = target.x - 10;
 
   //console.log(target);
 
