@@ -35,9 +35,23 @@ var raycaster;
 var theta = 0;
 
 function start_app() {
-    init();
-    animate();
-    //console.log(nodes);
+
+     $.getJSON('http://anyorigin.com/go?url=https%3A//stellarbeat.io/nodes/raw&callback=?', function(data){
+      $('#output').html(data.contents);
+      console.log("output: " );
+      console.log(data.contents);
+      nodes = data.contents;
+
+      init();
+      animate();
+      console.log(nodes);
+
+    });
+
+
+    // init();
+    // animate();
+    // //console.log(nodes);
     all_nodes = all_tracks;
     app.all_tracks = all_tracks;
 }

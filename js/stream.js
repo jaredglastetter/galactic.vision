@@ -157,7 +157,11 @@ RequestStream.prototype = {
               trade.asset2 = newTrades[i].counter_asset_type; 
             }
 
-            tripManager.addTrip(new Trip(centerNode.position, trade, newTrades[i]));
+
+            if($("#trades_stream").hasClass("selected")){
+              tripManager.addTrip(new Trip(centerNode.position, trade, newTrades[i]));
+            }
+            
           }
         }
 
