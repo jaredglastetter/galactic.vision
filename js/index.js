@@ -145,7 +145,7 @@ function init() {
   scene.background = reflectionCube;
 
   //effect = new THREE.OutlineEffect( renderer );
-  effect = renderer;
+  //effect = renderer;
 
   listener = new THREE.AudioListener();
   camera.add( listener );
@@ -595,7 +595,7 @@ function zoomToTarget(pos) {
 
 function globalView() {
   controls.target = scene.position;
-  effect.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
+  renderer.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 }
 
 $(document).ready(function() {
@@ -713,20 +713,20 @@ function render() {
   if(app.accountView) {
     controls.target = app.accountViewObj.position;
     camera.lookAt(app.accountViewObj.position);
-    effect.setViewport( SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
-    //effect.render( scene, camera );
+    renderer.setViewport( SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
+    //renderer.render( scene, camera );
   }
 
   if(app.switchToGlobalView) {
     controls.target = centerNode.position;
-    effect.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
+    renderer.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
     app.switchToGlobalView = false;
     console.log("running asdad");
   }
 
-  effect.render( scene, camera );
+  renderer.render( scene, camera );
 }
 
 animate();
