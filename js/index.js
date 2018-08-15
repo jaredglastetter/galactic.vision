@@ -147,7 +147,7 @@ function init() {
   scene.background = reflectionCube;
 
   //effect = new THREE.OutlineEffect( renderer );
-  effect = renderer;
+  //effect = renderer;
 
   listener = new THREE.AudioListener();
   camera.add( listener );
@@ -231,11 +231,12 @@ function init() {
 
   var account = "GBX6DXELQKLHMKVX2G24E3TPQV6APUAQECIC3XUJJ77Y2NYDM66TDTVY";
   var server = new StellarSdk.Server('https://horizon.stellar.org');
-
+  /*
   stats = new Stats();
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.top = '0px';
   document.body.appendChild(stats.domElement);
+  */
 
 
 }
@@ -603,7 +604,7 @@ function zoomToTarget(pos) {
 
 function globalView() {
   controls.target = scene.position;
-  effect.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
+  renderer.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 }
 
 $(document).ready(function() {
@@ -691,9 +692,11 @@ function animate() {
   requestAnimationFrame( animate );
   render();
 
+  /*
   if(stats) {
     stats.update();
-  }
+  }*/
+  
   controls.update();
 }
 
@@ -721,20 +724,18 @@ function render() {
   if(app.accountView) {
     controls.target = app.accountViewObj.position;
     camera.lookAt(app.accountViewObj.position);
-    effect.setViewport( SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
-    //effect.render( scene, camera );
+    renderer.setViewport( SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
   }
 
   if(app.switchToGlobalView) {
     controls.target = centerNode.position;
-    effect.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
+    renderer.setViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
     app.switchToGlobalView = false;
-    console.log("running asdad");
   }
 
-  effect.render( scene, camera );
+  renderer.render( scene, camera );
 }
 
 animate();
