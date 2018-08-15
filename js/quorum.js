@@ -236,6 +236,7 @@ function viewAll() {
     spline_point_cache = [];
 
     all_tracks = all_nodes;
+    all_tracks = clearConnectionType(all_tracks);
     app.curr_nodes = all_tracks;
     app.curr_tracks = all_tracks;
 
@@ -268,6 +269,14 @@ function highlightLines(node) {
 
     track_points_object = generate_track_point_cloud();
     scene.add(track_points_object);
+}
+
+function clearConnectionType(tracks) {
+    for(var i = 0; i < tracks.length; i++) {
+        tracks[i].connection_type = "";
+    }
+
+    return tracks
 }
 
 function changeTags() {
