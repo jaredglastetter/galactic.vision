@@ -229,11 +229,12 @@ function init() {
 
   var account = "GBX6DXELQKLHMKVX2G24E3TPQV6APUAQECIC3XUJJ77Y2NYDM66TDTVY";
   var server = new StellarSdk.Server('https://horizon.stellar.org');
-
+  /*
   stats = new Stats();
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.top = '0px';
   document.body.appendChild(stats.domElement);
+  */
 
 }
 
@@ -683,9 +684,11 @@ function animate() {
   requestAnimationFrame( animate );
   render();
 
+  /*
   if(stats) {
     stats.update();
-  }
+  }*/
+  
   controls.update();
 }
 
@@ -714,7 +717,6 @@ function render() {
     controls.target = app.accountViewObj.position;
     camera.lookAt(app.accountViewObj.position);
     renderer.setViewport( SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT );
-    //renderer.render( scene, camera );
   }
 
   if(app.switchToGlobalView) {
@@ -723,7 +725,6 @@ function render() {
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
     app.switchToGlobalView = false;
-    console.log("running asdad");
   }
 
   renderer.render( scene, camera );
