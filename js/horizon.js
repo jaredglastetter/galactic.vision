@@ -516,7 +516,7 @@ function assets(address) {
 
   			
 
-  			operations_table += '<tr><td class="text-center"><b>' + accountID + '</b></td><td class="text-center"><b>' + operationType + '</b></td><td class="text-center"><b>' + transaction + '</b></td><td class="text-center"><b>' + time + '</b></td></tr>';
+  			operations_table += '<tr><td class="text-center"><b>' + accountID + '</b></td><td class="text-center"><b>' + humanizeString(operationType) + '</b></td><td class="text-center"><b>' + transaction + '</b></td><td class="text-center"><b>' + time + '</b></td></tr>';
   			
 
   		}

@@ -67,12 +67,6 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        //console.log(message);
-        //console.log("hi")
-        //test account info
-        //var account = message.from;
-        //console.log(account);
-        //console.log(this.server.accounts(account));
         if(globalView) {
           var trade = new Object();
           trade.name = "trade";
@@ -178,8 +172,6 @@ RequestStream.prototype = {
     .cursor('now')
     .stream({
       onmessage: function (message) {
-        console.log(message);
-       //console.log("effects stream");
         if(!app.accountView && $("#effects_stream").hasClass("selected") && activeWindow) {
           tripManager.addTrip(new Trip(centerNode.position));
         }

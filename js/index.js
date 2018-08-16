@@ -10,8 +10,6 @@ var Focus_Planet_sound = new Audio("sounds/focus_planet.mp3");
 
 var Focus_Station_Sound = new Audio("sounds/focus_station.mp3");
 
-//
-
 var scene;
 var frustumSize = 15;
 var aspect = window.innerWidth / window.innerHeight;
@@ -666,6 +664,14 @@ function findAccount(objID) {
 function getAccountInfo(id){
   var server = new StellarSdk.Server('https://horizon.stellar.org');
 }
+
+function humanizeString(str) {
+  str = str.toLowerCase().replace(/[_-]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+  str = str.charAt(0).toUpperCase() + str.slice(1);
+
+  return str;
+};
+
 
 function animate() {
 
