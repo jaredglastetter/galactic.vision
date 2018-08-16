@@ -177,21 +177,14 @@ function init() {
   loader.load( 'stellar 4.fbx', function ( object ) {
 
     centerNode = object;
-    //centerNode.position.set(0,0,0);
 
     scene.add(centerNode);
 
-    //console.log(centerNode.scale);
-    //centerNode.geometry.scale = {x: 0.9, y: 0.9, z: 0.9};
      centerNode.scale.x = 0.1;
      centerNode.scale.y = 0.1;
      centerNode.scale.z = 0.1;
 
      centerNode.name = "Center Node";
-
-    //console.log(centerNode.scale);
-    console.log("scene info");
-    console.log(centerNode);
 
     //scene.add(centerNode);
     
@@ -376,7 +369,6 @@ function onDocumentMouseUp(event)
   {
       raycaster.setFromCamera( mouse, camera );
       var intersects = raycaster.intersectObjects( scene.children , true);
-      console.log(scene.children);
       if ( intersects.length > 0 ) 
       {
 
@@ -395,8 +387,6 @@ function onDocumentMouseUp(event)
            var account = findAccount(objID); 
 
            if(account){
-           console.log("Printing intersection information");
-           console.log(INTERSECTED);
            
            var account = findAccount(INTERSECTED.id);
 
@@ -407,8 +397,6 @@ function onDocumentMouseUp(event)
             app.accountViewID = account.account;
             zoomToTarget(INTERSECTED.position);
             app.showAccountWindow();
-            console.log("found matching account for object");
-            console.log(account.account);
             assets(account.account);
             sceneObj = scene.getObjectById( objID, true );
             accountObj = sceneObj.clone();
@@ -470,7 +458,6 @@ function onDocumentMouseUp(event)
            else if(INTERSECTED.parent.parent.parent.name == "Center Node"){
              //console.log("You have clicked the center node");
              //console.log("Printing intersection information");
-             console.log(INTERSECTED);
              zoomToTarget(INTERSECTED.position);
 
              Focus_Station_Sound.play();
@@ -580,10 +567,8 @@ function zoomToTarget(pos) {
   var position = { x : camera.position.x, y: camera.position.y, z: camera.position.z };
   var target = { x : pos.x, y: pos.y, z: pos.z };
 
-  target.z = target.z - 10;
-  target.x = target.x - 10;
-
-  //console.log(target);
+  target.z = target.z - 3;
+  target.x = target.x - 3;
 
   var tween = new TWEEN.Tween(position).to(target, 3000);
 
@@ -609,7 +594,6 @@ function globalView() {
 
 $(document).ready(function() {
   $("#transactions_stream").click(function setLiveTransactions() {
-    //console.log(liveMode);
     liveMode.transactions();
     $("#transactions_stream").toggleClass('selected');
   });
@@ -653,7 +637,6 @@ $(document).ready(function() {
   });
 
   $('#request-list').on('click','li',function (){
-    console.log($(this).html());
     var msgID = $(this).html();
 
     var request = findReq(msgID);
@@ -682,9 +665,6 @@ function findAccount(objID) {
 
 function getAccountInfo(id){
   var server = new StellarSdk.Server('https://horizon.stellar.org');
-  //get account info
-  console.log(id);
-  console.log(this.server.accounts(account));
 }
 
 function animate() {

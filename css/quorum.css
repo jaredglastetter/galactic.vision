@@ -228,6 +228,20 @@ button {
     width: 200px; 
 }
 
+.btn.btn-concrete{background-color: #7e8c8d; border-color: #7e8c8d; -webkit-box-shadow: 0 3px 0 #4e5b5c; box-shadow: 0 3px 0 #4e5b5c;}
+.btn.btn-concrete:hover{background-color:#6a7879;}
+.btn.btn-concrete:active{top: 3px; outline: none; -webkit-box-shadow: none; box-shadow: none;}
+
+.explorer_button {
+    bottom: 10px;
+    position: absolute;
+    left: 45vw;
+}
+
+.btn.btn-concrete, .btn.btn-concrete:hover a {
+    color: white;
+}
+
 /*
 .scrollbar {
     background-color: #F5F5F5;

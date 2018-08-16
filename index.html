@@ -121,17 +121,18 @@
 								<canvas id="myChart"></canvas>
 							</div>
 							<div class="pie-chart">
-								Trade Distribution
+								Trade Distribution (Last 200)
 								<canvas id="tradesChart"></canvas>
 							</div>
 						</div>
 
+						<!--
 						<div class="account-info"> 
 							<span> <b>Payments sent:</b> {{ payments_sent }} </span>
 							<span> <b>Payments received:</b> {{ payments_received }} </span>
 							<span> <b>Trades completed:</b> {{ trades_completed }} </span>
 							<span> <b>Most Traded Asset:</b> {{ most_traded }} </span>
-						</div>
+						</div> -->
 
 					</div>
 				</div>
@@ -174,13 +175,18 @@
 			<!-- <button id="effects_stream" class="raise">Effects</button> -->
 		</div>
 	 
+	 	<div class="quorum_button">
+			<a href="quorum.html" class="btn btn-concrete"><i class="fa fa-globe"></i> Switch to Quorum Explorer </a>			
+		</div>
+
+
 		<div id="description" style="display:none">
 
-		<h1>Description</h1>
-		<!-- <p> this is the description</p> -->
-		<div id="description_lines">
-		<!-- Append here -->
-		</div>
+			<h1>Description</h1>
+			<!-- <p> this is the description</p> -->
+			<div id="description_lines">
+			<!-- Append here -->
+			</div>
 
 		</div>
 	

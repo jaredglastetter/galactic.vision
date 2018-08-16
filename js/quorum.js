@@ -307,8 +307,8 @@ function clearTag() {
 function addAllPins() {
     nodes.forEach(function(node) {
         if(node.pin) {
-            node.pin.line.visible = false;
-            node.pin.top.visible = false;
+            node.pin.line.visible = true;
+            node.pin.top.visible = true;
         }
     });
 }

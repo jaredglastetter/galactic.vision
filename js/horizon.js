@@ -9,10 +9,7 @@ function assets(address) {
 	//calc total payments (limit 200 right now)
 	server.payments().forAccount(address).limit(200).call().then(function (account) {
 		var paymentArr = account.records;
-		//console.log(paymentArr);
-
-		console.log(paymentArr.length);
-
+		
 		for(var i = 0; i < paymentArr.length; i++){
 
 			var payment = paymentArr[i];
