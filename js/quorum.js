@@ -39,14 +39,10 @@ function start_app() {
 
      $.getJSON('http://anyorigin.com/go?url=https%3A//stellarbeat.io/nodes/raw&callback=?', function(data){
       $('#output').html(data.contents);
-      console.log("output: " );
-      console.log(data.contents);
       nodes = data.contents;
 
       init();
       animate();
-      console.log(nodes);
-
     });
 
 
@@ -1117,7 +1113,6 @@ document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 document.addEventListener('mouseup', onDocumentMouseup, false);
 
 function onDocumentMouseup(event){
-    console.log("click");
     var pin;
     
     raycaster.setFromCamera( mouse, camera );
@@ -1141,16 +1136,11 @@ function onDocumentMouseup(event){
 
             // store reference to closest object as current intersection object
             INTERSECTED_CLICK = intersects[ 0 ].object;
-            console.log("intersect:");
-            console.log(INTERSECTED_CLICK);
             // store color of closest object (for later restoration)
 
             pin = findNode(INTERSECTED_CLICK.id);
-            console.log(pin);
             if(pin){
                 // set a new color for closest object
-                
-                console.log("should tween to pin");
                 setupTween(pin.node);
                 app.cur_node_pin = pin.id;
                 pin.node.tag.visible = true;

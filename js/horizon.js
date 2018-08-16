@@ -9,7 +9,7 @@ function assets(address) {
 	//calc total payments (limit 200 right now)
 	server.payments().forAccount(address).limit(200).call().then(function (account) {
 		var paymentArr = account.records;
-		
+
 		for(var i = 0; i < paymentArr.length; i++){
 
 			var payment = paymentArr[i];
@@ -30,17 +30,12 @@ function assets(address) {
         url: horizonUrl,
         success: function(account) {
         	app.trades_completed = account._embedded.records.length;
-        	console.log(app.trades_completed);
 
         	var tradesArr = account._embedded.records;
 
         	var assetObj = {};
-         	//console.log("Printing Trade Records");
-         	//console.log(tradesArr);
 
         	for(var i = 0; i < tradesArr.length; i++) {
-	         	//console.log("next transaction");
-	        	//console.log(transactionsArr[i]);
 
 	        	var trade = tradesArr[i];
 
@@ -93,10 +88,8 @@ function assets(address) {
 		    var colour = "";
 
 
-		    console.log(assetObj);
 		    for (var key in assetObj) {
 		    	var count = assetObj[key];
-		    	console.log("printing count value: " + count);
 
 		    	innerData.push(count);
 		    	labels.push(key);
@@ -139,9 +132,6 @@ function assets(address) {
 			    labels: labels
 			};
 
-			console.log("Printing trades chart data");
-		    console.log(data);
-
 		    $('#tradesChart').replaceWith('<canvas id="tradesChart"></canvas>');
 
 		    var ctx = $("#tradesChart");
@@ -180,8 +170,6 @@ function assets(address) {
 			var asset_id = "";
 			var ajax;
 
-			console.log(asset);
-
 			
 			if(asset.asset_code) {
 	            code = asset.asset_code;
@@ -206,12 +194,7 @@ function assets(address) {
 		}
 
 		$( document ).ajaxComplete(function(event, xhr, settings) {
-			//console.log(event);
-			//console.log("num of requests so far: " + app.num_assets);
-			//console.log("num total requests expected: " + app.num_expected);
 		    if(app.num_assets == app.num_expected) {
-		    	console.log("building pie chart");
-		    	console.log(app.innerData);
 		    	//combine data
 			    datasets.push({ data: app.innerData, backgroundColor: app.backgroundColor});
 
@@ -226,8 +209,6 @@ function assets(address) {
 				    // These labels appear in the legend and in the tooltips when hovering different arcs
 				    labels: app.labels
 				};
-
-			    console.log(data);
 
 			    $('#myChart').replaceWith('<canvas id="myChart"></canvas>');
 			     $('.chartjs-size-monitor').remove();
