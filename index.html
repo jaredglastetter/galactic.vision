@@ -260,11 +260,7 @@ var app = new Vue({
 
   	imgArray = this.imgArray;
 
-  	console.log(this.imgArray);
-
     for(var image in this.imgArray) {
-    	console.log("loading image");
-    	console.log(this.imgArray[image]);
 	    	// load a resource
 			loader.load(
 				// resource URL
@@ -275,9 +271,7 @@ var app = new Vue({
 					texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 	      			texture.anisotropy = 16;
 					// in this example we create the material when the texture is loaded
-					console.log(texture);
 					app.textures.push(texture);
-					console.log(app.textures);
 
 					//create instances of this texture
 
