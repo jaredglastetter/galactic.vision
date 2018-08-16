@@ -2,9 +2,17 @@
 <html lang="en" >
 
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124053214-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-124053214-1');
+        </script>
   <meta charset="UTF-8">
   <title>Galactic Vision - Network Explorer</title>
-  
   <link rel="stylesheet" href="css/style.css">
 
   
@@ -121,17 +129,18 @@
 								<canvas id="myChart"></canvas>
 							</div>
 							<div class="pie-chart">
-								Trade Distribution
+								Trade Distribution (Last 200)
 								<canvas id="tradesChart"></canvas>
 							</div>
 						</div>
 
+						<!--
 						<div class="account-info"> 
 							<span> <b>Payments sent:</b> {{ payments_sent }} </span>
 							<span> <b>Payments received:</b> {{ payments_received }} </span>
 							<span> <b>Trades completed:</b> {{ trades_completed }} </span>
 							<span> <b>Most Traded Asset:</b> {{ most_traded }} </span>
-						</div>
+						</div> -->
 
 					</div>
 				</div>
@@ -174,13 +183,18 @@
 			<!-- <button id="effects_stream" class="raise">Effects</button> -->
 		</div>
 	 
+	 	<div class="quorum_button">
+			<a href="quorum.html" class="btn btn-concrete"><i class="fa fa-globe"></i> Switch to Quorum Explorer </a>			
+		</div>
+
+
 		<div id="description" style="display:none">
 
-		<h1>Description</h1>
-		<!-- <p> this is the description</p> -->
-		<div id="description_lines">
-		<!-- Append here -->
-		</div>
+			<h1>Description</h1>
+			<!-- <p> this is the description</p> -->
+			<div id="description_lines">
+			<!-- Append here -->
+			</div>
 
 		</div>
 	
@@ -246,11 +260,7 @@ var app = new Vue({
 
   	imgArray = this.imgArray;
 
-  	console.log(this.imgArray);
-
     for(var image in this.imgArray) {
-    	console.log("loading image");
-    	console.log(this.imgArray[image]);
 	    	// load a resource
 			loader.load(
 				// resource URL
@@ -261,9 +271,7 @@ var app = new Vue({
 					texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 	      			texture.anisotropy = 16;
 					// in this example we create the material when the texture is loaded
-					console.log(texture);
 					app.textures.push(texture);
-					console.log(app.textures);
 
 					//create instances of this texture
 
