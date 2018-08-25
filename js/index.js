@@ -1,4 +1,4 @@
-//sounds
+//sounds  [seperate js]
 var Button_Click_Sound = new Audio();//"sounds/button_click.mp3");
 var Button_Hover_Sound = new Audio();//"sounds/button_hover.mp3");
 Button_Hover_Sound.src = "sounds/button_hover.mp3";
@@ -9,6 +9,13 @@ var Opening_Sound = new Audio("sounds/loading_sound.mp3");
 var Focus_Planet_sound = new Audio("sounds/focus_planet.mp3");
 
 var Focus_Station_Sound = new Audio("sounds/focus_station.mp3");
+
+
+
+
+var tutpage = 1;
+
+
 
 var scene;
 var frustumSize = 15;
@@ -27,6 +34,10 @@ var mouse = new THREE.Vector2(), INTERSECTED;
 var raycaster = new THREE.Raycaster();
 var radius = 500;
 var theta = 0;
+
+
+
+
 
 //Window Focus
 var activeWindow = true;
@@ -591,6 +602,7 @@ function globalView() {
 }
 
 $(document).ready(function() {
+
   $("#transactions_stream").click(function setLiveTransactions() {
     liveMode.transactions();
     $("#transactions_stream").toggleClass('selected');
@@ -641,6 +653,44 @@ $(document).ready(function() {
 
     showRequest(request);
   });
+
+
+  //tutorial navigation
+  //
+  
+  var hasVisited = JSON.parse(localStorage.getItem('hasVisited'));
+
+  if(hasVisited == null){
+    $("#tutorial_window").toggleClass('tutorial_window_off');
+    localStorage.setItem('hasVisited', true);
+  }
+
+  $("#tutorial_window_button").click(function toggleTutorial(){
+    tutpage = 1;
+    $("#tutorial_window").toggleClass('tutorial_window_off');
+  });
+
+  $("#tutorial_next_button").click(function nextTutorial(){
+
+    if(tutpage < 3){
+      $("#page" + tutpage).addClass("off");
+      tutpage ++;
+      $("#page" + tutpage).removeClass("off");
+    }
+  });
+
+  $("#tutorial_back_button").click(function backTutorial(){
+
+    if(tutpage > 1){
+      $("#page" + tutpage).addClass("off");
+      tutpage --;
+      $("#page" + tutpage).removeClass("off");
+    }
+  });
+
+
+ 
+
 
 });
 

@@ -73,6 +73,69 @@
 	 	
 	</div>
 
+
+	<div class="tutorial_window_off tutorial_text" id="tutorial_window" type="hidden">
+	<h1>Galactic.Vision Tutorial</h1>
+
+	<!-- Page 1 -->
+	<div id="page1">
+	<p>Stellar Explorer represents live data about user activity on the network. Network activity can either be observed from a glance, or interacted with to get more information.</p>
+
+	<ul >
+		<li>Click the buttons at the bottom right of the screen to open up the desired stream </li>
+		<li>Explore the network using the mouse to control the camera</li>
+	</ul>
+	
+
+	<div style="position: absolute; left: 50%; bottom: 25%; transform: translate(-50%, 0); margin-top: 65px;">
+	<img src="https://i.imgur.com/rfHXmin.gif" >
+	</div>
+
+	</div>
+
+	<!-- Page 2 -->
+	<div id="page2" class="off">
+	<p tutorial_text" >Particles are emitted from the planets to represent assets. The most popular cryptos are colour coded and can be refered to using the legend using the (?) icon.</p>
+	
+
+	<ul>
+		<li>Click the question mark (?) icon to see the legend</li>
+		<li>Click the history icon to view the request hitory</li>
+	</ul>
+
+	<div style="position: absolute; left: 50%; bottom: 25%; transform: translate(-50%, 0); ">
+	<img src="https://i.imgur.com/DgXqDGa.gif" >
+	</div>
+
+	</div>
+
+	<!-- Page 3 -->
+	<div id="page3" class="off">
+	<p>Each planet is able to be clicked on to enter account view. This allows the user to explore the balances and recent history of the account.</p>
+	<ul>
+		<li>Click on the space station to focus on the particles entering and leaving the space station</li>
+		<li>Click on any planet to focus in on an account, view asset distributions, balances, trades, and more</li>
+	</ul>
+
+	<div style="position: absolute; left: 50%; bottom: 25%; transform: translate(-50%, 0); margin-top: 65px;">
+	<img src="https://i.imgur.com/7gDfMQC.gif" >
+	</div>
+
+	</div>
+
+
+	
+
+	<div class="tutorial_navigation_buttons">
+	<button id="tutorial_back_button"  class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"">Back</button>
+	<button id="tutorial_next_button"  class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"">Next</button>
+
+	</div>
+
+
+	</div>
+	<button id="tutorial_window_button" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Help</button>
+
 	<div id="app">
 
 		<div class="icon-bar">
@@ -83,10 +146,15 @@
 		  <a v-on:click="showLegendWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-question"></i></a>
 		</div>
 
+		
+
+
 		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Back</button>
 
 		<div v-show="showAccountWin" id="account_window">
 			<div class="account-title"> Account - {{ accountViewID  }}</div>
+
+
 
 			<div id="account" class="container p-t-md">
 				<div class="tab-content" style="background: #212529;">
