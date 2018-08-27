@@ -278,9 +278,9 @@ function assets(address) {
 				var from = payment.from.substring(0,4);
 				var to = payment.to.substring(0,4);
 				if(payment.asset_type == 'native'){
-					payments_table += '<tr><td class="text-center"><b>'+from+'</b></td><td class="text-center"><b>'+to+'</b></td><td><b><span class="pull-right prl">'+payment.amount + ' XLM' +'</span></b></td><td class="text-center"><b>'+tx_hash_display+'</b></td><td class="text-center"><b>'+payment.created_at+'</b></td></tr>';
+					payments_table += '<tr><td class="text-center"><b><p  title="' + payment.from +'">'+from+'</p></b></td><td class="text-center"><p  title="' + payment.to +'">'+to+'</p></b></td><td><b><span class="pull-right prl">'+payment.amount + ' XLM' +'</span></b></td><td class="text-center"><b>'+tx_hash_display+'</b></td><td class="text-center"><b>'+payment.created_at+'</b></td></tr>';
 				} else {
-					payments_table += '<tr><td class="text-center"><b>'+from+'</b></td><td class="text-center"><b>'+to+'</b></td><td><b><span class="pull-right prl">'+payment.amount + ' ' + asset +'</span></b></td><td class="text-center"><b>'+tx_hash_display+'</b></td><td class="text-center"><b>'+payment.created_at+'</b></td></tr>';
+					payments_table += '<tr><td class="text-center"><b><p  title="' + payment.from +'">'+from+'</p></b></td><td class="text-center"><b><p  title="' + payment.to +'">'+to+'</p></b></td><td><b><span class="pull-right prl">'+payment.amount + ' ' + asset +'</span></b></td><td class="text-center"><b>'+tx_hash_display+'</b></td><td class="text-center"><b>'+payment.created_at+'</b></td></tr>';
 				}
 			}
 		}
@@ -516,7 +516,7 @@ function assets(address) {
 
   			
 
-  			operations_table += '<tr><td class="text-center"><b>' + accountID + '</b></td><td class="text-center"><b>' + humanizeString(operationType) + '</b></td><td class="text-center"><b>' + transaction + '</b></td><td class="text-center"><b>' + time + '</b></td></tr>';
+  			operations_table += '<tr><td class="text-center"><b><p  title="' + operation.source_account +'">' + accountID + '</p></b></td><td class="text-center"><b>' + humanizeString(operationType) + '</b></td><td class="text-center"><b>' + transaction + '</b></td><td class="text-center"><b>' + time + '</b></td></tr>';
   			
 
   		}
