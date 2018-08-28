@@ -422,7 +422,7 @@ function assets(address) {
           counterAsset = "XLM";
         }
 
-         var description = "[" + trade.base_account.substring(0,4) + "] " + trade.base_amount.substring(0,6) + " " + baseAsset   + " FOR " +  trade.counter_amount.substring(0,6) + " " + counterAsset + " [" + trade.counter_account.substring(0,4) + "] ";
+         var description = "[" + '<p style="display:inline" title="' + trade.base_account + '">' + trade.base_account.substring(0,4) + "</p>] " + trade.base_amount.substring(0,6) + " " + baseAsset   + " FOR " +  trade.counter_amount.substring(0,6) + " " + counterAsset + " [" + '<p style="display:inline" title="' + trade.counter_account + '">' + trade.counter_account.substring(0,4) + "</p>] ";
          var time = trade.ledger_close_time;
           //var type = trade.type;
             
