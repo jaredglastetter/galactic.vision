@@ -515,8 +515,8 @@ function assets(address) {
   			var transaction= operation.transaction_hash.substring(0,4);
 
   			
-
-  			operations_table += '<tr><td class="text-center"><b><p  title="' + operation.source_account +'">' + accountID + '</p></b></td><td class="text-center"><b>' + humanizeString(operationType) + '</b></td><td class="text-center"><b>' + transaction + '</b></td><td class="text-center"><b>' + time + '</b></td></tr>';
+  			// operation.source_account
+  			operations_table += '<tr><td class="text-center"><b><p class="address_short">' + accountID + '<span class="address_display">' + operation.source_account + '</span></p></b></td><td class="text-center"><b>' + humanizeString(operationType) + '</b></td><td class="text-center"><b>' + transaction + '</b></td><td class="text-center"><b>' + time + '</b></td></tr>';
   			
 
   		}
