@@ -603,6 +603,11 @@ function globalView() {
 
 $(document).ready(function() {
 
+  //init payment stream on startup
+  $("#payments_stream").toggleClass('selected');
+  $("#payments_stream").toggleClass('toggle-on');
+  liveMode.payments();
+
   $("#transactions_stream").click(function setLiveTransactions() {
     liveMode.transactions();
     $("#transactions_stream").toggleClass('selected');
@@ -672,14 +677,30 @@ $(document).ready(function() {
 
   $("#tutorial_next_button").click(function nextTutorial(){
 
+    if(tutpage == 2) {
+      //hide next button
+      $("#tutorial_next_button").hide();
+      $("#tutorial_close_button").show();
+    } else if (tutpage == 1) {
+      $("#tutorial_back_button").show();
+    }
+
     if(tutpage < 3){
       $("#page" + tutpage).addClass("off");
       tutpage ++;
       $("#page" + tutpage).removeClass("off");
-    }
+    } 
   });
 
   $("#tutorial_back_button").click(function backTutorial(){
+
+    if(tutpage == 3) {
+      //hide next button
+      $("#tutorial_next_button").show();
+      $("#tutorial_close_button").hide();
+    } else if (tutpage == 2) {
+      $("#tutorial_back_button").hide();
+    }
 
     if(tutpage > 1){
       $("#page" + tutpage).addClass("off");
@@ -688,8 +709,19 @@ $(document).ready(function() {
     }
   });
 
+  $("#tutorial_close_button").click(function closeTutorial(){
+    $("#tutorial_window").toggleClass('tutorial_window_off');
+    $("#tutorial_next_button").show();
+    $("#tutorial_close_button").hide();
+    $("#page" + 3).addClass("off");
+    $("#page" + 1).removeClass("off");
+  });
 
- 
+
+  $('.toggle').click(function(e){
+    e.preventDefault(); // The flicker is a codepen thing
+    $(this).toggleClass('toggle-on');
+  });
 
 
 });
