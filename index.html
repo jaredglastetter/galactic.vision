@@ -25,7 +25,7 @@
 
 	<script src="js/dependencies/jquery.min.js"></script>
 	<script src="js/dependencies/vue.js"></script>
-
+	<link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet"> 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -75,66 +75,61 @@
 
 
 	<div class="tutorial_window_off tutorial_text" id="tutorial_window" type="hidden">
-	<h1>Galactic.Vision Tutorial</h1>
+		<div class="tutorial_window_content">
+			<h1 class="orbitron_header">Galactic.Vision Tutorial</h1>
 
-	<!-- Page 1 -->
-	<div id="page1">
-	<p>Stellar Explorer represents live data about user activity on the network. Network activity can either be observed from a glance, or interacted with to get more information.</p>
+			<!-- Page 1 -->
+			<div id="page1">
+				<p>Welcome to Galactic Vision! This application visualizes live data about user activity on the network. Network activity can either be observed from a glance, or interacted with to get more information.</p>
 
-	<ul >
-		<li>Click the buttons at the bottom right of the screen to open up the desired stream </li>
-		<li>Explore the network using the mouse to control the camera</li>
-	</ul>
-	
+				<ul >
+					<li>Click the buttons at the bottom left of the screen to open up the desired activity stream </li>
+					<li>Explore the network using the mouse to control the camera</li>
+				</ul>
+				
 
-	<div style="position: absolute; left: 50%; bottom: 25%; transform: translate(-50%, 0); margin-top: 65px;">
-	<img src="https://i.imgur.com/rfHXmin.gif" >
-	</div>
+				<div class="tutorial_image">
+					<img src="https://i.imgur.com/rfHXmin.gif" >
+				</div>
 
-	</div>
+			</div>
 
-	<!-- Page 2 -->
-	<div id="page2" class="off">
-	<p tutorial_text" >Particles are emitted from the planets to represent assets. The most popular cryptos are colour coded and can be refered to using the legend using the (?) icon.</p>
-	
+			<!-- Page 2 -->
+			<div id="page2" class="off">
+				<p tutorial_text" >Particles are emitted from the planets to represent assets. The most popular cryptos are colour coded and can be refered to using the legend using the (?) icon.</p>
+				
+				<ul>
+					<li>Click the question mark (?) icon to see the legend</li>
+					<li>Click the history icon to view the request history</li>
+				</ul>
 
-	<ul>
-		<li>Click the question mark (?) icon to see the legend</li>
-		<li>Click the history icon to view the request hitory</li>
-	</ul>
+				<div class="tutorial_image">
+					<img src="https://i.imgur.com/DgXqDGa.gif" >
+				</div>
+			</div>
 
-	<div style="position: absolute; left: 50%; bottom: 25%; transform: translate(-50%, 0); ">
-	<img src="https://i.imgur.com/DgXqDGa.gif" >
-	</div>
+			<!-- Page 3 -->
+			<div id="page3" class="off">
+				<p>Each planet is able to be clicked on to enter account view. This allows the user to explore the balances and recent history of the account.</p>
+				<ul>
+					<li>Click on the space station to focus on the particles entering and leaving the space station</li>
+					<li>Click on any planet to focus in on an account, view asset distributions, balances, trades, and more</li>
+				</ul>
 
-	</div>
+				<div class="tutorial_image">
+					<img src="https://i.imgur.com/7gDfMQC.gif" >
+				</div>
 
-	<!-- Page 3 -->
-	<div id="page3" class="off">
-	<p>Each planet is able to be clicked on to enter account view. This allows the user to explore the balances and recent history of the account.</p>
-	<ul>
-		<li>Click on the space station to focus on the particles entering and leaving the space station</li>
-		<li>Click on any planet to focus in on an account, view asset distributions, balances, trades, and more</li>
-	</ul>
+			</div>
 
-	<div style="position: absolute; left: 50%; bottom: 25%; transform: translate(-50%, 0); margin-top: 65px;">
-	<img src="https://i.imgur.com/7gDfMQC.gif" >
-	</div>
-
-	</div>
-
-
-	
-
-	<div class="tutorial_navigation_buttons">
-	<button id="tutorial_back_button"  class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"">Back</button>
-	<button id="tutorial_next_button"  class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"">Next</button>
-
-	</div>
-
+			<div class="tutorial_navigation_buttons">
+				<button id="tutorial_back_button"  class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" style="display: none">Back</button>
+				<button id="tutorial_next_button"  class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Next</button>
+				<button id="tutorial_close_button"  class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" style="display: none">Close</button>
+			</div>
+		</div>
 
 	</div>
-	<button id="tutorial_window_button" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Help</button>
 
 	<div id="app">
 
@@ -146,15 +141,11 @@
 		  <a v-on:click="showLegendWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-question"></i></a>
 		</div>
 
-		
-
-
-		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Back</button>
+		<button id="tutorial_window_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Help</button>
+		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Back</button>
 
 		<div v-show="showAccountWin" id="account_window">
-			<div class="account-title"> Account - {{ accountViewID  }}</div>
-
-
+			<div class="account-title "> Account - {{ accountViewID  }}</div>
 
 			<div id="account" class="container p-t-md">
 				<div class="tab-content" style="background: #212529;">
@@ -192,11 +183,11 @@
 					<div id="account_stats" class="tab-pane fade">
 
 						<div class="chart_container">
-							<div class="pie-chart">
+							<div class="pie-chart orbitron">
 								Assets (USD)
 								<canvas id="myChart"></canvas>
 							</div>
-							<div class="pie-chart">
+							<div class="pie-chart orbitron">
 								Trade Distribution (Last 200)
 								<canvas id="tradesChart"></canvas>
 							</div>
@@ -216,7 +207,7 @@
 		</div>
 
 		<div v-show="showRequestHistory" class="request-history">
-			<div class="request-title">Request History</div>
+			<div class="request-title orbitron_header">Request History</div>
 			<!--<div class='request-container'>
 			  <ul class='request-labels' id="request-list"></ul>
 			</div> -->
@@ -224,7 +215,7 @@
 		</div>
 
 		<div v-show="showLegend" class='my-legend'>
-			<div class='legend-title'>Stellar Assets Legend</div>
+			<div class='legend-title orbitron_header'>Stellar Assets Legend</div>
 			<div class='legend-scale'>
 			  <ul class='legend-labels' id="asset-list"></ul>
 			</div>
@@ -245,9 +236,37 @@
 					<div class='toggle-text-on'>ON</div>
 				</div>
 			</div>-->
+			<div id='switch_container'>
+				<div class='switch_header'>Payments</div>
+				<div class='toggle' id='payments_stream'>
+					<div class='toggle-text-off'>OFF</div>
+					<div class='glow-comp'></div>
+					<div class='toggle-button'></div>
+					<div class='toggle-text-on'>ON</div>
+				</div>
+			</div>
+			<div id='switch_container2'>
+				<div class='switch_header'>Offers</div>
+				<div class='toggle' id='operations_stream'>
+					<div class='toggle-text-off'>OFF</div>
+					<div class='glow-comp'></div>
+					<div class='toggle-button'></div>
+					<div class='toggle-text-on'>ON</div>
+				</div>
+			</div>
+			<div id='switch_container3'>
+				<div class='switch_header'>Trades</div>
+				<div class='toggle' id='trades_stream'>
+					<div class='toggle-text-off'>OFF</div>
+					<div class='glow-comp'></div>
+					<div class='toggle-button'></div>
+					<div class='toggle-text-on'>ON</div>
+				</div>
+			</div>
+			<!--
 			<button id="payments_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" >Payments</button>
 			<button id="operations_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Offers</button>
-			<button id="trades_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Trades</button>
+			<button id="trades_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Trades</button> -->
 			<!-- <button id="effects_stream" class="raise">Effects</button> -->
 		</div>
 	 
@@ -255,22 +274,15 @@
 			<a href="quorum.html" class="btn btn-concrete"><i class="fa fa-globe"></i> Switch to Quorum Explorer </a>			
 		</div>
 
-
 		<div id="description" style="display:none">
-
 			<h1>Description</h1>
 			<!-- <p> this is the description</p> -->
 			<div id="description_lines">
 			<!-- Append here -->
 			</div>
-
 		</div>
-	
 	</div>
-
-
 </body>
-
 </html>
 
 <script type="text/javascript">
@@ -309,7 +321,8 @@ var app = new Vue({
 	trades: [],
 	tradeCount: 0,
 	numTrades: 0, //number of trades inserted last
-	currTrades: []
+	currTrades: [],
+	tutorial_page: 0
   },
   mounted: function() {
   	var rR;

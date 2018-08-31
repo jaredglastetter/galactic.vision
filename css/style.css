@@ -61,12 +61,14 @@ button {
 }
 
 .buttons {
-	bottom: 10px;
+	bottom:0;
 	position: absolute;
 	left:0;
+	height: 6.5em;
+	width: 22em;
 	margin-left:auto;
 	margin-right:auto;
-
+	background-color: rgba(50,50,50,.5);
   	transition: 0.25s;
   	font: 300 1em 'Fira Sans', sans-serif;
 }
@@ -384,9 +386,8 @@ a[id|="account-tabs-tab"]:hover {
 
 #back_button {
 	position: absolute;
-	top: 0;
-	right: 0;
-	margin: 5px;
+	top: 1em;
+	right: 1em;
 }
 
 div {
@@ -394,8 +395,6 @@ div {
 }
 
 .request-title {
-	font-size: 1.5em;
-	text-decoration: bold;
 	padding-bottom: 1em;
 }
 
@@ -461,9 +460,50 @@ div {
 	clear: both;
 }
 
-#tl{
-   bottom:0;
-   left:500px;
+#switch_container {
+	position: absolute;
+	bottom: 3em;
+    left: 1em;
+}
+
+#switch_container2 {
+	position: absolute;
+	bottom: 3em;
+    left: 9em;
+}
+
+#switch_container3 {
+	position: absolute;
+	bottom: 3em;
+    left: 16em;
+}
+
+#payments_stream{
+	margin-left: 10px;
+    width: 75px;
+    height: 40px;
+}
+
+#operations_stream{
+    width: 75px;
+    height: 40px;
+}
+
+#trades_stream{
+    width: 75px;
+    height: 40px;
+}
+
+.switch_header {
+	font-family: 'Orbitron', sans-serif;
+	color: #24d1c4;
+	text-align: center;
+	padding-bottom: 10px;
+	width: 75px;
+	font-size: 1em;
+	letter-spacing: 1px;
+	font-weight: 600;
+
 }
 
 .toggle{
@@ -472,6 +512,7 @@ div {
     border-radius: 20px;
     -webkit-transition: border-color .6s  ease-out;
     transition: border-color .6s  ease-out;
+    box-sizing: border-box;
 }
 
 .toggle.toggle-on{
@@ -518,7 +559,7 @@ div {
     font-size: 18px;
     font-weight: normal;
     cursor: pointer;
-    -webkit-user-select: none; /* Chrome/Safari */        
+    -webkit-user-select: none; /* Chrome/Safari */    
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+ */
 
@@ -595,7 +636,7 @@ div {
 	
 
   	position: absolute;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
 
@@ -604,7 +645,8 @@ div {
 	margin: 6px 7px;
 	border: 2px solid cyan;
 	border-radius: 0.5em;
-	height: calc(100vh - 125px);
+	min-height: 50vh;
+	max-height: 85vh;
 	overflow: auto;
 	box-shadow: 0px 0px 13px cyan;
 	padding: 0 15px;
@@ -618,22 +660,84 @@ div {
 
 #tutorial_window_button{
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: 1em;
+	right: 10em;
 }
 
 .tutorial_text{
-	font-size: 22px;
+	font-size: 1em;
 }
 
-.tutorial_navigation_buttons{
-	position: absolute;
-	bottom: 5%;
+.tutorial_navigation_buttons {
+	position: relative;
 	left: 50%;
-
+	padding-bottom: 1em;
+	padding-top: 1em;
+	text-align: center;
 	transform: translate(-50%, 0);
 }
 
 .off{
 	display: none !important;
+}
+
+.tutorial_window_content {
+	padding: 1em;
+}
+
+.tutorial_image {
+	display: inline;
+	text-align: center;
+	margin-top: 2em;
+	margin-bottom: 300px;
+	margin-left: 10%;
+	width: 100%;
+}
+
+.tutorial_image img {
+	width: 80%;
+	height: auto;
+	object-fit: cover;
+}
+
+.image_container {
+	width: 100%;
+	text-align: center;
+}
+
+#tutorial_back_button {
+	margin-right: 0.5em;
+}
+
+#tutorial_next_button {
+	margin-left: 0.5em;
+}
+
+.orbitron {
+	font-family: 'Orbitron', sans-serif;
+	color: #24d1c4;
+	font-size: 1em;
+	letter-spacing: 1px;
+	font-weight: 600;
+}
+
+.orbitron_header {
+	font-family: 'Orbitron', sans-serif;
+	color: #24d1c4;
+	font-size: 1em;
+	letter-spacing: 1px;
+	font-weight: 600;
+	font-size: 3em;
+}
+
+#page1{
+	color: white;
+}
+
+#page2{
+	color: white;
+}
+
+#page3{
+	color: white;
 }
