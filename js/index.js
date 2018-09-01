@@ -35,7 +35,7 @@ var raycaster = new THREE.Raycaster();
 var radius = 500;
 var theta = 0;
 
-
+var is_loading = false;
 
 
 
@@ -119,11 +119,17 @@ var color = new THREE.Color();
 //
 var spriteMap = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/lensflare/lensflare0_alpha.png' ); // new THREE.CanvasTexture( generateSprite() )
 var pMaterial = new THREE.SpriteMaterial( {
-          map: spriteMap,
-          blending: THREE.AdditiveBlending
-        } );
+  map: spriteMap,
+  blending: THREE.AdditiveBlending
+} );
 
-init();
+
+function start_app() {
+      show_loading(true);
+      init();
+      animate();
+
+}
 
 function init() {
   scene = new THREE.Scene();
@@ -195,6 +201,7 @@ function init() {
 
      centerNode.name = "Center Node";
 
+     show_loading(false);
     //scene.add(centerNode);
     
     // THREE.Line ( WireframeGeometry, LineBasicMaterial ) - rendered with gl.LINE
@@ -241,6 +248,18 @@ function init() {
   */
 
 
+}
+
+function show_loading(visible) {
+    if (visible) {
+        is_loading = true;
+        document.getElementById("loading_overlay").className = "show";
+        document.getElementById("loading_overlay").style.pointerEvents = "all";
+    } else {
+        is_loading = false;
+        document.getElementById("loading_overlay").className = "hide";
+        document.getElementById("loading_overlay").style.pointerEvents = "none";
+    }
 }
 
 /*  Sprites  */
@@ -805,5 +824,3 @@ function render() {
 
   renderer.render( scene, camera );
 }
-
-animate();
