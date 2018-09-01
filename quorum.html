@@ -13,7 +13,7 @@
 
         <title>Galactic Vision - Quorum Explorer</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <link type="text/css" rel="stylesheet" href="css/quorum.css" />
         <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
         <script type="text/javascript" src="js/three.min.js"></script>
@@ -70,14 +70,18 @@
             </div>
             <div class="validators">
                 <h3 id="node_header"></h3>
-                <span>
-                    Location: 
+                <div class="node_info">
+                   <i class="fas fa-map-marked-alt"></i> Location: 
                     <div id="node_location"></div>
-                </span>
-                <span>
-                    Rating: 
+                </div>
+                <div class="node_info">
+                    <i class="fas fa-star"></i> Availability Rating: 
                     <div id="rating"></div>
-                </span>
+                </div>
+                <div class="node_info">
+                    <i class="far fa-handshake"></i> Trust Index: 
+                    <div id="trust_index"></div>
+                </div>
                 Trusted
                 <div id="validator_list" class="list-group">
                 </div> 

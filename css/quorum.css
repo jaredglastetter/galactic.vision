@@ -131,13 +131,13 @@ h2 {
 
 #validator_list {
     overflow: auto;
-    max-height: 30vh !important;
+    max-height: 27vh !important;
     margin: 1em;
 }
 
 #trusted_by_list {
     overflow: auto;
-    max-height: 30vh !important;
+    max-height: 27vh !important;
     margin: 1em;
 }
 
@@ -236,6 +236,10 @@ button {
 
 .btn.btn-concrete, .btn.btn-concrete:hover a {
     color: white;
+}
+
+.node_info {
+    margin-bottom: 1em;
 }
 
 /*

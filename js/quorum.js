@@ -27,6 +27,7 @@ var changing = false;
 var globe;
 var spriteMap;
 var node;
+var total_nodes;
 
 // for interactive
 var INTERSECTED;
@@ -40,7 +41,7 @@ function start_app() {
      $.getJSON('http://anyorigin.com/go?url=https%3A//stellarbeat.io/nodes/raw&callback=?', function(data){
       $('#output').html(data.contents);
       nodes = data.contents;
-
+      total_nodes = nodes.length;
       init();
       animate();
     });
@@ -339,16 +340,19 @@ function addValidators() {
     quorumArr = app.curr_node.quorumArr;
     var trusted_by = app.curr_node.trusted_by;
     var curr_node = app.curr_node;
+    var trust_index = Math.round((curr_node.trusted_by.length / total_nodes) * 100);
 
     $('#node_header').empty();
     $('#node_location').empty();
     $('#rating').empty();
+    $('#trust_index').empty(); 
     $('#validator_list').empty();
     $('#trusted_by_list').empty();
 
     $('#node_header').append(getNodeName(curr_node)); 
     $('#node_location').append(getNodeLocation(curr_node)); 
-    $('#rating').append(curr_node.activeRating); 
+    $('#rating').append(curr_node.activeRating);
+    $('#trust_index').append(trust_index + "%"); 
 
     for(var node in quorumArr) {
         //nodes it trusted
@@ -399,6 +403,25 @@ function getNodeLocation(node) {
     location = node.city ? node.city + ", " + node.country : node.country;
 
     return location
+}
+
+function populateNodeList() {
+
+    //sort list by # trusted_by
+
+    nodes = _.sortBy(nodes, "trusted_by");
+
+    nodes = nodes.reverse();
+
+    for(var f = 0; f < nodes.length; f++) {
+        if(nodes[f].connections) {
+            if(nodes[f].connections.length > 0 && nodes[f].name) {
+                menu_node = '<a onclick="setupTween(nodes[' + f + '])" href="#" class="list-group-item list-group-item-dark">' + nodes[f].name + '</a>';
+                $('#node_list').append(menu_node); 
+                app.nodes.push(nodes[f]);
+            }
+        }
+    }
 }
 
 function generateControlPoints(radius) {
@@ -647,15 +670,10 @@ function generateControlPoints(radius) {
                 }
             }
             //node_tracks.push(node);
-            if(nodes[f].connections) {
-                if(nodes[f].connections.length > 0 && nodes[f].name) {
-                    menu_node = '<a onclick="setupTween(nodes[' + f + '])" href="#" class="list-group-item list-group-item-dark">' + nodes[f].name + '</a>';
-                    $('#node_list').append(menu_node); 
-                    app.nodes.push(nodes[f]);
-                }
-            }
         }
     }
+
+    populateNodeList();
     app.all_nodes = nodes;
 }
 
