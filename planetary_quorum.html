@@ -154,7 +154,6 @@ var app = new Vue({
     
     $.getJSON('http://anyorigin.com/go?url=https%3A//stellarbeat.io/nodes/raw&callback=?', function(data) {
       app.nodes_data = data.contents;
-      app.total_nodes = nodes_data.length;
       app.convertToGraph();
     }); 
 
