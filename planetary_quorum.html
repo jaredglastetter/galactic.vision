@@ -20,7 +20,6 @@
     <script src="js/dependencies/vue.js"></script>
     <script src="js/dependencies/underscore-min.js"></script>
     <script src="js/dependencies/underscore-min.js"></script>
-    <script src="js/planet_quorum.js"></script>
 
       <!--<script src="../../dist/3d-force-graph.js"></script>-->
 </head>
@@ -294,7 +293,11 @@ var app = new Vue({
         }
 
 
-
+        var reflectionCube = new THREE.CubeTextureLoader()
+        .setPath( 'images/quorum_skybox/' )
+        .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
+        
+        reflectionCube.format = THREE.RGBFormat;
         
         app.Graph = ForceGraph3D()
           (document.getElementById('3d-graph'))
@@ -309,13 +312,13 @@ var app = new Vue({
             .linkOpacity(0.5)
             .nodeRelSize(5)
             .nodeThreeObject(({ id }) => 
-                 new THREE.Mesh(new THREE.SphereBufferGeometry( 20, 32, 16 ), app.node_textures[id % nodes.length]))
+                 new THREE.Mesh(new THREE.SphereBufferGeometry( 30, 32, 16 ), app.node_textures[id % nodes.length]))
             .onNodeClick(
               node => {
               //changeDataSet(node.id);
               app.Graph.linkVisibility(link => app.shouldShowLink(link, node))
               // Aim at node from outside it
-              const distance = 1000;
+              const distance = 1750;
               const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
               app.Graph.cameraPosition(
                 { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
@@ -325,7 +328,10 @@ var app = new Vue({
             })
             .graphData(app.gData);
 
-          
+        app.Graph.scene().background = reflectionCube;
+        app.Graph.cameraPosition({z: 2000});
+
+
          app.Graph.cooldownTime(Infinity)
           //.d3AlphaDecay(0)
           //.d3VelocityDecay(0)
@@ -333,7 +339,7 @@ var app = new Vue({
           //.d3Force('center', null)
           //.d3Force('charge', null)
           // Add collision and bounding box forces
-          .d3Force('collide', d3.forceCollide(app.Graph.nodeRelSize() * 35))
+          .d3Force('collide', d3.forceCollide(app.Graph.nodeRelSize() * 50))
           .d3Force('box', () => {
             const CUBE_HALF_SIDE = app.Graph.nodeRelSize() * nodes.length * 0.5;
             nodes.forEach(node => {
@@ -369,7 +375,7 @@ var app = new Vue({
 
         app.Graph.linkVisibility(link => app.shouldShowLink(link, node))
           // Aim at node from outside it
-          const distance = 1000;
+          const distance = 1750;
           const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
           app.Graph.cameraPosition(
             { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
