@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+   <head>
+    <title>Galactic Vision - Quorum Explorer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="css/quorum.css" />
+    <style> body { margin: 0; } </style>
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js'></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="//unpkg.com/3d-force-graph"></script>
+    <script src="//unpkg.com/d3-octree"></script>
+    <script src="//unpkg.com/d3-force-3d"></script>
+    <script type="text/javascript" src="js/three.min.js"></script>
+    <script src="js/dependencies/jquery.min.js"></script> 
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js%22%3E"></script>
+    <script src="js/dependencies/vue.js"></script>
+    <script src="js/dependencies/underscore-min.js"></script>
+    <script src="js/dependencies/underscore-min.js"></script>
+    <script src="js/planet_quorum.js"></script>
+
+      <!--<script src="../../dist/3d-force-graph.js"></script>-->
+</head>
+
+<body>
+    <!--
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", start_app, false);
+    </script> -->
+    <div id="app"> 
+        <div class="quorum-nav">
+            <div id="node_list" class="list-group">
+                <a onclick="app.viewAll()" href="#" class="list-group-item list-group-item-dark">View All</a>
+            </div> 
+        </div>
+        <div class="validators">
+            <h3 id="node_header"></h3>
+            <div class="node_info">
+               <i class="fas fa-map-marked-alt"></i> Location: 
+                <div id="node_location"></div>
+            </div>
+            <div class="node_info">
+                <i class="fas fa-star"></i> Availability Rating: 
+                <div id="rating"></div>
+            </div>
+            <div class="node_info">
+                <i class="far fa-handshake"></i> Trust Index: 
+                <div id="trust_index"></div>
+            </div>
+            Trusted
+            <div id="validator_list" class="list-group">
+            </div> 
+            Trusted By
+            <div id="trusted_by_list" class="list-group">
+            </div>  
+                <!-- <div class="force-overflow"></div> -->
+        </div> 
+    </div>
+    <div id="3d-graph"></div>
+
+</body>
+</html>
+
+
+<script type="text/javascript">
+var app = new Vue({
+  el: '#app',
+  data: {
+    imgArray: ["images/Wetlands-Clouds-EQUIRECTANGULAR-1-1024x512.png", "images/2k_uranus.jpg", "images/planet_textures/Planet_Al_Dhanab_9192.png", "images/planet_textures/planet_Alba_1227.png", "images/planet_textures/planet_Arnessk_1166.png", "images/planet_textures/Planet_Avalon_4205.png", "images/planet_textures/Planet_Beta_Hydri.png", "images/planet_textures/planet_blink_3782.png", "images/planet_textures/planet_Bog_2275.png", "images/planet_textures/Planet_Cerca_Trova_3519.png", "images/planet_textures/Planet_Circus_9143.png", "images/planet_textures/planet_Commerce_One_2131.png", "images/planet_textures/planet_Dagobah_1174.png", "images/planet_textures/planet_Dam-ba-da_1547.png", "images/planet_textures/planet_Dank_1182.png", "images/planet_textures/planet_Down_360Full_3621.png", "images/planet_textures/Planet_Dust_4284.png", "images/planet_textures/Planet_Ecaz_5346.png", "images/planet_textures/Planet_Farma_8165.png", "images/planet_textures/Planet_Harmonthep_8239b.png", "images/planet_textures/Planet_Hearth.png", "images/planet_textures/planet_hoth_1235.png", "images/planet_textures/Planet_Ipyr_7435.png", "images/planet_textures/planet_Ixchel_1978.png", "images/planet_textures/planet_Jinx_1259.png", "images/planet_textures/planet_Klendathu_3058.png", "images/planet_textures/Planet_Kzin.png", "images/planet_textures/planet_Meh_1246.png", "images/planet_textures/planet_Miners_Moon_4138.png", "images/planet_textures/planet_Muunilinst_1406.png", "images/planet_textures/Planet_New_Aruba_5128.png", "images/planet_textures/Planet_Patina_8110.png", "images/planet_textures/planet_Quom_2449.png", "images/planet_textures/Planet_Reststop_Full360_3591.png", "images/planet_textures/planet_Rim.png", "images/planet_textures/planet_Robbers_Roost_3111.png", "images/planet_textures/Planet_Salusa_Secundus_9265.png", "images/planet_textures/planet_Scarl_1191.png", "images/planet_textures/planet_serendip_3943.png", "images/planet_textures/Planet_Sno_7271.png", "images/planet_textures/planet_Spot_Full360_3430.png", "images/planet_textures/planet_Tank_3817.png", "images/planet_textures/planet_Tao_Seti_Prime_4072.png", "images/planet_textures/", "images/planet_textures/", "images/planet_textures/", "images/planet_textures/", "images/planet_textures/", "images/planet_textures/", "images/planet_textures/", "images/planet_textures/", "images/planet_textures/planet_Telos_1157.png", "images/planet_textures/planet_Terminus_1204.png", "images/planet_textures/planet_Trantor_1211.png", "images/planet_textures/planet_Trask_1134.png", "images/planet_textures/planet_Tsu-Ni_2391.png", "images/planet_textures/Planet_Wight_Full360_3671.png"],
+    textures: [],
+    generated_textures: [],
+    nodes_data: [],
+    total_nodes: 0,
+    node_textures: [],
+    gData: "",
+    Graph: {},
+    links: [],
+    curr_node: []
+  },
+  mounted: function() {
+    var rR;
+    var rG;
+    var rB;
+
+    var saturation;
+    var lightness;
+
+    var specularShininess;
+    var specularColor;
+    var diffuseColor;
+    var material;
+    var alpha = 0.5;
+    var beta = 0.5;
+    var gamma = 0.5;
+    var alphaIndex = 1;
+
+    var loader = new THREE.TextureLoader();
+
+    imgArray = this.imgArray;
+
+    for(var image in this.imgArray) {
+            // load a resource
+            loader.load(
+                // resource URL
+                imgArray[image],
+
+                // onLoad callback
+                function ( texture ) {
+                    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                    texture.anisotropy = 16;
+                    // in this example we create the material when the texture is loaded
+                    app.textures.push(texture);
+
+                    //create instances of this texture
+
+                    for(var i = 0; i < 25; i++) {
+
+                      rR = Math.random();
+                      rG = Math.random();
+                      rB = Math.random();
+                      saturation = Math.random() / 2 + 0.5;
+                      lightness = Math.random() / 2 + 0.5;
+
+                      specularShininess = Math.pow( 2, alpha * 10 );
+                      //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
+                      specularColor = new THREE.Color(rR, rG, rB );
+                      //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+                      diffuseColor = new THREE.Color(rR, rG, rB).setHSL( rR, saturation, lightness );
+                      material = new THREE.MeshToonMaterial( {
+                        map: texture,
+                        color: diffuseColor,
+                        specular: specularColor,
+                        reflectivity: beta,
+                        shininess: 0.75
+                      } );
+
+                      app.generated_textures.push(material);
+                    }
+                },
+
+                // onProgress callback currently not supported
+                undefined,
+
+                // onError callback
+                function ( err ) {
+                    console.error( 'An error happened.' );
+                }
+            );
+    }
+
+    
+    $.getJSON('http://anyorigin.com/go?url=https%3A//stellarbeat.io/nodes/raw&callback=?', function(data) {
+      app.nodes_data = data.contents;
+      app.convertToGraph();
+    }); 
+
+  },
+  methods: {
+      convertToGraph: function () {
+        var nodes_data = [];
+        var nodes = [];
+        var links = [];
+
+        var node;
+        var link;
+        var quorumSet;
+        var v_index;
+        var validatorMatch;
+        var curvature;
+
+        console.log("at least got here");
+
+        //nodes = [...Array(nodes_data.length).keys()].map(i => ({ id: i }));
+
+        for (var i = 0; i < app.nodes_data.length; ++i) {
+            app.nodes_data[i].listPos = i;
+            app.nodes_data[i].trusted_by = [];
+            app.nodes_data[i].trusted_connections = [];
+        }
+
+        for (var f = 0; f < app.nodes_data.length; ++f) {
+            //create links data
+            node = app.nodes_data[f];
+
+            app.nodes_data[f].connections = [];
+
+            if(app.nodes_data[f].quorumSet) {
+                quorumSet = app.nodes_data[f].quorumSet.validators;
+
+                app.nodes_data[f].quorumArr = [];
+
+                if(app.nodes_data[f].name) {
+                    app.nodes_data[f].listPos = nodes.length;
+                    //add to nodes list
+                    nodes.push(app.nodes_data[f]);
+
+
+                    //enter quorum set array loop and execute the next code per found quorum
+                    /*
+                    for(var j = 0; j < quorumSet.length; j++) {
+
+                        var validator = quorumSet[j];
+
+                        //find validator key in nodes array
+                        validatorMatch = _.where(app.nodes_data, {publicKey: validator});
+
+                        if(validatorMatch.length > 0) {
+                            //add current node to validator nodes trusted nodes array
+                            v_index = validatorMatch[0].listPos;
+
+                            app.nodes_data[v_index].trusted_by.push(app.nodes_data[f]);
+                            
+                            //add validator node object to array
+                            app.nodes_data[f].quorumArr.push(validatorMatch[0]);
+
+                            curvature = Math.random();
+
+                            //add link
+                            link = { source: f, target: v_index, curvature: 0, rotation: 0, name: app.nodes_data[f].name }
+                            links.push(link);
+                            console.log("generating some links");
+                        }
+                    }*/
+                }
+            }
+        }
+
+        /* All connections graph */
+
+        //enter quorum set array loop and execute the next code per found quorum
+        
+        for(var i = 0; i < nodes.length; i++) {
+            quorumSet = nodes[i].quorumSet.validators;
+
+            menu_node = '<a onclick="app.enterNodeView(' + i + ')" href="#" class="list-group-item list-group-item-dark">' + nodes[i].name + '</a>';
+            $('#node_list').append(menu_node); 
+
+            for(var j = 0; j < quorumSet.length; j++) {
+
+                var validator = quorumSet[j];
+
+                //find validator key in nodes array
+                validatorMatch = _.where(nodes, {publicKey: validator});
+
+                if(validatorMatch.length > 0) {
+                    //add current node to validator nodes trusted nodes array
+                    v_index = validatorMatch[0].listPos;
+
+                    nodes[v_index].trusted_by.push(nodes[i]);
+                    
+                    //add validator node object to array
+                    nodes[i].quorumArr.push(validatorMatch[0]);
+
+                    
+                    if(nodes[v_index].name && nodes[v_index].quorumSet) {
+                        curvature = Math.random();
+
+                        //add link
+                        link = { source: i, target: v_index, curvature: 0.25, rotation: 0 }
+                        links.push(link);
+                        console.log("generating some links");
+                    } 
+                }
+            }
+        } 
+
+        var GROUPS = 12;
+
+        app.gData = {
+          nodes: [...Array(nodes.length).keys()].map(i => ({ id: i, vx: Math.random(),
+          vy: Math.random(),
+          vz: Math.random(),
+          group: Math.ceil(Math.random() * GROUPS),
+          name: nodes[i].name,
+          trusted: nodes[i].quorumArr,
+          trusted_by: nodes[i].trusted_by })),
+          links: links
+        };
+
+        app.links = links;
+
+        var geometry2 = new THREE.SphereBufferGeometry( 1, 32, 16 );
+        var material;
+        var n;
+
+        for(var i = 0; i < nodes.length; i++) {
+            n = Math.floor(Math.random() * app.generated_textures.length);
+            material = app.generated_textures[n]; 
+            app.node_textures.push(material);
+            console.log(i);
+        }
+
+
+
+        
+        app.Graph = ForceGraph3D()
+          (document.getElementById('3d-graph'))
+            .linkCurvature('curvature')
+            //.linkCurveRotation('rotation')
+            .linkDirectionalParticles(2)
+            .nodeLabel("name")
+            .nodeAutoColorBy('group')
+            .linkAutoColorBy(d => app.gData.nodes[d.source].group)
+            .linkWidth(3)
+            .linkDirectionalParticleWidth(8)
+            .linkOpacity(0.5)
+            .nodeRelSize(5)
+            .nodeThreeObject(({ id }) => 
+                 new THREE.Mesh(new THREE.SphereBufferGeometry( 20, 32, 16 ), app.node_textures[id % nodes.length]))
+            .onNodeClick(
+              node => {
+              //changeDataSet(node.id);
+              app.Graph.linkVisibility(link => app.shouldShowLink(link, node))
+              // Aim at node from outside it
+              const distance = 1000;
+              const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+              app.Graph.cameraPosition(
+                { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+                node, // lookAt ({ x, y, z })
+                3000  // ms transition duration
+              );
+            })
+            .graphData(app.gData);
+
+          
+         app.Graph.cooldownTime(Infinity)
+          //.d3AlphaDecay(0)
+          //.d3VelocityDecay(0)
+          // Deactivate existing forces
+          //.d3Force('center', null)
+          //.d3Force('charge', null)
+          // Add collision and bounding box forces
+          .d3Force('collide', d3.forceCollide(app.Graph.nodeRelSize() * 35))
+          .d3Force('box', () => {
+            const CUBE_HALF_SIDE = app.Graph.nodeRelSize() * nodes.length * 0.5;
+            nodes.forEach(node => {
+              const x = node.x || 0, y = node.y || 0, z = node.z || 0;
+              // bounce on box walls
+              if (Math.abs(x) > CUBE_HALF_SIDE) { node.vx *= -1; }
+              if (Math.abs(y) > CUBE_HALF_SIDE) { node.vy *= -1; }
+              if (Math.abs(z) > CUBE_HALF_SIDE) { node.vz *= -1; }
+            });
+          })
+
+
+        console.log(app.gData)
+    },
+    shouldShowLink: function (link, baseNode) {
+        console.log(link);
+        //change colours depending on connection type
+        if(link.source === baseNode) {
+            link.color = "#00ff00";
+        } else if(link.target === baseNode) {
+            link.color = "#00ffff";
+        }
+
+      return link.source === baseNode || link.target === baseNode;
+    },
+    enterNodeView: function(i) {
+        console.log("switching node");
+
+        //find node by index
+        node = app.gData.nodes[i];
+        app.curr_node = node;
+        this.addValidators();
+
+        app.Graph.linkVisibility(link => app.shouldShowLink(link, node))
+          // Aim at node from outside it
+          const distance = 1000;
+          const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+          app.Graph.cameraPosition(
+            { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+            node, // lookAt ({ x, y, z })
+            3000  // ms transition duration
+          );
+    },
+    viewAll: function() {
+        app.gData.links = app.links;
+        app.Graph.linkVisibility(true);
+    },
+    addValidators: function () {
+        var validator_node;
+        var validator;
+        var quorumArr = app.curr_node.trusted;
+        var trusted_by = app.curr_node.trusted_by;
+        var curr_node = app.curr_node;
+        var trust_index = Math.round((curr_node.trusted_by.length / app.nodes_data.length) * 100);
+
+        $('#node_header').empty();
+        $('#node_location').empty();
+        $('#rating').empty();
+        $('#trust_index').empty(); 
+        $('#validator_list').empty();
+        $('#trusted_by_list').empty();
+
+        $('#node_header').append(this.getNodeName(curr_node)); 
+        $('#node_location').append("Deep space"); 
+        $('#rating').append(curr_node.activeRating);
+        $('#trust_index').append(trust_index + "%"); 
+
+        for(var node in quorumArr) {
+            //nodes it trusted
+            validator = quorumArr[node];
+            validator_node = '<a onclick="app.enterNodeView(' + validator.listPos + ')" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
+            $('#validator_list').append(validator_node); 
+        }
+
+        for(var node in trusted_by) {
+            validator = trusted_by[node];
+            validator_node = '<a onclick="app.enterNodeView(' + validator.listPos + ')" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
+            $('#trusted_by_list').append(validator_node); 
+        }
+    },
+    getNodeName: function (node) {
+        var name;
+
+        name = node.name ? node.name : node.publicKey.substring(0,16);
+
+        return name
+    }
+}
+
+});
+
+</script>
