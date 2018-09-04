@@ -58,8 +58,8 @@ var controls;
 var effect
 
 var reflectionCube = new THREE.CubeTextureLoader()
-    .setPath( 'images/ss_skybox/' )
-    .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
+    .setPath( 'images/quorum_skybox/' )
+    .load( [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png' ] );
   reflectionCube.format = THREE.RGBFormat;
 
 var tripManager = new TripManager();
@@ -155,7 +155,7 @@ function init() {
 
   camera.lookAt( scene.position );
 
-  var light = new THREE.AmbientLight( 0xffffff, 1 );
+  var light = new THREE.AmbientLight( 0xffffff, 2 );
   light.position.set( 1, 1, 1 ).normalize();
   scene.add( light );
 
