@@ -230,10 +230,16 @@ button {
 .btn.btn-concrete:hover{background-color:#6a7879;}
 .btn.btn-concrete:active{top: 3px; outline: none; -webkit-box-shadow: none; box-shadow: none;}
 
-.explorer_button {
+.explorer_buttons {
+    z-index: 10;
     bottom: 10px;
     position: absolute;
-    left: 45vw;
+    left: 40vw;
+    text-align: center
+}
+
+.explorer_button {
+    display: inline-block;
 }
 
 .btn.btn-concrete, .btn.btn-concrete:hover a {
