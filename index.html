@@ -134,11 +134,21 @@
 
 	</div>
 
+	<div  id="search_window" class="off" type="hidden">
+		<div class="search_bar">
+		<input type="text" name="account-number" id="search_input">
+		<button id="search_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" >Search</button>
+	</div>
+		
+		
+
+	</div>
+
 	<div id="app">
 
 		<div class="icon-bar">
 		  <!-- <a class="active" href="#"><i class="fa fa-home" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"></i></a> -->
-		  <!-- <a href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-search"></i></a> -->
+		   <a href="#"  onclick="Button_Click_Sound.play(); toggleSearchWindow(); " onmouseover="Button_Hover_Sound.play()"><i class="fa fa-search"></i></a> 
 		  <a v-on:click="showRequestHistoryWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" ><i class="fa fa-history"></i></a>
 		  <!-- <a v-on:click="showAccountWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-book"></i></a> -->
 		  <a v-on:click="showLegendWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-question"></i></a>

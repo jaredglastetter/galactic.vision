@@ -400,7 +400,7 @@ a[id|="account-tabs-tab"]:hover {
 
 .icon-bar a {
     float: left;
-    width: 50%;
+    width: 33%;
     text-align: center; /* Center-align text */
     transition: all 0.3s ease; /* Add transition for hover effects */
     color: white; /* White text color */
@@ -771,4 +771,60 @@ div {
 
 #page3{
 	color: white;
+}
+
+/*Search Window*/
+
+#search_window {
+	
+
+  	position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+	background-color: rgba(50,50,50,.9);
+	width: 60vw !important;
+	margin: 6px 7px;
+	border: 2px solid cyan;
+	border-radius: 0.5em;
+	min-height: 15vh;
+	max-height: 50vh;
+	overflow: auto;
+	box-shadow: 0px 0px 13px cyan;
+	padding: 0 15px;
+  	
+
+}
+
+.search_bar{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	/*display: inline-block;*/
+}
+
+#search_input{
+	font-size: 18px;
+	width: 40em;
+	background: #212529;
+	color: cyan;
+	border: none;
+}
+
+#search_button{
+	position: relative;
+	left: 50%;
+	bottom: 0;
+	padding-bottom: 1em;
+	padding-top: 1em;
+	text-align: center;
+	transform: translate(-50%, 0);
+	color: cyan;
+	border-color: : cyan;
+
+	/*position: absolute;
+	top: 1em;
+	right: 10em;*/
 }

@@ -139,7 +139,7 @@ function init() {
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
-  controls = new THREE.OrbitControls( camera );
+  controls = new THREE.OrbitControls( camera, renderer.domElement ); // added renderer.domElement make sure there are no side effects
 
   controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
   controls.dampingFactor = 0.25;
@@ -743,7 +743,68 @@ $(document).ready(function() {
   });
 
 
+  // search
+  
+  $('#search_button').click(function searchAccount(){
+    var accountText =  document.getElementById('search_input').value;
+
+    var ranindex = Math.floor(Math.random() * app.accountList.length);
+    var account = app.accountList[ranindex];
+
+    var object;
+    var objID;
+    for(var i = 0; i < scene.children.length; i++){
+      if(scene.children[i].type == "Mesh"){
+        object = scene.children[i];
+      }
+    }
+
+          objID = object.id;
+
+
+           var sceneObj;
+           var accountObj;
+
+           if(account && !app.accountView) {
+            app.accountViewID = accountText;
+            zoomToTarget(object.position);
+            app.showAccountWindow();
+            assets(accountText);
+            sceneObj = scene.getObjectById( objID, true );
+            accountObj = sceneObj.clone();
+
+            accountObj.material.transparent = true;
+            accountObj.material.opacity = 1;
+
+            app.accountViewObj = accountObj;
+
+           
+
+            scene.add(accountObj);
+            SCREEN_WIDTH = window.innerWidth;
+            SCREEN_HEIGHT = window.innerHeight;
+            var aspect = SCREEN_WIDTH / 2 / SCREEN_HEIGHT;
+
+            camera.aspect = aspect;
+            camera.updateProjectionMatrix();
+            app.accountView = true;
+             $('#search_window').toggleClass('off');
+
+
+            Focus_Planet_sound.play();
+           }
+
+
+
+  })
+  
+
 });
+
+function toggleSearchWindow(){
+    $('#search_window').toggleClass('off');
+
+  };
 
 
 function findReq(msgID) {
