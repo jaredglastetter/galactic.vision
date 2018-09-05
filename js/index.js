@@ -750,6 +750,10 @@ $(document).ready(function() {
 
     var ranindex = Math.floor(Math.random() * app.accountList.length);
     var account = app.accountList[ranindex];
+    
+    if(accountText.length != 56){
+      return;
+    }
 
     var object;
     var objID;
