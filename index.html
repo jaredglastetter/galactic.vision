@@ -3,14 +3,14 @@
 
 <head>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124053214-1"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124053214-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-          gtag('config', 'UA-124053214-1');
-        </script>
+    gtag('config', 'UA-124053214-1');
+  </script>
   <meta charset="UTF-8">
   <title>Galactic Vision - Network Explorer</title>
   <link rel="stylesheet" href="css/style.css">
@@ -134,21 +134,11 @@
 
 	</div>
 
-	<div  id="search_window" class="off" type="hidden">
-		<div class="search_bar">
-		<input type="text" name="account-number" id="search_input">
-		<button id="search_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" >Search</button>
-	</div>
-		
-		
-
-	</div>
-
 	<div id="app">
 
 		<div class="icon-bar">
 		  <!-- <a class="active" href="#"><i class="fa fa-home" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"></i></a> -->
-		   <a href="#"  onclick="Button_Click_Sound.play(); toggleSearchWindow(); " onmouseover="Button_Hover_Sound.play()"><i class="fa fa-search"></i></a> 
+		   <a href="#" v-on:click="showSearchWindow()" onclick="Button_Click_Sound.play();" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-search"></i></a> 
 		  <a v-on:click="showRequestHistoryWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" ><i class="fa fa-history"></i></a>
 		  <!-- <a v-on:click="showAccountWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-book"></i></a> -->
 		  <a v-on:click="showLegendWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-question"></i></a>
@@ -156,6 +146,14 @@
 
 		<button id="tutorial_window_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Help</button>
 		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Back</button>
+
+		<div v-show="showSearch" id="search_window">
+			<div class="search-title orbitron_header">Search Account</div>
+			<div class="search_bar">
+				<input type="text" name="account-number" id="search_input">
+			</div>
+			<button id="search_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" >Search</button>
+		</div>
 
 		<div v-show="showAccountWin" id="account_window">
 			<div class="account-title "> Account - {{ accountViewID  }}</div>
@@ -308,6 +306,7 @@ var app = new Vue({
   showRequestHistory: false,
   showLegend: false,
   showTx: false,
+  showSearch: false,
   messageList: [],
 	accountList: [] ,
 	accountViewID: "",
@@ -443,10 +442,19 @@ var app = new Vue({
 	  		this.showLegend = true;
 	  	}
   	},
+  	showSearchWindow: function() {
+  		if(this.showSearch) {
+  			this.showSearch = false;
+  		} else {
+	  		this.hideAll();
+	  		this.showSearch = true;
+	  	}
+  	},
   	hideAll: function() {
   		this.showRequestHistory = false;
   		this.showAccountWin = false;
   		this.showLegend = false;
+  		this.showSearch = false;
   	},
   	globalView: function() {
   		this.showAccountWin = false;

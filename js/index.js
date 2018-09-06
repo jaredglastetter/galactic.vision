@@ -755,60 +755,66 @@ $(document).ready(function() {
       return;
     }
 
-    var object;
-    var objID;
-    for(var i = 0; i < scene.children.length; i++){
-      if(scene.children[i].type == "Mesh"){
-        object = scene.children[i];
-      }
-    }
+    var planet;
+    var t = Math.floor(Math.random() * app.generated_textures.length);
+    var t2 = Math.floor(Math.random() * app.generated_textures.length);
 
-          objID = object.id;
+    var material = app.generated_textures[t];
+
+    var material2 = app.generated_textures[t2];
+
+    planet = new THREE.Mesh( geometry2, material );
+
+    var angle = Math.random() * Math.PI*2;
+    var radius = Math.random() * 15 + 20;
+
+    var x1 = (Math.abs(Math.cos(angle) * radius) * -1) -3;
+    var y1 = Math.random() * 20 - 10;
+    var z1 = Math.sin(angle) * radius;
+
+    planet.position.set(x1,y1,z1);
+
+    scene.add(planet);
+
+    objID = planet.id;
+
+     var sceneObj;
+     var accountObj;
+
+     if(account && !app.accountView) {
+      app.accountViewID = accountText;
+      zoomToTarget(planet.position);
+      app.showAccountWindow();
+      assets(accountText);
+      sceneObj = scene.getObjectById( objID, true );
+      accountObj = sceneObj.clone();
+
+      accountObj.material.transparent = true;
+      accountObj.material.opacity = 1;
+
+      app.accountViewObj = planet;
+
+      SCREEN_WIDTH = window.innerWidth;
+      SCREEN_HEIGHT = window.innerHeight;
+      var aspect = SCREEN_WIDTH / 2 / SCREEN_HEIGHT;
+
+      camera.aspect = aspect;
+      camera.updateProjectionMatrix();
+      app.accountView = true;
+      app.showSearch = false;
 
 
-           var sceneObj;
-           var accountObj;
-
-           if(account && !app.accountView) {
-            app.accountViewID = accountText;
-            zoomToTarget(object.position);
-            app.showAccountWindow();
-            assets(accountText);
-            sceneObj = scene.getObjectById( objID, true );
-            accountObj = sceneObj.clone();
-
-            accountObj.material.transparent = true;
-            accountObj.material.opacity = 1;
-
-            app.accountViewObj = accountObj;
-
-           
-
-            scene.add(accountObj);
-            SCREEN_WIDTH = window.innerWidth;
-            SCREEN_HEIGHT = window.innerHeight;
-            var aspect = SCREEN_WIDTH / 2 / SCREEN_HEIGHT;
-
-            camera.aspect = aspect;
-            camera.updateProjectionMatrix();
-            app.accountView = true;
-             $('#search_window').toggleClass('off');
-
-
-            Focus_Planet_sound.play();
-           }
-
-
-
+      Focus_Planet_sound.play();
+     }
   })
   
 
 });
 
 function toggleSearchWindow(){
-    $('#search_window').toggleClass('off');
+  $('#search_window').toggleClass('off');
 
-  };
+}
 
 
 function findReq(msgID) {

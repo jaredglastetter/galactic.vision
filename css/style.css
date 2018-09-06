@@ -784,7 +784,7 @@ div {
     transform: translate(-50%, -50%);
 
 	background-color: rgba(50,50,50,.9);
-	width: 60vw !important;
+	width: 50vw !important;
 	margin: 6px 7px;
 	border: 2px solid cyan;
 	border-radius: 0.5em;
@@ -797,17 +797,20 @@ div {
 
 }
 
+.search-title {
+	margin-bottom: 0.5em;
+}
+
 .search_bar{
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	position: relative;
+	margin: 0 auto;
+	text-align: center;
 	/*display: inline-block;*/
 }
 
 #search_input{
 	font-size: 18px;
-	width: 40em;
+	width: 33em;
 	background: #212529;
 	color: cyan;
 	border: none;
@@ -817,6 +820,7 @@ div {
 	position: relative;
 	left: 50%;
 	bottom: 0;
+	margin: 1em 0;
 	padding-bottom: 1em;
 	padding-top: 1em;
 	text-align: center;
