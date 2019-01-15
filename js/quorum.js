@@ -38,13 +38,28 @@ var theta = 0;
 
 function start_app() {
 
-     $.getJSON('http://anyorigin.com/go?url=https%3A//stellarbeat.io/nodes/raw&callback=?', function(data){
+     /*$.getJSON('http://www.whateverorigin.org/get?url=https%3A//stellarbeat.io/v1/nodes/', function(data){
       $('#output').html(data.contents);
       nodes = data.contents;
       total_nodes = nodes.length;
       init();
       animate();
-    });
+    });*/
+
+    console.log(data);
+
+    $('#output').html(data);
+
+    /*nodes = []
+
+    for(var i = 0; i < nodes_data.length; i++) {
+        node = nodes_data[i].node;
+        nodes.push(node);
+    }*/
+      nodes = data;
+      total_nodes = nodes.length;
+      init();
+      animate();
 
 
     // init();
@@ -221,7 +236,7 @@ function setupTween(node) {
     //changeTags();
     changePins();
     highlightLines(node);
-    zoomToLocation(xyz_from_lat_lng(node.latitude, node.longitude, 1.3));
+    zoomToLocation(xyz_from_lat_lng(node.geoData.latitude, node.geoData.longitude, 1.3));
 }
 
 function viewAll() {
@@ -439,8 +454,8 @@ function generateControlPoints(radius) {
         //grab 
         node = new Object();
 
-        var start_lat = nodes[f].latitude;
-        var start_lng = nodes[f].longitude;
+        var start_lat = nodes[f].geoData.latitude;
+        var start_lng = nodes[f].geoData.longitude;
 
         nodes[f].connections = [];
 
@@ -593,8 +608,8 @@ function generateControlPoints(radius) {
                     //add validator node object to array
                     nodes[f].quorumArr.push(validatorMatch[0]);
 
-                    var end_lat = validatorMatch[0].latitude;
-                    var end_lng = validatorMatch[0].longitude;
+                    var end_lat = validatorMatch[0].geoData.latitude;
+                    var end_lng = validatorMatch[0].geoData.longitude;
 
                     var material = new THREE.ShaderMaterial( {
                         uniforms: {

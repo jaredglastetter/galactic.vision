@@ -9,16 +9,15 @@
     <style> body { margin: 0; } </style>
     <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js'></script>
+    <script src="js/dependencies/jquery.min.js"></script> 
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="//unpkg.com/3d-force-graph"></script>
     <script src="//unpkg.com/d3-octree"></script>
     <script src="//unpkg.com/d3-force-3d"></script>
     <script type="text/javascript" src="js/three.min.js"></script>
-    <script src="js/dependencies/jquery.min.js"></script> 
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="js/dependencies/vue.js"></script>
-    <script src="js/dependencies/underscore-min.js"></script>
     <script src="js/dependencies/underscore-min.js"></script>
 
       <!--<script src="../../dist/3d-force-graph.js"></script>-->
@@ -159,10 +158,13 @@ var app = new Vue({
     }
 
     
-    $.getJSON('http://anyorigin.com/go?url=https%3A//stellarbeat.io/nodes/raw&callback=?', function(data) {
+    /*$.getJSON('http://www.whateverorigin.org/get?url=https%3A//api.stellarbeat.io/v1/nodes/', function(data) {
       app.nodes_data = data.contents;
       app.convertToGraph();
-    }); 
+    }); */
+    nodes = [];
+    app.nodes_data = nodes;
+    app.convertToGraph();
 
   },
   methods: {
