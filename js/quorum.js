@@ -36,7 +36,33 @@ var mouse;
 var raycaster; 
 var theta = 0;
 
-function start_app() {
+function reqListener () {
+  console.log(this.responseText);
+  console.log(JSON.parse(this.responseText));
+  data = JSON.parse(this.responseText);
+  $('#output').html(data);
+  nodes = data;
+  total_nodes = nodes.length;
+  init();
+  animate();
+}
+
+async function start_app() {
+
+    //  await $.getJSON('http://www.alloworigin.com/get?url=' + encodeURIComponent('https://api.stellarbeat.io/v1/nodes'), function(data){
+    //   console.log("received stellarbeat node data");
+    //   $('#output').html(data.contents);
+    //   nodes = data.contents;
+    //   total_nodes = nodes.length;
+    //   init();
+    //   animate();
+    // });
+
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", reqListener);
+    oReq.open("GET", "https://api.stellarbeat.io/v1/nodes");
+    oReq.send();
+
 
      /*$.getJSON('http://www.whateverorigin.org/get?url=https%3A//stellarbeat.io/v1/nodes/', function(data){
       $('#output').html(data.contents);
@@ -46,9 +72,9 @@ function start_app() {
       animate();
     });*/
 
-    console.log(data);
+    //console.log(data);
 
-    $('#output').html(data);
+    //$('#output').html(data);
 
     /*nodes = []
 
@@ -56,10 +82,10 @@ function start_app() {
         node = nodes_data[i].node;
         nodes.push(node);
     }*/
-      nodes = data;
-      total_nodes = nodes.length;
-      init();
-      animate();
+      // nodes = data;
+      // total_nodes = nodes.length;
+      // init();
+      // animate();
 
 
     // init();

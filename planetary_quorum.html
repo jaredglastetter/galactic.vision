@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html>
    <head>
-    <title>Galactic Vision - Quorum Explorer</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <link type="text/css" rel="stylesheet" href="css/quorum.css" />
-    <style> body { margin: 0; } </style>
-    <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js'></script>
-    <script src="js/dependencies/jquery.min.js"></script> 
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="//unpkg.com/3d-force-graph"></script>
-    <script src="//unpkg.com/d3-octree"></script>
-    <script src="//unpkg.com/d3-force-3d"></script>
-    <script type="text/javascript" src="js/three.min.js"></script>
-    <script src="js/dependencies/vue.js"></script>
-    <script src="js/dependencies/underscore-min.js"></script>
-
-      <!--<script src="../../dist/3d-force-graph.js"></script>-->
-</head>
+        <title>Galactic Vision - Quorum Explorer</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <link type="text/css" rel="stylesheet" href="css/quorum.css" />
+        <style> body { margin: 0; } </style>
+        <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js'></script>
+        <script src="js/dependencies/jquery.min.js"></script> 
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/3d-force-graph"></script>
+        <script src="https://unpkg.com/d3-octree"></script>
+        <script src="https://unpkg.com/d3-force-3d"></script>
+        <script type="text/javascript" src="js/three.min.js"></script>
+        <script src="js/dependencies/vue.js"></script>
+        <script src="js/dependencies/underscore-min.js"></script>
+    </head>
 
 <body>
-    <!--
-    <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", start_app, false);
-    </script> -->
     <div id="app"> 
         <div class="quorum-nav">
             <div id="node_list" class="list-group">
@@ -72,6 +66,13 @@
 
 
 <script type="text/javascript">
+
+function reqListener () {
+  nodes = [];
+  app.nodes_data = JSON.parse(this.responseText);
+  app.convertToGraph();
+}
+
 var app = new Vue({
   el: '#app',
   data: {
@@ -87,6 +88,9 @@ var app = new Vue({
     curr_node: []
   },
   mounted: function() {
+    console.log(this.$el);
+    console.log(app);
+
     var rR;
     var rG;
     var rB;
@@ -114,7 +118,7 @@ var app = new Vue({
                 imgArray[image],
 
                 // onLoad callback
-                function ( texture ) {
+                function( texture ) {
                     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                     texture.anisotropy = 16;
                     // in this example we create the material when the texture is loaded
@@ -162,9 +166,15 @@ var app = new Vue({
       app.nodes_data = data.contents;
       app.convertToGraph();
     }); */
-    nodes = [];
-    app.nodes_data = nodes;
-    app.convertToGraph();
+
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", reqListener);
+    oReq.open("GET", "https://api.stellarbeat.io/v1/nodes");
+    oReq.send();
+
+    // nodes = [];
+    // this.nodes_data = nodes;
+    // this.convertToGraph();
 
   },
   methods: {
@@ -180,31 +190,35 @@ var app = new Vue({
         var validatorMatch;
         var curvature;
 
+        console.log(this.$el);
+        console.log(this.nodes_data);
+        console.log(this.total_nodes);
+
         console.log("at least got here");
 
         //nodes = [...Array(nodes_data.length).keys()].map(i => ({ id: i }));
 
-        for (var i = 0; i < app.nodes_data.length; ++i) {
-            app.nodes_data[i].listPos = i;
-            app.nodes_data[i].trusted_by = [];
-            app.nodes_data[i].trusted_connections = [];
+        for (var i = 0; i < this.nodes_data.length; ++i) {
+            this.nodes_data[i].listPos = i;
+            this.nodes_data[i].trusted_by = [];
+            this.nodes_data[i].trusted_connections = [];
         }
 
-        for (var f = 0; f < app.nodes_data.length; ++f) {
+        for (var f = 0; f < this.nodes_data.length; ++f) {
             //create links data
-            node = app.nodes_data[f];
+            node = this.nodes_data[f];
 
-            app.nodes_data[f].connections = [];
+            this.nodes_data[f].connections = [];
 
-            if(app.nodes_data[f].quorumSet) {
-                quorumSet = app.nodes_data[f].quorumSet.validators;
+            if(this.nodes_data[f].quorumSet) {
+                quorumSet = this.nodes_data[f].quorumSet.validators;
 
-                app.nodes_data[f].quorumArr = [];
+                this.nodes_data[f].quorumArr = [];
 
-                if(app.nodes_data[f].name) {
-                    app.nodes_data[f].listPos = nodes.length;
+                if(this.nodes_data[f].name) {
+                    this.nodes_data[f].listPos = nodes.length;
                     //add to nodes list
-                    nodes.push(app.nodes_data[f]);
+                    nodes.push(this.nodes_data[f]);
 
 
                     //enter quorum set array loop and execute the next code per found quorum
@@ -278,7 +292,7 @@ var app = new Vue({
 
         var GROUPS = 12;
 
-        app.gData = {
+        this.gData = {
           nodes: [...Array(nodes.length).keys()].map(i => ({ id: i, vx: Math.random(),
           vy: Math.random(),
           vz: Math.random(),
@@ -289,16 +303,16 @@ var app = new Vue({
           links: links
         };
 
-        app.links = links;
+        this.links = links;
 
         var geometry2 = new THREE.SphereBufferGeometry( 1, 32, 16 );
         var material;
         var n;
 
         for(var i = 0; i < nodes.length; i++) {
-            n = Math.floor(Math.random() * app.generated_textures.length);
-            material = app.generated_textures[n]; 
-            app.node_textures.push(material);
+            n = Math.floor(Math.random() * this.generated_textures.length);
+            material = this.generated_textures[n]; 
+            this.node_textures.push(material);
             console.log(i);
         }
 
@@ -309,49 +323,49 @@ var app = new Vue({
         
         reflectionCube.format = THREE.RGBFormat;
         
-        app.Graph = ForceGraph3D()
+        this.Graph = ForceGraph3D()
           (document.getElementById('3d-graph'))
             .linkCurvature('curvature')
             //.linkCurveRotation('rotation')
             .linkDirectionalParticles(2)
             .nodeLabel("name")
             .nodeAutoColorBy('group')
-            .linkAutoColorBy(d => app.gData.nodes[d.source].group)
+            .linkAutoColorBy(d => this.gData.nodes[d.source].group)
             .linkWidth(3)
             .linkDirectionalParticleWidth(8)
             .linkOpacity(0.5)
             .nodeRelSize(5)
             .nodeThreeObject(({ id }) => 
-                 new THREE.Mesh(new THREE.SphereBufferGeometry( 30, 32, 16 ), app.node_textures[id % nodes.length]))
+                 new THREE.Mesh(new THREE.SphereBufferGeometry( 30, 32, 16 ), this.node_textures[id % nodes.length]))
             .onNodeClick(
               node => {
               //changeDataSet(node.id);
-              app.Graph.linkVisibility(link => app.shouldShowLink(link, node))
+              this.Graph.linkVisibility(link => this.shouldShowLink(link, node))
               // Aim at node from outside it
               const distance = 1750;
               const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
-              app.Graph.cameraPosition(
+              this.Graph.cameraPosition(
                 { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
                 node, // lookAt ({ x, y, z })
                 3000  // ms transition duration
               );
             })
-            .graphData(app.gData);
+            .graphData(this.gData);
 
-        app.Graph.scene().background = reflectionCube;
-        app.Graph.cameraPosition({z: 2000});
+        this.Graph.scene().background = reflectionCube;
+        this.Graph.cameraPosition({z: 2000});
 
 
-         app.Graph.cooldownTime(Infinity)
+         this.Graph.cooldownTime(Infinity)
           //.d3AlphaDecay(0)
           //.d3VelocityDecay(0)
           // Deactivate existing forces
           //.d3Force('center', null)
           //.d3Force('charge', null)
           // Add collision and bounding box forces
-          .d3Force('collide', d3.forceCollide(app.Graph.nodeRelSize() * 50))
+          .d3Force('collide', d3.forceCollide(this.Graph.nodeRelSize() * 50))
           .d3Force('box', () => {
-            const CUBE_HALF_SIDE = app.Graph.nodeRelSize() * nodes.length * 0.5;
+            const CUBE_HALF_SIDE = this.Graph.nodeRelSize() * nodes.length * 0.5;
             nodes.forEach(node => {
               const x = node.x || 0, y = node.y || 0, z = node.z || 0;
               // bounce on box walls
@@ -362,7 +376,7 @@ var app = new Vue({
           })
 
 
-        console.log(app.gData)
+        console.log(this.gData)
     },
     shouldShowLink: function (link, baseNode) {
         console.log(link);
