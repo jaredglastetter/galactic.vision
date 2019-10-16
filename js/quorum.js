@@ -391,7 +391,8 @@ function addValidators() {
     $('#node_header').empty();
     $('#node_location').empty();
     $('#rating').empty();
-    $('#trust_index').empty(); 
+    $('#trust_index').empty();
+    $('#core_version').empty();
     $('#validator_list').empty();
     $('#trusted_by_list').empty();
 
@@ -399,6 +400,7 @@ function addValidators() {
     $('#node_location').append(getNodeLocation(curr_node)); 
     $('#rating').append(curr_node.statistics.active24HoursPercentage + "%");
     $('#trust_index').append(trust_index + "%"); 
+    $('#core_version').append(curr_node.versionStr.substring(0,curr_node.versionStr.indexOf("(")));
 
     for(var node in quorumArr) {
         //nodes it trusted
