@@ -146,6 +146,11 @@ function init() {
             loader.load(
                 'images/water.png',
                 function(water_texture) {
+           
+                     earth_texture.image.crossOrigin = "";
+                     water_texture.image.crossOrigin = "";
+                     console.log(water_texture);
+                     console.log(earth_texture);
 
                     globe.add(new THREE.Mesh(
                         new THREE.SphereGeometry(radius, segments, segments),
@@ -392,7 +397,7 @@ function addValidators() {
 
     $('#node_header').append(getNodeName(curr_node)); 
     $('#node_location').append(getNodeLocation(curr_node)); 
-    $('#rating').append(curr_node.activeRating);
+    $('#rating').append(curr_node.statistics.active24HoursPercentage + "%");
     $('#trust_index').append(trust_index + "%"); 
 
     for(var node in quorumArr) {
@@ -440,8 +445,12 @@ function getNodeName(node) {
 
 function getNodeLocation(node) {
     var location;
+    var geoData = node.geoData;
 
-    location = node.city ? node.city + ", " + node.country : node.country;
+    if(geoData) {
+      location = geoData.city ? geoData.city + ", " + geoData.countryName : geoData.countryName;     
+    }
+
 
     return location
 }
@@ -450,13 +459,15 @@ function populateNodeList() {
 
     //sort list by # trusted_by
 
-    nodes = _.sortBy(nodes, "trusted_by");
+    //TO DO: fix node links when sorting by trusted by. Sorting by trusted nodes messes up the linked node
 
-    nodes = nodes.reverse();
+    //nodes = _.sortBy(nodes, "trusted_by");
+
+   // nodes = nodes.reverse();
 
     for(var f = 0; f < nodes.length; f++) {
         if(nodes[f].connections) {
-            if(nodes[f].connections.length > 0 && nodes[f].name) {
+            if(nodes[f].name) { // optional condition: nodes[f].connections.length > 0 && -> only nodes that have a node that trust it
                 menu_node = '<a onclick="setupTween(nodes[' + f + '])" href="#" class="list-group-item list-group-item-dark">' + nodes[f].name + '</a>';
                 $('#node_list').append(menu_node); 
                 app.nodes.push(nodes[f]);
