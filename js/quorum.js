@@ -397,7 +397,7 @@ function addValidators() {
     $('#validator_list').empty();
     $('#trusted_by_list').empty();
     $('#is_validating').empty();
-
+    $('#overloaded').empty();
 
     $('#node_header').append(getNodeName(curr_node)); 
     $('#node_location').append(getNodeLocation(curr_node)); 
@@ -406,6 +406,7 @@ function addValidators() {
     $('#validator_type').append(curr_node.isFullValidator ? "Full Validator" : "Validator");
     $('#core_version').append(curr_node.versionStr.substring(0,curr_node.versionStr.indexOf("(")));
     $('#is_validating').append(curr_node.isValidating ? "Validating" : "Not Validating");
+    $('#overloaded').append(curr_node.statistics.overLoaded24HoursPercentage.toString() + "%");
 
     for(var node in quorumArr) {
         //nodes it trusted
