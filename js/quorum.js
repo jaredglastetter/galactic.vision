@@ -392,6 +392,7 @@ function addValidators() {
     $('#node_location').empty();
     $('#rating').empty();
     $('#trust_index').empty();
+    $('#validator_type').empty();
     $('#core_version').empty();
     $('#validator_list').empty();
     $('#trusted_by_list').empty();
@@ -399,7 +400,8 @@ function addValidators() {
     $('#node_header').append(getNodeName(curr_node)); 
     $('#node_location').append(getNodeLocation(curr_node)); 
     $('#rating').append(curr_node.statistics.active24HoursPercentage + "%");
-    $('#trust_index').append(trust_index + "%"); 
+    $('#trust_index').append(trust_index + "%");
+    $('#validator_type').append(curr_node.isFullValidator ? "Full Validator" : "Validator");
     $('#core_version').append(curr_node.versionStr.substring(0,curr_node.versionStr.indexOf("(")));
 
     for(var node in quorumArr) {
