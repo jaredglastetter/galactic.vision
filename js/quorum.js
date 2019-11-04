@@ -400,7 +400,7 @@ function addValidators() {
     $('#node_header').append(getNodeName(curr_node)); 
     $('#node_location').append(getNodeLocation(curr_node)); 
     $('#rating').append(curr_node.statistics.active24HoursPercentage + "%");
-    $('#trust_index').append(trust_index + "%");
+    $('#trust_index').append(curr_node.index * 100 + "%");
     $('#validator_type').append(curr_node.isFullValidator ? "Full Validator" : "Validator");
     $('#core_version').append(curr_node.versionStr.substring(0,curr_node.versionStr.indexOf("(")));
 
