@@ -116,3 +116,9 @@ header a, a:visited {
 .title-container {
   margin-top: 5rem;
 }
+
+.card-img-top {
+  background-position: center;
+  background-size: cover;
+  height: 200px;
+}
