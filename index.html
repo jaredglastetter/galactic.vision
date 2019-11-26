@@ -1,662 +1,111 @@
-<!DOCTYPE html>
-<html lang="en" >
+<!-- Home Page -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
 
-<head>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124053214-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    <title>Galactic Vision - 3D Stellar Explorer</title>
 
-    gtag('config', 'UA-124053214-1');
-  </script>
-  <meta charset="UTF-8">
-  <title>Galactic Vision - Network Explorer</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
-  
-</head>
+    <!-- Bootstrap core CSS -->
+    <link href="../../../../dist/css/bootstrap.min.css" rel="stylesheet">
 
-<body>
+    <!-- Custom styles for this template -->
+    <link href="album.css" rel="stylesheet">
+  </head>
 
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js'></script>
-	<script src="./bower_components/stellar-sdk/stellar-sdk.min.js"></script>
+  <body>
 
-	<script src="js/dependencies/jquery.min.js"></script>
-	<script src="js/dependencies/vue.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet"> 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
-	<script src="https://unpkg.com/ionicons@4.2.4/dist/ionicons.js"></script>
+<!--     <header>
+      <div class="navbar navbar-dark bg-black box-shadow">
+        <div class="container d-flex justify-content-between">
+          <a href="#" class="navbar-brand d-flex align-items-center">
+            <strong>Galactic Vision</strong>
+          </a>
+        </div>
+      </div>
+    </header> -->
 
-	<script src="js/dependencies/require.js"></script>
-	<script src="js/dependencies/underscore-min.js"></script>
-	<script src="js/webgl/OrbitControls.js"></script>
-	<script src="js/webgl/Projector.js"></script>
-	<script src="js/webgl/CanvasRenderer.js"></script>
-	<script src="js/dependencies/stats.min.js"></script>
-	<script type="text/javascript" src="js/webgl/stats.min.js"></script>
-	<script src="js/dependencies/tween.min.js"></script>
-	<script src='js/webgl/LineSegmentsGeometry.js'></script>
-	<script src='js/webgl/LineGeometry.js'></script>
-	<script src='js/webgl/WireframeGeometry2.js'></script>
+    <main role="main">
 
-	<script src='js/webgl/LineMaterial.js'></script>
+      <section class="title-section jumbotron text-center bg-transparent">
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+        <div class="clouds"></div>
+        <div class="title-container container">
+          <h1 class="jumbotron-heading" style="color: #fff">Galactic Vision</h1>
+          <p class="sub-title text-muted">A feature rich 3D explorer for the Stellar network</p>
+        </div>
+      </section>
 
-	<script src='js/webgl/LineSegments2.js'></script>
-	<script src='js/webgl/Line2.js'></script>
-	<script src='js/webgl/Wireframe.js'></script>
-	
-	<!-- index -->
-	<script src="js/webgl/inflate.min.js"></script>
-	<script src="js/loaders/FBXLoader.js"></script>
-	<script  src="js/webgl/OutlineEffect.js"></script>
-	<!-- <script  src="js/webgl/shootingstar.js"></script> -->
-	<script  src="js/horizon.js"></script>
-	<script  src="js/stream.js"></script>
-	<script  src="js/trip.js"></script>
-	<script  src="js/index.js"></script>
+      <div class="album py-5 bg-light">
+        <div class="container">
 
-	<!--
-	<div id="layout" class="stars">
-	 	<div id="ShootingStarParams"></div>
-	</div> -->
-	<!-- <img src="Stellar-Logo.png" class="stellar_logo"> -->
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="images/stellarexplorer.png" alt="Card image cap">
+                <div class="card-body">
+                  <p class="card-text" style="font-weight: bold">Activity Explorer</p>
+                  <p class="card-text">View the exchange of assets in real time.</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                  	<a href="explorer.html" class="btn btn-primary my-2">Go to App</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="images/quorumexplorer.png" alt="Card image cap">
+                <div class="card-body">
+                  <p class="card-text" style="font-weight: bold">Quorum Explorer</p>
+                  <p class="card-text">Monitor the state of the network structure around the earth.</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <a href="quorum.html" class="btn btn-primary my-2">Go to App</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="images/planetaryquorumexplorer.png" alt="Card image cap">
+                <div class="card-body">
+                  <p class="card-text" style="font-weight: bold">Planetary Quorum Explorer</p>
+                  <p class="card-text">Monitor the state of the network structure in intergalactic space.</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <a href="planetary_quorum.html" class="btn btn-primary my-2">Go to App</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
+    </main>
 
-	<div id="background_layout" class="star_background">
-	 	
-	</div>
-	<script type="text/javascript">
-      document.addEventListener("DOMContentLoaded", start_app, false);
-  </script>
-	<div id="loading_overlay" class="hide"><img width="400" height="400" id="loading_overlay_img" src="images/loading.svg"></div>
+    <footer class="text-muted">
+      <div class="container">
+        <p class="float-right">
+          <a href="#">Back to top</a>
+        </p>
+        <p>Have feedback, suggestions, or found a bug? Email us at prismaticcoredev@gmail.com</p>
+      </div>
+    </footer>
 
-	<div class="tutorial_window_off tutorial_text" id="tutorial_window" type="hidden">
-		<div class="tutorial_window_content">
-			<h1 class="orbitron_header"><img width="60" height="60" id="galactic_icon" src="images/icon.png" style="margin-right: 0.5em;">Galactic.Vision Tutorial</h1>
-
-			<!-- Page 1 -->
-			<div id="page1">
-				<p>Welcome to Galactic Vision! This application visualizes live data about user activity on the network. Network activity can either be observed from a glance, or interacted with to get more information.</p>
-
-				<ul >
-					<li>Click the buttons at the bottom left of the screen to open up the desired activity stream </li>
-					<li>Explore the network using the mouse to control the camera</li>
-				</ul>
-				
-
-				<div class="tutorial_image">
-					<img src="https://i.imgur.com/rfHXmin.gif" >
-				</div>
-
-			</div>
-
-			<!-- Page 2 -->
-			<div id="page2" class="off">
-				<p tutorial_text" >Particles are emitted from the planets to represent assets. The most popular cryptos are colour coded and can be refered to using the legend using the (?) icon.</p>
-				
-				<ul>
-					<li>Click the question mark (?) icon to see the legend</li>
-					<li>Click the history icon to view the request history</li>
-				</ul>
-
-				<div class="tutorial_image">
-					<img src="https://i.imgur.com/DgXqDGa.gif" >
-				</div>
-			</div>
-
-			<!-- Page 3 -->
-			<div id="page3" class="off">
-				<p>Each planet is able to be clicked on to enter account view. This allows the user to explore the balances and recent history of the account.</p>
-				<ul>
-					<li>Click on the space station to focus on the particles entering and leaving the space station</li>
-					<li>Click on any planet to focus in on an account, view asset distributions, balances, trades, and more</li>
-				</ul>
-
-				<div class="tutorial_image">
-					<img src="https://i.imgur.com/7gDfMQC.gif" >
-				</div>
-
-			</div>
-
-			<div class="tutorial_navigation_buttons">
-				<button id="tutorial_back_button"  class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" style="display: none">Back</button>
-				<button id="tutorial_next_button"  class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Next</button>
-				<button id="tutorial_close_button"  class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" style="display: none">Close</button>
-			</div>
-		</div>
-
-	</div>
-
-	<div id="app">
-
-		<div class="icon-bar">
-		  <!-- <a class="active" href="#"><i class="fa fa-home" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"></i></a> -->
-		   <a href="#" v-on:click="showSearchWindow()" onclick="Button_Click_Sound.play();" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-search"></i></a> 
-		  <a v-on:click="showRequestHistoryWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" ><i class="fa fa-history"></i></a>
-		  <!-- <a v-on:click="showAccountWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-book"></i></a> -->
-		  <a v-on:click="showLegendWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-question"></i></a>
-		</div>
-
-		<button id="tutorial_window_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Help</button>
-		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Back</button>
-
-		<div v-show="showSearch" id="search_window">
-			<div class="search-title orbitron_header">Search Account</div>
-			<div class="search_bar">
-				<input type="text" name="account-number" id="search_input">
-			</div>
-			<button id="search_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" >Search</button>
-		</div>
-
-		<div v-show="showAccountWin" id="account_window">
-			<div class="account-title "> Account - {{ accountViewID  }}</div>
-
-			<div id="account" class="container p-t-md">
-				<div class="tab-content" style="background: #212529;">
-					<ul class="nav nav-tabs">
-						<li role="presentation" class="nav-item"><a id="account-tabs-tab-history" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-balances" aria-selected="true" href="#account_history" class="nav-link active">History</a></li>
-						<li role="presentation" class="nav-item"><a id="account-tabs-tab-stats" href="#account_stats" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-payments" tabindex="-1" aria-selected="false" class="nav-link">Stats</a></li>
-					</ul>
-
-					<!-- Account History table tab -->
-					<div id="account_history" class="tab-pane active">
-						<div class="account_container">
-							<div id="account-menu" style="border-radius: 4px;">
-								<ul role="tablist" class="nav nav-tabs" id="account-tabs">
-									<li role="presentation" class="nav-item"><a id="account-tabs-tab-balances" class="nav-link active" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-balances" aria-selected="true" href="#balances">Balances</a></li>
-									<li role="presentation" class="nav-item"><a id="account-tabs-tab-payments" class="nav-link" href="#payments_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-payments" tabindex="-1" aria-selected="false">Payments</a></li>
-									<li role="presentation" class="nav-item"><a id="account-tabs-tab-offers" class="nav-link" href="#offers_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-offers" tabindex="-1" aria-selected="false">Offers</a></li>
-									<li role="presentation" class="nav-item"><a id="account-tabs-tab-trades" class="nav-link" href="#trades_tab" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-trades" tabindex="-1" aria-selected="false" >Trades</a></li>
-									<li role="presentation" class="nav-item"><a id="account-tabs-tab-operations" class="nav-link" data-toggle="tab" role="tab" aria-controls="account-tabs-pane-operations" tabindex="-1" aria-selected="false" href="#operations_tab">Operations</a></li>
-									<li role="presentation" class="nav-item"><a id="account-tabs-tab-transactions" class="nav-link" data-toggle="tab" data-url="?action=transactions" role="tab" aria-controls="account-tabs-pane-transactions" tabindex="-1" aria-selected="false" href="#transactions_tab">Transactions</a></li>
-								</ul>
-								<div class="tab-content">
-									<div id="balances" class="tab-pane active"></div>
-									<div id="payments_tab" class="tab-pane fade"></div>
-									<div id="offers_tab" class="tab-pane fade"></div>
-									<div id="operations_tab" class="tab-pane fade"></div>
-									<div id="transactions_tab" class ="tab-pane fade"></div>
-									<div id="trades_tab" class="tab-pane fade"> </div>
-								</div>
-							</div>
-							<div id="assets"></div>
-						</div>				
-					</div>
-
-					<!-- Stats Tab -->
-					<div id="account_stats" class="tab-pane fade">
-
-						<div class="chart_container">
-							<div class="pie-chart orbitron">
-								Assets (USD)
-								<canvas id="myChart"></canvas>
-							</div>
-							<div class="pie-chart orbitron">
-								Trade Distribution (Last 200)
-								<canvas id="tradesChart"></canvas>
-							</div>
-						</div>
-
-						<!--
-						<div class="account-info"> 
-							<span> <b>Payments sent:</b> {{ payments_sent }} </span>
-							<span> <b>Payments received:</b> {{ payments_received }} </span>
-							<span> <b>Trades completed:</b> {{ trades_completed }} </span>
-							<span> <b>Most Traded Asset:</b> {{ most_traded }} </span>
-						</div> -->
-
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div v-show="showRequestHistory" class="request-history">
-			<div class="request-title orbitron_header">Request History</div>
-			<!--<div class='request-container'>
-			  <ul class='request-labels' id="request-list"></ul>
-			</div> -->
-			<table id="request-table" class="table table-dark table-hover table-condensed"><thead><tr><th id="request-operation">Operation</th><th id="request-details">Operation</th><th id="request-transaction">Transaction</th><!--<th id="request-time">Time</th>--></tr></thead><tbody id="request-body"> </tbody> </table>
-		</div>
-
-		<div v-show="showLegend" class='my-legend'>
-			<div class='legend-title orbitron_header'>Stellar Assets Legend</div>
-			<div class='legend-scale'>
-			  <ul class='legend-labels' id="asset-list"></ul>
-			</div>
-		</div>
-
-		<div class="buttons" >
-			<!-- <button id="transactions_stream" class="raise">Transactions</button> -->
-			<!--
-			<div id="toggle_container">
-				<div class='toggle' 
-					id='tl'
-					toggle-div
-					toggle-class='toggle-on'
-					toggle-active=false>
-					<div class='toggle-text-off'>OFF</div>
-					<div class='glow-comp'></div>
-					<div class='toggle-button'></div>
-					<div class='toggle-text-on'>ON</div>
-				</div>
-			</div>-->
-			<div id='switch_container'>
-				<div class='switch_header'>Payments</div>
-				<div class='toggle' id='payments_stream' onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">
-					<div class='toggle-text-off'>OFF</div>
-					<div class='glow-comp'></div>
-					<div class='toggle-button'></div>
-					<div class='toggle-text-on'>ON</div>
-				</div>
-			</div>
-			<div id='switch_container2'>
-				<div class='switch_header'>Offers</div>
-				<div class='toggle' id='operations_stream' onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">
-					<div class='toggle-text-off'>OFF</div>
-					<div class='glow-comp'></div>
-					<div class='toggle-button'></div>
-					<div class='toggle-text-on'>ON</div>
-				</div>
-			</div>
-			<div id='switch_container3'>
-				<div class='switch_header'>Trades</div>
-				<div class='toggle' id='trades_stream' onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">
-					<div class='toggle-text-off'>OFF</div>
-					<div class='glow-comp'></div>
-					<div class='toggle-button'></div>
-					<div class='toggle-text-on'>ON</div>
-				</div>
-			</div>
-			<!--
-			<button id="payments_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" >Payments</button>
-			<button id="operations_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Offers</button>
-			<button id="trades_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Trades</button> -->
-			<!-- <button id="effects_stream" class="raise">Effects</button> -->
-		</div>
-	 
-	 	<div class="quorum_button">
-			<a href="quorum.html" class="btn btn-concrete"><i class="fa fa-globe"></i> Switch to Quorum Explorer </a>			
-		</div>
-
-		<div id="description" style="display:none">
-			<h1>Description</h1>
-			<!-- <p> this is the description</p> -->
-			<div id="description_lines">
-			<!-- Append here -->
-			</div>
-		</div>
-	</div>
-</body>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="../../../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../../../dist/js/bootstrap.min.js"></script>
+    <script src="../../../../assets/js/vendor/holder.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/index.css" />
+  </body>
 </html>
-
-<script type="text/javascript">
-var app = new Vue({
-  el: '#app',
-  data: {
-  message: 'Hello Vue!',
-  showVue: false,
-  showAccountWin: false,
-  showRequestHistory: false,
-  showLegend: false,
-  showTx: false,
-  showSearch: false,
-  messageList: [],
-	accountList: [] ,
-	accountViewID: "",
-	accountViewObj: {},
-	accountView: false,
-	switchToGlobalView: false,
-	requestCount: 0,
-	payments_sent: 0,
-	payments_received: 0,
-	trades_completed: 0,
-	most_traded: "",
-	found: false,
-	assetID: "",
-	num_assets: 0,
-	num_expected: 0,
-	datasets: [],
-	innerData: [],
-	backgroundColor: [],
-	labels: [],
-	wireframe: "",
-	imgArray: ["images/Wetlands-Clouds-EQUIRECTANGULAR-1-1024x512.png", "images/2k_uranus.jpg", "images/planet_textures/Planet_Al_Dhanab_9192.png", "images/planet_textures/planet_Alba_1227.png", "images/planet_textures/planet_Arnessk_1166.png", "images/planet_textures/Planet_Avalon_4205.png", "images/planet_textures/Planet_Beta_Hydri.jpg", "images/planet_textures/planet_blink_3782.png", "images/planet_textures/planet_Bog_2275.png", "images/planet_textures/Planet_Cerca_Trova_3519.jpg", "images/planet_textures/Planet_Circus_9143.jpg", "images/planet_textures/planet_Commerce_One_2131.png", "images/planet_textures/planet_Dagobah_1174.png", "images/planet_textures/planet_Dam-ba-da_1547.png", "images/planet_textures/planet_Dank_1182.png", "images/planet_textures/planet_Down_360Full_3621.png", "images/planet_textures/Planet_Dust_4284.png", "images/planet_textures/Planet_Ecaz_5346.jpg", "images/planet_textures/Planet_Farma_8165.png", "images/planet_textures/Planet_Harmonthep_8239b.png", "images/planet_textures/Planet_Hearth.jpg", "images/planet_textures/planet_hoth_1235.png", "images/planet_textures/Planet_Ipyr_7435.png", "images/planet_textures/planet_Ixchel_1978.png", "images/planet_textures/planet_Jinx_1259.png", "images/planet_textures/planet_Klendathu_3058.png", "images/planet_textures/Planet_Kzin.jpg", "images/planet_textures/planet_Meh_1246.png", "images/planet_textures/planet_Miners_Moon_4138.png", "images/planet_textures/planet_Muunilinst_1406.png", "images/planet_textures/Planet_New_Aruba_5128.png", "images/planet_textures/Planet_Patina_8110.jpg", "images/planet_textures/planet_Quom_2449.png", "images/planet_textures/Planet_Reststop_Full360_3591.png", "images/planet_textures/planet_Rim.png", "images/planet_textures/planet_Robbers_Roost_3111.png", "images/planet_textures/Planet_Salusa_Secundus_9265.png", "images/planet_textures/planet_Scarl_1191.png", "images/planet_textures/planet_serendip_3943.png", "images/planet_textures/Planet_Sno_7271.jpg", "images/planet_textures/planet_Spot_Full360_3430.png", "images/planet_textures/planet_Tank_3817.png", "images/planet_textures/planet_Tao_Seti_Prime_4072.png", "images/planet_textures/planet_Telos_1157.png", "images/planet_textures/planet_Terminus_1204.png", "images/planet_textures/planet_Trantor_1211.png", "images/planet_textures/planet_Trask_1134.png", "images/planet_textures/planet_Tsu-Ni_2391.png", "images/planet_textures/Planet_Wight_Full360_3671.png"],
-	textures: [],
-	generated_textures: [],
-	trades: [],
-	tradeCount: 0,
-	numTrades: 0, //number of trades inserted last
-	currTrades: [],
-	tutorial_page: 0
-  },
-  mounted: function() {
-  	var rR;
-	  var rG;
-	  var rB;
-
-	  var saturation;
-		var lightness;
-
-	  var specularShininess;
-	  var specularColor;
-	  var diffuseColor;
-	  var material;
-
-  	var loader = new THREE.TextureLoader();
-
-  	imgArray = this.imgArray;
-
-    for(var image in this.imgArray) {
-	    	// load a resource
-			loader.load(
-				// resource URL
-				imgArray[image],
-
-				// onLoad callback
-				function ( texture ) {
-					texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-	      			texture.anisotropy = 16;
-					// in this example we create the material when the texture is loaded
-					app.textures.push(texture);
-
-					//create instances of this texture
-
-					for(var i = 0; i < 25; i++) {
-
-						rR = Math.random();
-					  rG = Math.random();
-					  rB = Math.random();
-					  saturation = Math.random() / 2 + 0.5;
-						lightness = Math.random() / 2 + 0.5;
-
-					  specularShininess = Math.pow( 2, alpha * 10 );
-					  //var specularColor = new THREE.Color( beta * 0.2, beta * 0.2, beta * 0.2 );
-					  specularColor = new THREE.Color(rR, rG, rB );
-					  //var diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
-					  diffuseColor = new THREE.Color(rR, rG, rB).setHSL( rR, saturation, lightness );
-					  material = new THREE.MeshToonMaterial( {
-					    map: texture,
-					    color: diffuseColor,
-					    specular: specularColor,
-					    reflectivity: beta,
-					    shininess: 0.75, 
-					    envMap: alphaIndex % 2 === 0 ? null : reflectionCube
-					  } );
-
-					  app.generated_textures.push(material);
-					}
-				},
-
-				// onProgress callback currently not supported
-				undefined,
-
-				// onError callback
-				function ( err ) {
-					console.error( 'An error happened.' );
-				}
-			);
-    }
-
-  },
-  methods: {
-  	showText: function() {
-  		this.showVue = !this.showVue;
-  	},
-  	showAccountWindow: function() {
-  		//fix the case where you toggle the window off then click on another planet
-  		//this.hideAll();
-		//this.showAccountWin = true;
-
-		if(this.showAccountWin == true){
-			this.showAccountWin = false;
-		}else{
-			this.hideAll();
-			this.showAccountWin = true;
-		}
-  		
-  	},
-  	closeAccountWindow: function() {
-  		this.showAccountWin = false;
-  	},
-  	showRequestHistoryWindow: function() {
-  		
-  		if(this.showRequestHistory) {
-  			this.showRequestHistory = false;
-  		} else {
-	  		this.hideAll();
-  			this.showRequestHistory = true;
-	  	}
-  	},
-  	showLegendWindow: function() {
-  		if(this.showLegend) {
-  			this.showLegend = false;
-  		} else {
-	  		this.hideAll();
-	  		this.showLegend = true;
-	  	}
-  	},
-  	showSearchWindow: function() {
-  		if(this.showSearch) {
-  			this.showSearch = false;
-  		} else {
-	  		this.hideAll();
-	  		this.showSearch = true;
-	  	}
-  	},
-  	hideAll: function() {
-  		this.showRequestHistory = false;
-  		this.showAccountWin = false;
-  		this.showLegend = false;
-  		this.showSearch = false;
-  	},
-  	globalView: function() {
-  		this.showAccountWin = false;
-  		this.accountView = false;
-  		this.switchToGlobalView = true;
-  		scene.remove(this.accountViewObj);
-  	},
-  	operationMessage: function(message) {
-  		var type = message.type;
-  		var display;
-  		//print out basic message detailing operation
-  		if(type == "payment") {
-  			display = "[" + message.from.substring(0,4) + "]" + " sent " + message.amount + " " + this.assetString(message) + " to " + "[" + message.to.substring(0,4) + "]"; 
-  		} else if(type == "manage_offer") {
-  			display = "[" + message.source_account.substring(0,4) + "] " + " wants to trade " + message.amount.substring(0,6) + " " + this.sellingAssetString(message)   + " FOR " + this.buyingAssetAmount(message) + " " + this.buyingAssetString(message);
-  		} else if(type == "trade") {
-  			display = "[" + message.base_account.substring(0,4) + "] " + " traded " + message.base_amount.substring(0,6) + " " + this.baseAssetString(message)   + " FOR " + this.counterAssetAmount(message) + " " + this.counterAssetString(message) + " [" + message.counter_account.substring(0,4) + "]";
-  		} else {
-  			display = "idk lol";
-  		}
-
-  		return display;
-  	},
-  	assetString: function(message) {
-  		var asset;
-
-  		if(message.asset_code) {
-  			asset = message.asset_code;
-  		} else if(message.asset_type == "native") {
-  			asset = "XLM";
-  		} else {
-  			asset = message.asset_type;
-  		}
-
-  		return asset;
-  	},
-  	sellingAssetString: function(message) {
-  		var asset;
-
-  		if(message.selling_asset_code) {
-  			asset = message.selling_asset_code;
-  		} else if(message.selling_asset_type == "native") {
-  			asset = "XLM";
-  		} else {
-  			asset = message.selling_asset_type;
-  		}
-
-  		return asset;
-  	},
-  	buyingAssetString: function(message) {
-  		var asset;
-
-  		if(message.buying_asset_code) {
-  			asset = message.buying_asset_code;
-  		} else if(message.buying_asset_type == "native") {
-  			asset = "XLM";
-  		} else {
-  			asset = message.buying_asset_type;
-  		}
-
-  		return asset;
-  	},
-  	buyingAssetAmount: function(message) {
-  		var buying_amount = message.amount * message.price;
-
-  		if(buying_amount > 0.01) {
-    		buying_amount = Math.round(buying_amount * 100) / 100;
-  		} else {
-  			buying_amount = Math.round(buying_amount * 100000) / 100000;
-  		}
-
-    	return buying_amount;
-  	},
-  	baseAssetString: function(message) {
-  		var asset;
-
-  		if(message.base_asset_code) {
-  			asset = message.base_asset_code;
-  		} else if(message.base_asset_type == "native") {
-  			asset = "XLM";
-  		} else {
-  			asset = message.base_asset_type;
-  		}
-
-  		return asset;
-  	},
-  	counterAssetString: function(message) {
-  		var asset;
-
-  		if(message.counter_asset_code) {
-  			asset = message.counter_asset_code;
-  		} else if(message.counter_asset_type == "native") {
-  			asset = "XLM";
-  		} else {
-  			asset = message.counter_asset_type;
-  		}
-
-  		return asset;
-  	},
-  	counterAssetAmount: function(message) {
-  		var buying_amount = message.counter_amount;
-
-  		if(buying_amount > 0.01) {
-    		buying_amount = Math.round(buying_amount * 100) / 100;
-  		} else {
-  			buying_amount = Math.round(buying_amount * 100000) / 100000;
-  		}
-
-    	return buying_amount;
-  	},
-  	buildPieChart: function(assets) {
-
-  		app.datasets = [];
-  		app.backgroundColor = [];
-  		app.innerData = [];
-  		app.labels = [];
-
-  		app.num_assets = 0;
-  		app.num_expected = assets.length;
-
-  		for(var a in assets) {
-
-			var asset = assets[a];
-
-			var code;
-			var usd_value = 0;
-			var asset_id = "";
-			var ajax;
-
-			//console.log(asset);
-
-			
-			if(asset.asset_code) {
-	            code = asset.asset_code;
-	        } else {
-	        	if(asset.asset_type == "native") {
-	        		code = "XLM";
-	        	} else {
-	        		code = asset.asset_type;
-	        	}      
-	        }
-
-	        //asset_id = app.convertToUsd(code, asset.balance);
-
-	        app.assetToUsd(code, asset.balance);
-
-	        /*
-	        if(asset_id) {
-	        	usd_value = app.getUsdValue(asset_id);
-	        	console.log(usd_value);
-	        }*/
-	    } 
-
-
-  	},
-  	assetToUsd: function(asset, amount) {
-  		var usd_value = 0;
-
-  		$.ajax({
-	        url: "https://min-api.cryptocompare.com/data/price?fsym=" + asset + "&tsyms=USD",
-	        success: function(result) {
-	        	//console.log(result);
-	        	app.num_assets++;
-	        		
-        		//console.log("Searched cryptocompare for " + asset + " and found: " + result.USD);
-
-        		usd_value = result.USD * amount;
-
-        		usd_value = Math.round(usd_value * 100) / 100;
-    
-
-        		//console.log(amount + " " + asset + " is worth $" + usd_value + " USD" );
-
-        		if(usd_value > 1) {
-        			app.addChartData(asset, amount, usd_value);
-        		}
-	        },
-	        error: function(result) {
-	        	app.num_assets++;
-	        }
-    	});
-  	},
-  	addChartData: function(asset, amount, usd_value) {
-  		var colour;
-
-  		app.innerData.push(usd_value);
-    	app.labels.push(asset);
-
-    	if(asset_colours.hasOwnProperty(asset)) {
-			colour = asset_colours[asset];
-		} else {
-			var x = Math.round(0xffffff * Math.random()).toString(16);
-			var y = (6-x.length);
-			var z = "000000";
-			var z1 = z.substring(0,y);
-			colour= "#" + z1 + x;
-		}
-
-		app.backgroundColor.push(colour);
-	}	
-		
-  }
-})
-
-</script>
