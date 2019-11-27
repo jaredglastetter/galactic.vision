@@ -216,6 +216,14 @@ button {
     padding: 1em;
     box-shadow: 0px 0px 13px cyan;
     border: 2px solid cyan;
+    overflow: hidden;
+}
+
+.validator-info-container {
+    overflow-y: scroll;
+    width: 115%;
+    height: 100%;
+    box-sizing: content-box; /* So the width will be 100% + 17px */
 }
 
 #test_window {
