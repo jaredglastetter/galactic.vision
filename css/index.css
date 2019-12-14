@@ -101,6 +101,7 @@ header a, a:visited {
   -o-animation:move-clouds-back 200s linear infinite;
   -webkit-animation:move-clouds-back 200s linear infinite;
   animation:move-clouds-back 200s linear infinite;
+  opacity: 0.4;
 }
 
 .sub-title {
