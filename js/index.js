@@ -1,14 +1,14 @@
 //sounds  [seperate js]
-var Button_Click_Sound = new Audio();//"sounds/button_click.mp3");
-var Button_Hover_Sound = new Audio();//"sounds/button_hover.mp3");
-Button_Hover_Sound.src = "sounds/button_hover.mp3";
-Button_Click_Sound.src = "sounds/button_click.mp3";
+//var Button_Click_Sound = new Audio();//"sounds/button_click.mp3");
+//var Button_Hover_Sound = new Audio();//"sounds/button_hover.mp3");
+//Button_Hover_Sound.src = "sounds/button_hover.mp3";
+//utton_Click_Sound.src = "sounds/button_click.mp3";
 
-var Opening_Sound = new Audio("sounds/loading_sound.mp3");
+//var Opening_Sound = new Audio("sounds/loading_sound.mp3");
 
-var Focus_Planet_sound = new Audio("sounds/focus_planet.mp3");
+//var Focus_Planet_sound = new Audio("sounds/focus_planet.mp3");
 
-var Focus_Station_Sound = new Audio("sounds/focus_station.mp3");
+//var Focus_Station_Sound = new Audio("sounds/focus_station.mp3");
 
 
 
@@ -356,7 +356,7 @@ function onDocumentMouseMove( event )
             if(account){
             // set a new color for closest object
             INTERSECTED.material.color.setHex( 0xffff00 ); 
-            Button_Hover_Sound.play();
+            //Button_Hover_Sound.play();
           }
             
         }
@@ -473,7 +473,7 @@ function onDocumentMouseUp(event)
             camera.updateProjectionMatrix();
             app.accountView = true;
 
-            Focus_Planet_sound.play();
+            //Focus_Planet_sound.play();
            }
 
 
@@ -488,7 +488,7 @@ function onDocumentMouseUp(event)
              //console.log("Printing intersection information");
              zoomToTarget(INTERSECTED.position);
 
-             Focus_Station_Sound.play();
+             //Focus_Station_Sound.play();
 
            }
            
@@ -804,7 +804,7 @@ $(document).ready(function() {
       app.showSearch = false;
 
 
-      Focus_Planet_sound.play();
+      //Focus_Planet_sound.play();
      }
   })
   
