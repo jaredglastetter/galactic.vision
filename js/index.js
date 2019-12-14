@@ -303,9 +303,9 @@ function initParticle( particle, delay ) {
 
 /* raycaster */
 
-document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-document.addEventListener( 'mousedown', onDocumentMouseDown, false);
-document.addEventListener( 'mouseup', onDocumentMouseUp, false);
+document.addEventListener( 'pointermove', onDocumentMouseMove, false );
+document.addEventListener( 'pointerdown', onDocumentMouseDown, false);
+document.addEventListener( 'pointerup', onDocumentMouseUp, false);
 window.addEventListener( 'resize', onWindowResize, false );
 
 window.addEventListener('load', function(){
@@ -378,7 +378,7 @@ function onDocumentMouseDown(event)
   var y = event.screenY;
   dragCheck = false;
   $("body").on("mousemove", function(event){
-    if(Math.abs(x - event.screenX) > 5 || Math.abs(y - event.screenY) > 5){
+    if(Math.abs(x - event.screenX) > 15 || Math.abs(y - event.screenY) > 15){
       dragCheck = true;
     }
   })
