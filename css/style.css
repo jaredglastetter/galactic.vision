@@ -201,7 +201,7 @@ button {
 }
 
 .my-legend {
-	top: 0;
+	top: 85px;
 	position: absolute;
 	margin-left: 1em;
 	background-color: rgba(50,50,50,.5);
@@ -257,13 +257,13 @@ button {
 
 #account_window {
 	position: absolute;
-	top: 0;
+	top: 85px;
 	background-color: rgba(50,50,50,.5);
 	width: 49.5vw !important;
 	margin: 6px 7px;
 	border: 2px solid cyan;
 	border-radius: 0.5em;
-	height: calc(100vh - 125px);
+	height: calc(100vh - 200px);
 	overflow: auto;
 	box-shadow: 0px 0px 13px cyan;
 	padding: 0 15px;
@@ -417,7 +417,7 @@ a[id|="account-tabs-tab"]:hover {
 
 #back_button {
 	position: absolute;
-	top: 1em;
+	top: 85px;
 	right: 1em;
 }
 
@@ -691,7 +691,7 @@ div {
 
 #tutorial_window_button{
 	position: absolute;
-	top: 1em;
+	top: 85px;
 	right: 10em;
 }
 
@@ -877,3 +877,46 @@ footer p {
 }
 
 .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+
+/* Add a black background color to the top navigation */
+.top-nav {
+  background-color: #222;
+  overflow: hidden;
+  height: 60px;
+  display: flex;
+	align-items: center;
+	position: absolute;
+	width: 100%;
+}
+
+/* Style the links inside the navigation bar */
+.top-nav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.top-nav a:hover {
+  background-color: #333;
+  color: white;
+  text-decoration: none !important;
+}
+
+/* Add a color to the active/current link */
+.top-nav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.nav-gv {
+  font-family: 'Orbitron', sans-serif !important;
+  color: #24d1c4 !important;
+  font-weight: 700;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  text-decoration: none !important;
+}

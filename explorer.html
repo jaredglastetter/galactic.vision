@@ -68,7 +68,14 @@
 	</div> -->
 	<!-- <img src="Stellar-Logo.png" class="stellar_logo"> -->
 
-
+	<!-- Nav bar-->
+	<div class="top-nav">
+			<a href="index.html" class="nav-gv"> <img height="40" width="40" src="images/icon.png" style="margin-right: 1em"> Galactic Vision</a>
+			<a href="index.html">Home</a>
+			<a href="explorer.html">Activity</a>
+			<a href="quorum.html">Quorum</a>
+			<a href="planetary_quorum.html">Planetary Quorum</a>
+	</div>
 	<div id="background_layout" class="star_background">
 	 	
 	</div>
@@ -148,7 +155,7 @@
 		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise orbitron" >Back</button>
 
 		<div v-show="showSearch" id="search_window">
-			<div class="search-title orbitron_header">Search Account</div>
+			<div class="search-title orbitron_header">Search Account (Public key)</div>
 			<div class="search_bar">
 				<input type="text" name="account-number" id="search_input">
 			</div>
@@ -280,10 +287,7 @@
 			<button id="trades_stream" class="raise" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Trades</button> -->
 			<!-- <button id="effects_stream" class="raise">Effects</button> -->
 		</div>
-	 
-	 	<div class="quorum_button">
-			<a href="quorum.html" class="btn btn-concrete"><i class="fa fa-globe"></i> Switch to Quorum Explorer </a>			
-		</div>
+
 
 		<div id="description" style="display:none">
 			<h1>Description</h1>
