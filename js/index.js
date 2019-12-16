@@ -19,7 +19,7 @@ var tutpage = 1;
 
 var scene;
 var frustumSize = 15;
-var aspect = window.innerWidth / (window.innerHeight - 60);
+var aspect = window.innerWidth / window.innerHeight;
 var dragCheck = false;
 
 var camera;
@@ -133,10 +133,10 @@ function start_app() {
 
 function init() {
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / (window.innerHeight - 60), 1, 1000 );
+  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
   renderer = new THREE.WebGLRenderer( { alpha: true } );
   renderer.setClearColor( 0x000000, 0.0 );
-  renderer.setSize( window.innerWidth, window.innerHeight - 60);
+  renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
   controls = new THREE.OrbitControls( camera, renderer.domElement ); // added renderer.domElement make sure there are no side effects
@@ -315,19 +315,19 @@ window.addEventListener('load', function(){
 
 function onWindowResize() 
 {
-        var aspect = window.innerWidth / (window.innerHeight - 60);
+        var aspect = window.innerWidth / window.innerHeight;
         camera.left   = - frustumSize * aspect / 2;
         camera.right  =   frustumSize * aspect / 2;
         camera.top    =   frustumSize / 2;
         camera.bottom = - frustumSize / 2;
         camera.updateProjectionMatrix();
-        renderer.setSize( window.innerWidth, (window.innerHeight - 60));
+        renderer.setSize( window.innerWidth, window.innerHeight );
 }
 function onDocumentMouseMove( event ) 
 {
         event.preventDefault();
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / (window.innerHeight - 60) ) * 2 + 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
         // might need to find a better place for this
         raycaster.setFromCamera( mouse, camera );
@@ -466,8 +466,8 @@ function onDocumentMouseUp(event)
 
             scene.add(accountObj);
             SCREEN_WIDTH = window.innerWidth;
-            SCREEN_HEIGHT = window.innerHeight - 60;
-            var aspect = SCREEN_WIDTH / 2 / (SCREEN_HEIGHT - 60);
+            SCREEN_HEIGHT = window.innerHeight;
+            var aspect = SCREEN_WIDTH / 2 / SCREEN_HEIGHT;
 
             camera.aspect = aspect;
             camera.updateProjectionMatrix();
@@ -795,8 +795,8 @@ $(document).ready(function() {
       app.accountViewObj = planet;
 
       SCREEN_WIDTH = window.innerWidth;
-      SCREEN_HEIGHT = window.innerHeight - 60;
-      var aspect = SCREEN_WIDTH / 2 / (SCREEN_HEIGHT - 60);
+      SCREEN_HEIGHT = window.innerHeight;
+      var aspect = SCREEN_WIDTH / 2 / SCREEN_HEIGHT;
 
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
