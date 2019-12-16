@@ -1,7 +1,3 @@
-/**
- * Stack Overflowing
- * @author Callum Prentice 2017 / http://callum.com/
- */
 var camera, scene, renderer, controls, stats;
 var positions, colors, sizes;
 var line_positions;
@@ -114,7 +110,7 @@ function init() {
     });
     renderer.setClearColor(0x000000, 1.0);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth - 260, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
 
@@ -267,7 +263,24 @@ function setupTween(node) {
     //changeTags();
     changePins();
     highlightLines(node);
+    //toggle left window if mobile
+    toggleIfMobile(true);
     zoomToLocation(xyz_from_lat_lng(node.geoData.latitude, node.geoData.longitude, 1.3));
+}
+
+function toggleIfMobile(listView) {
+  if($(window).width() <= 768) {
+    if(listView) {
+      $('#node_list').hide();
+      $('.validators').show();
+      $('.validator-back').show();
+    } else {
+      $('#node_list').show();
+      $('.validators').hide();
+      $('.validator-back').hide();
+    }
+
+  }
 }
 
 function viewAll() {
@@ -289,6 +302,7 @@ function viewAll() {
 
     track_points_object = generate_track_point_cloud();
     scene.add(track_points_object);
+    toggleIfMobile(false);
 }
 
 function highlightLines(node) {
