@@ -110,7 +110,12 @@ function init() {
     });
     renderer.setClearColor(0x000000, 1.0);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth - 260, window.innerHeight);
+    
+    if($(window).width() <= 1080) {
+      renderer.setSize(window.innerWidth - 315, window.innerHeight);
+    } else {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
     document.body.appendChild(renderer.domElement);
 
 
@@ -119,7 +124,13 @@ function init() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100);
     camera.position.x = -0.3;
     camera.position.y = 0.8;
-    camera.position.z = 1.4;
+    
+    //zoom out more for mobile
+    if($(window).width() <= 1080) {
+      camera.position.z = 3;
+    } else {
+      camera.position.z = 1.4;
+    }
 
     scene.add(new THREE.AmbientLight(0x777777));
 
@@ -223,7 +234,13 @@ function init() {
 
 function zoomToLocation(pos) {
     var position = { x : camera.position.x, y: camera.position.y, z: camera.position.z };
-    var target = { x : pos.x, y: pos.y, z: pos.z };
+    
+    if($(window).width() <= 1080) {
+      var target = { x : pos.x * 2.0, y: pos.y * 2.0, z: pos.z * 2.0};
+    } else {
+      var target = { x : pos.x, y: pos.y, z: pos.z };
+    }
+
 
     target.z = target.z;
     target.x = target.x;
@@ -237,7 +254,7 @@ function zoomToLocation(pos) {
         controls.update();
         camera.position.x = position.x;
         camera.position.y = position.y;
-        camera.position.z = position.z
+        camera.position.z = position.z;
     });
 
 
@@ -269,13 +286,13 @@ function setupTween(node) {
 }
 
 function toggleIfMobile(listView) {
-  if($(window).width() <= 768) {
+  if($(window).width() <= 1080) {
     if(listView) {
-      $('#node_list').hide();
+      $('.quorum-nav').hide();
       $('.validators').show();
       $('.validator-back').show();
     } else {
-      $('#node_list').show();
+      $('.quorum-nav').show();
       $('.validators').hide();
       $('.validator-back').hide();
     }

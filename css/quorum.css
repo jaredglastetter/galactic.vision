@@ -14,10 +14,6 @@ body {
     user-select: none;
 }
 
-canvas {
-    float: right;
-}
-
 a {
     color: orange;
     text-decoration: none;
@@ -216,7 +212,7 @@ button {
   z-index: 10;
   position: absolute;
   right: 15px;
-  bottom: 15px;
+  top: 25px;
   height: 95vh;
   width: 300px;
   background-color: rgba(50,50,50,.5);
@@ -268,10 +264,14 @@ button {
     margin-bottom: 1em;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1080px) {
   .validators {
     left: 15px;
     display: none;
+  }
+
+  canvas {
+    float: right;
   }
 }
 
