@@ -126,9 +126,9 @@
 			</div>
 
 			<div class="tutorial_navigation_buttons">
-				<button id="tutorial_back_button"  class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" style="display: none">Back</button>
-				<button id="tutorial_next_button"  class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Next</button>
-				<button id="tutorial_close_button"  class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" style="display: none">Close</button>
+				<button id="tutorial_back_button"  class="raise orbitron"  style="display: none">Back</button>
+				<button id="tutorial_next_button"  class="raise orbitron">Next</button>
+				<button id="tutorial_close_button"  class="raise orbitron"  style="display: none">Close</button>
 			</div>
 		</div>
 
@@ -138,21 +138,21 @@
 
 		<div class="icon-bar">
 		  <!-- <a class="active" href="#"><i class="fa fa-home" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"></i></a> -->
-		   <a href="#" v-on:click="showSearchWindow()" onclick="Button_Click_Sound.play();" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-search"></i></a> 
-		  <a v-on:click="showRequestHistoryWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" ><i class="fa fa-history"></i></a>
+		   <a href="#" v-on:click="showSearchWindow()" ><i class="fa fa-search"></i></a> 
+		  <a v-on:click="showRequestHistoryWindow()" href="#"><i class="fa fa-history"></i></a>
 		  <!-- <a v-on:click="showAccountWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-book"></i></a> -->
-		  <a v-on:click="showLegendWindow()" href="#" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()"><i class="fa fa-question"></i></a>
+		  <a v-on:click="showLegendWindow()" href="#" o><i class="fa fa-question"></i></a>
 		</div>
 
-		<button id="tutorial_window_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Help</button>
-		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">Back</button>
+		<button id="tutorial_window_button" class="raise orbitron" >Help</button>
+		<button v-show="accountView" v-on:click="globalView()" id="back_button" class="raise orbitron" >Back</button>
 
 		<div v-show="showSearch" id="search_window">
 			<div class="search-title orbitron_header">Search Account</div>
 			<div class="search_bar">
 				<input type="text" name="account-number" id="search_input">
 			</div>
-			<button id="search_button" class="raise orbitron" onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()" >Search</button>
+			<button id="search_button" class="raise orbitron"  >Search</button>
 		</div>
 
 		<div v-show="showAccountWin" id="account_window">
@@ -249,7 +249,7 @@
 			</div>-->
 			<div id='switch_container'>
 				<div class='switch_header'>Payments</div>
-				<div class='toggle' id='payments_stream' onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">
+				<div class='toggle' id='payments_stream'>
 					<div class='toggle-text-off'>OFF</div>
 					<div class='glow-comp'></div>
 					<div class='toggle-button'></div>
@@ -258,7 +258,7 @@
 			</div>
 			<div id='switch_container2'>
 				<div class='switch_header'>Offers</div>
-				<div class='toggle' id='operations_stream' onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">
+				<div class='toggle' id='operations_stream'>
 					<div class='toggle-text-off'>OFF</div>
 					<div class='glow-comp'></div>
 					<div class='toggle-button'></div>
@@ -267,7 +267,7 @@
 			</div>
 			<div id='switch_container3'>
 				<div class='switch_header'>Trades</div>
-				<div class='toggle' id='trades_stream' onclick="Button_Click_Sound.play()" onmouseover="Button_Hover_Sound.play()">
+				<div class='toggle' id='trades_stream'>
 					<div class='toggle-text-off'>OFF</div>
 					<div class='glow-comp'></div>
 					<div class='toggle-button'></div>
