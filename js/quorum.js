@@ -147,70 +147,70 @@ function init() {
     globe = new THREE.Object3D();
 
     loader.load(
-        'https://i.imgur.com/keA1lkO.jpg',
-        function(earth_texture) {
+    'https://i.imgur.com/keA1lkO.jpg',
+    function(earth_texture) {
 
-            loader.load(
-                'images/water.png',
-                function(water_texture) {
-           
-                     earth_texture.image.crossOrigin = "";
-                     water_texture.image.crossOrigin = "";
-                     console.log(water_texture);
-                     console.log(earth_texture);
+        loader.load(
+            'images/water.png',
+            function(water_texture) {
+        
+                    earth_texture.image.crossOrigin = "";
+                    water_texture.image.crossOrigin = "";
+                    console.log(water_texture);
+                    console.log(earth_texture);
 
-                    globe.add(new THREE.Mesh(
-                        new THREE.SphereGeometry(radius, segments, segments),
-                        new THREE.MeshPhongMaterial({
-                            map: earth_texture,
-                            specularMap: water_texture,
-                            specular: new THREE.Color(0x999999)
-                        })
-                    ));
+                globe.add(new THREE.Mesh(
+                    new THREE.SphereGeometry(radius, segments, segments),
+                    new THREE.MeshPhongMaterial({
+                        map: earth_texture,
+                        specularMap: water_texture,
+                        specular: new THREE.Color(0x999999)
+                    })
+                ));
 
-                    //scene.add(globe);
+                //scene.add(globe);
 
-                    generateControlPoints(radius);
+                generateControlPoints(radius);
 
-                    track_lines_object = generate_track_lines();
-                    scene.add(track_lines_object);
+                track_lines_object = generate_track_lines();
+                scene.add(track_lines_object);
 
-                    track_points_object = generate_track_point_cloud();
-                    scene.add(track_points_object);
+                track_points_object = generate_track_point_cloud();
+                scene.add(track_points_object);
 
-                    track_lines_object.material.opacity = 0.25;
+                track_lines_object.material.opacity = 0.25;
 
-                    /*
-                    var gui = new dat.GUI();
+                /*
+                var gui = new dat.GUI();
 
-                    gui.add(this, 'changing_arc_distance_miles', min_arc_distance_miles, max_arc_distance_miles).name("Max Distance Miles").onFinishChange(function(value) {
-                        cur_arc_distance_miles = value;
-                        update_track_lines();
-                    });
-
-                    gui.add(this, 'track_line_opacity', 0, 0.25).name("Line Opacity").onChange(function(value) {
-                        track_lines_object.material.opacity = value;
-                    });
-
-                    gui.add(this, 'track_point_opacity', 0, 1.0).name("Points Opacity").onChange(function(value) {
-                        track_points_object.material.uniforms.opacity.value = value;
-                    });
-
-                    gui.add(this, 'track_point_size', 0, 0.1).name("Point Size").onChange(function(value) {
-                        var index = 0;
-                        for (var i = 0; i < all_tracks.length; ++i) {
-
-                            for (var j = 0; j < all_tracks[i].point_positions.length; ++j) {
-                                sizes[index] = value;
-                                ++index;
-                            }
-                        }
-                        track_points_object.geometry.attributes.size.needsUpdate = true;
-                    });
-                    gui.add(this, "handle_about").name("About & Credits");*/
-
-                    show_loading(false);
+                gui.add(this, 'changing_arc_distance_miles', min_arc_distance_miles, max_arc_distance_miles).name("Max Distance Miles").onFinishChange(function(value) {
+                    cur_arc_distance_miles = value;
+                    update_track_lines();
                 });
+
+                gui.add(this, 'track_line_opacity', 0, 0.25).name("Line Opacity").onChange(function(value) {
+                    track_lines_object.material.opacity = value;
+                });
+
+                gui.add(this, 'track_point_opacity', 0, 1.0).name("Points Opacity").onChange(function(value) {
+                    track_points_object.material.uniforms.opacity.value = value;
+                });
+
+                gui.add(this, 'track_point_size', 0, 0.1).name("Point Size").onChange(function(value) {
+                    var index = 0;
+                    for (var i = 0; i < all_tracks.length; ++i) {
+
+                        for (var j = 0; j < all_tracks[i].point_positions.length; ++j) {
+                            sizes[index] = value;
+                            ++index;
+                        }
+                    }
+                    track_points_object.geometry.attributes.size.needsUpdate = true;
+                });
+                gui.add(this, "handle_about").name("About & Credits");*/
+
+                show_loading(false);
+            });
         });
 
 
