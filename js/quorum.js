@@ -147,7 +147,7 @@ function init() {
     globe = new THREE.Object3D();
 
     loader.load(
-        'images/earth.jpg',
+        'https://i.imgur.com/keA1lkO.jpg',
         function(earth_texture) {
 
             loader.load(
