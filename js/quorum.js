@@ -308,7 +308,7 @@ function viewAll() {
     scene.remove(track_points_object);
     spline_point_cache = [];
 
-    all_tracks = all_nodes;
+    all_tracks = this.nodes;
     all_tracks = clearConnectionType(all_tracks);
     app.curr_nodes = all_tracks;
     app.curr_tracks = all_tracks;

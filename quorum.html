@@ -74,12 +74,12 @@
         </div>
         <div id="app">
             <div class="quorum-nav">
-                <div id="node_list" class="list-group">
-                  <a v-on:click="viewAll()" href="#" class="list-group-item list-group-item-dark">View All</a>
-                </div>
+              <div id="node_list" class="list-group">
+                <a v-on:click="viewAll()" href="#" class="list-group-item list-group-item-dark">View All</a>
                 <div v-for="node in nodes">
                   <a v-if="node.name" v-on:click="setupTween(node)" href="#" class="list-group-item list-group-item-dark">{{ node.name }}</a>
                 </div>
+              </div>
             </div>
             <div class="validators">
                 <div class="validator-info-container">
@@ -115,9 +115,15 @@
                     </div>
                     Trusted
                     <div id="validator_list" class="list-group">
+                      <div v-for="validator in curr_node.quorumArr">
+                        <a v-on:click="setupTween(nodes[validator.listPos])" href="#" class="list-group-item list-group-item-dark"> {{ getNodeName(validator) }}</a>
+                      </div>
                     </div> 
                     Trusted By
                     <div id="trusted_by_list" class="list-group">
+                      <div v-for="validator in curr_node.trusted_by">
+                        <a v-on:click="setupTween(nodes[validator.listPos])" href="#" class="list-group-item list-group-item-dark"> {{ getNodeName(validator) }}</a>
+                      </div>
                     </div>  
                         <!-- <div class="force-overflow"></div> -->
                 </div>
@@ -156,7 +162,6 @@ var app = new Vue({
     curr_node: {},
     curr_tracks: [],
     all_tracks: [],
-    all_nodes: [],
     node_list: [],
     cur_node_pin: null,
     camera: null,
@@ -184,7 +189,6 @@ var app = new Vue({
     changing_arc_distance_miles: 0,
     spline_point_cache: [],
     all_tracks: [],
-    all_nodes: [],
     node_tracks: [],
     changing: false,
     globe: null,
@@ -195,7 +199,10 @@ var app = new Vue({
     INTERSECTED_CLICK: null,
     mouse: null,
     raycaster: null, 
-    theta: null
+    theta: null,
+    trusted_by: [],
+    trusted: [],
+    tracks_store: []
   },
   mounted: function() {
     var oReq = new XMLHttpRequest();
@@ -219,7 +226,7 @@ var app = new Vue({
       this.mouse = new THREE.Vector2();
       this.raycaster = new THREE.Raycaster();
 
-      this.spriteMap = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/lensflare/lensflare0_alpha.png' );
+      //this.spriteMap = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/lensflare/lensflare0_alpha.png' );
 
       this.renderer = new THREE.WebGLRenderer({
           antialias: true
@@ -238,6 +245,8 @@ var app = new Vue({
       document.addEventListener('mouseup', this.onDocumentMouseup, false);
 
       this.loader = new THREE.TextureLoader(this.manager);
+
+      this.loader.crossOrigin = '';
 
       this.scene = new THREE.Scene();
 
@@ -274,7 +283,7 @@ var app = new Vue({
         img.src,
         async function(earth_texture) {
           await app.loader.load(
-            'images/water.png',
+            'https://i.imgur.com/iOZDaeG.png',
             async function(water_texture) {
     
               earth_texture.image.crossOrigin = "anonymous";
@@ -524,12 +533,12 @@ var app = new Vue({
                   var end_lat = validatorMatch[0].geoData.latitude;
                   var end_lng = validatorMatch[0].geoData.longitude;
 
-                  var material = new THREE.ShaderMaterial( {
-                      uniforms: {
-                          color:   { value: new THREE.Color( 0xffffff ) },
-                          texture: { value: this.spriteMap }
-                      }
-                  } );
+                  // var material = new THREE.ShaderMaterial( {
+                  //     uniforms: {
+                  //         color:   { value: new THREE.Color( 0xffffff ) },
+                  //         texture: { value: this.spriteMap }
+                  //     }
+                  // } );
 
                   /*
                   track_point_cloud_geom.addAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -592,15 +601,15 @@ var app = new Vue({
                   };
                   this.addToTrusted(track, v_index);
                   this.nodes[f].connections.push(track);
+                  console.log(track.spline);
                   this.all_tracks.push(track);
                 }
             }
             //node_tracks.push(node);
         }
       }
-
+      this.tracks_store = this.all_tracks;
       this.populateNodeList();
-      app.all_nodes = this.nodes;
     },
     update_track_point_cloud: function() {
 
@@ -668,38 +677,40 @@ var app = new Vue({
       var colors = new Float32Array(this.all_tracks.length * 3 * 2 * this.settings.num_track_line_control_points);
 
       for (var i = 0; i < this.all_tracks.length; ++i) {
-        var color
-        //var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.9, 0.8);
-        if(this.all_tracks[i].connection_type) {
-          if(this.all_tracks[i].connection_type == "outgoing") {
-            color = new THREE.Color(0x00ff00);
+        if(this.all_tracks[i].spline){
+          var color
+          //var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.9, 0.8);
+          if(this.all_tracks[i].connection_type) {
+            if(this.all_tracks[i].connection_type == "outgoing") {
+              color = new THREE.Color(0x00ff00);
+            } else {
+              color = new THREE.Color(0x00ffff);
+            }
           } else {
-            color = new THREE.Color(0x00ffff);
+            color = new THREE.Color(0xffffff).setHSL(i / this.all_tracks.length, 0.9, 0.8);
           }
-        } else {
-          color = new THREE.Color(0xffffff).setHSL(i / this.all_tracks.length, 0.9, 0.8);
+
+          for (var j = 0; j < this.settings.num_track_line_control_points - 1; ++j) {
+
+            var start_pos = this.all_tracks[i].spline.getPoint(j / (this.settings.num_track_line_control_points - 1));
+            var end_pos = this.all_tracks[i].spline.getPoint((j + 1) / (this.settings.num_track_line_control_points - 1));
+
+            this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 0] = start_pos.x;
+            this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 1] = start_pos.y;
+            this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 2] = start_pos.z;
+            this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 3] = end_pos.x;
+            this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 4] = end_pos.y;
+            this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 5] = end_pos.z;
+
+            colors[(i * this.settings.num_track_line_control_points + j) * 6 + 0] = color.r;
+            colors[(i * this.settings.num_track_line_control_points + j) * 6 + 1] = color.g;
+            colors[(i * this.settings.num_track_line_control_points + j) * 6 + 2] = color.b;
+            colors[(i * this.settings.num_track_line_control_points + j) * 6 + 3] = color.r;
+            colors[(i * this.settings.num_track_line_control_points + j) * 6 + 4] = color.g;
+            colors[(i * this.settings.num_track_line_control_points + j) * 6 + 5] = color.b;
+          }
+          //console.log(i);
         }
-
-        for (var j = 0; j < this.settings.num_track_line_control_points - 1; ++j) {
-
-          var start_pos = this.all_tracks[i].spline.getPoint(j / (this.settings.num_track_line_control_points - 1));
-          var end_pos = this.all_tracks[i].spline.getPoint((j + 1) / (this.settings.num_track_line_control_points - 1));
-
-          this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 0] = start_pos.x;
-          this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 1] = start_pos.y;
-          this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 2] = start_pos.z;
-          this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 3] = end_pos.x;
-          this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 4] = end_pos.y;
-          this.line_positions[(i * this.settings.num_track_line_control_points + j) * 6 + 5] = end_pos.z;
-
-          colors[(i * this.settings.num_track_line_control_points + j) * 6 + 0] = color.r;
-          colors[(i * this.settings.num_track_line_control_points + j) * 6 + 1] = color.g;
-          colors[(i * this.settings.num_track_line_control_points + j) * 6 + 2] = color.b;
-          colors[(i * this.settings.num_track_line_control_points + j) * 6 + 3] = color.r;
-          colors[(i * this.settings.num_track_line_control_points + j) * 6 + 4] = color.g;
-          colors[(i * this.settings.num_track_line_control_points + j) * 6 + 5] = color.b;
-        }
-        //console.log(i);
       }
 
       geometry.addAttribute('position', new THREE.BufferAttribute(this.line_positions, 3));
@@ -755,31 +766,32 @@ var app = new Vue({
       var index = 0;
 
       for (i = 0; i < this.all_tracks.length; ++i) {
-
-        //var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.6, 0.6);
-        if(this.all_tracks[i].connection_type) {
-          if(this.all_tracks[i].connection_type == "outgoing") {
-              color = new THREE.Color(0x00ff00);
+        if(this.all_tracks[i].point_positions) {
+          //var color = new THREE.Color(0xffffff).setHSL(i / all_tracks.length, 0.6, 0.6);
+          if(this.all_tracks[i].connection_type) {
+            if(this.all_tracks[i].connection_type == "outgoing") {
+                color = new THREE.Color(0x00ff00);
+            } else {
+                color = new THREE.Color(0x00ffff);
+            }
           } else {
-              color = new THREE.Color(0x00ffff);
+              color = new THREE.Color(0xffffff).setHSL(i / this.all_tracks.length, 0.9, 0.8);
           }
-        } else {
-            color = new THREE.Color(0xffffff).setHSL(i / this.all_tracks.length, 0.9, 0.8);
-        }
 
-        for (var j = 0; j < this.all_tracks[i].point_positions.length; ++j) {
+          for (var j = 0; j < this.all_tracks[i].point_positions.length; ++j) {
 
-          positions[3 * index + 0] = 0;
-          positions[3 * index + 1] = 0;
-          positions[3 * index + 2] = 0;
+            positions[3 * index + 0] = 0;
+            positions[3 * index + 1] = 0;
+            positions[3 * index + 2] = 0;
 
-          colors[3 * index + 0] = color.r;
-          colors[3 * index + 1] = color.g;
-          colors[3 * index + 2] = color.b;
+            colors[3 * index + 0] = color.r;
+            colors[3 * index + 1] = color.g;
+            colors[3 * index + 2] = color.b;
 
-          sizes[index] = this.track_point_size;
+            sizes[index] = this.track_point_size;
 
-          ++index;
+            ++index;
+          }
         }
       }
 
@@ -795,7 +807,7 @@ var app = new Vue({
         },
         texture: {
           type: "t",
-          value: await this.loader.load('images/point.png',
+          value: await this.loader.load('https://i.imgur.com/it80wQh.png',
             function(point_texture) {
               return point_texture;
             })
@@ -914,6 +926,7 @@ var app = new Vue({
       }
     },
     setupTween: function(node) {
+      console.log("doing the tween");
       this.clearTag();
       app.curr_node = node;
       this.addValidators();
@@ -958,8 +971,8 @@ var app = new Vue({
         var outgoing_connections;
         var incoming_connections;
 
-        this.scene.remove(this.track_lines_object);
-        this.scene.remove(this.track_points_object);
+        app.scene.remove(this.track_lines_object);
+        app.scene.remove(this.track_points_object);
         this.spline_point_cache = [];
 
         outgoing_connections = this.addOutgoingTag(node.connections);
@@ -1040,10 +1053,13 @@ var app = new Vue({
     addValidators: function() {
       var validator_node;
       var validator;
-      quorumArr = app.curr_node.quorumArr;
+      var quorumArr = app.curr_node.quorumArr;
       var trusted_by = app.curr_node.trusted_by;
       var curr_node = app.curr_node;
       var trust_index = Math.round((curr_node.trusted_by.length / this.total_nodes) * 100);
+
+      this.trusted = [];
+      this.trusted_by = [];
 
       $('#node_header').empty();
       $('#node_location').empty();
@@ -1068,14 +1084,19 @@ var app = new Vue({
       for(var node in quorumArr) {
         //nodes it trusted
         validator = quorumArr[node];
-        validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
-        $('#validator_list').append(validator_node); 
+        //validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
+        //$('#validator_list').append(validator_node);
+        console.log("Adding to trusted list");
+        //this.trusted.push(this.nodes[validator.listPos]);
+
       }
 
       for(var node in trusted_by) {
         validator = trusted_by[node];
-        validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
-        $('#trusted_by_list').append(validator_node); 
+        // validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
+        // $('#trusted_by_list').append(validator_node); 
+
+        //this.trusted_by.push(this.nodes[validator.listPos]);
       }
     },
     addOutgoingTag: function(tracks) {
@@ -1127,7 +1148,7 @@ var app = new Vue({
       this.scene.remove(this.track_points_object);
       this.spline_point_cache = [];
 
-      this.all_tracks = this.all_nodes;
+      this.all_tracks = this.tracks_store;
       this.all_tracks = this.clearConnectionType(this.all_tracks);
       app.curr_nodes = this.all_tracks;
       app.curr_tracks = this.all_tracks;
@@ -1147,6 +1168,9 @@ var app = new Vue({
       var trusted_by = app.curr_node.trusted_by;
       var curr_node = app.curr_node;
       var trust_index = Math.round((curr_node.trusted_by.length / this.total_nodes) * 100);
+
+      this.trusted = [];
+      this.trusted_by = [];
 
       $('#node_header').empty();
       $('#node_location').empty();
@@ -1171,14 +1195,17 @@ var app = new Vue({
       for(var node in quorumArr) {
         //nodes it trusted
         validator = quorumArr[node];
-        validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
-        $('#validator_list').append(validator_node); 
+        //validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
+        //$('#validator_list').append(validator_node); 
+
+        //this.trusted.push(this.nodes[validator.listPos]);
       }
 
       for(var node in trusted_by) {
         validator = trusted_by[node];
-        validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
-        $('#trusted_by_list').append(validator_node); 
+        //validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
+        //$('#trusted_by_list').append(validator_node); 
+        //this.trusted_by.push(this.nodes[validator.listPos]);
       }
     },
     getNodeName: function (node) {
