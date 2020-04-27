@@ -77,55 +77,61 @@
               <div id="node_list" class="list-group">
                 <a v-on:click="viewAll()" href="#" class="list-group-item list-group-item-dark">View All</a>
                 <div v-for="node in nodes">
-                  <a v-if="node.name" v-on:click="setupTween(node)" href="#" class="list-group-item list-group-item-dark">{{ node.name }}</a>
+                  <a v-if="hasNodesInQuorum(node)" v-on:click="setupTween(node)" href="#" class="list-group-item list-group-item-dark">{{ getNodeName(node) }}</a>
                 </div>
               </div>
             </div>
             <div class="validators">
-                <div class="validator-info-container">
-                    <div class="validator-back" onclick="viewAll()"><i class="fas fa-chevron-left" style="margin-right: 1em;"></i>Go Back</div>
-                    <h3 id="node_header"></h3>
-                    <div class="node_info">
-                    <i class="fas fa-map-marked-alt"></i> Location: 
-                        <div id="node_location"></div>
-                    </div>
-                    <div class="node_info">
-                        <i class="fas fa-star"></i> Availability Rating (24 Hours): 
-                        <div id="rating"></div>
-                    </div>
-                    <div class="node_info">
-                        <i class="fas fa-star"></i> Time Overloaded (24 Hours): 
-                        <div id="overloaded"></div>
-                    </div>
-                    <div class="node_info">
-                        <i class="far fa-handshake"></i> Trust Index: 
-                        <div id="trust_index"></div>
-                    </div>
-                    <div class="node_info">
-                        <i class="fas fa-server"></i> Type:
-                        <div id="validator_type" style="text-overflow: ellipsis;"></div>
-                    </div>
-                    <div class="node_info">
-                        <i class="fas fa-rocket"></i> Status:
-                        <div id="is_validating" style="text-overflow: ellipsis;"></div>
-                    </div>
-                    <div class="node_info">
-                        <i class="fas fa-code-branch"></i> Core Version: 
-                        <div id="core_version" style="text-overflow: ellipsis;"></div>
-                    </div>
-                    Trusted
-                    <div id="validator_list" class="list-group">
-                      <div v-for="validator in curr_node.quorumArr">
-                        <a v-on:click="setupTween(nodes[validator.listPos])" href="#" class="list-group-item list-group-item-dark"> {{ getNodeName(validator) }}</a>
+              <div class="validator-info-container">
+                  <div class="validator-back" onclick="viewAll()"><i class="fas fa-chevron-left" style="margin-right: 1em;"></i>Go Back</div>
+                  <h3 id="node_header"></h3>
+                  <div class="node_info">
+                  <i class="fas fa-map-marked-alt"></i> Location: 
+                      <div id="node_location"></div>
+                  </div>
+                  <div class="node_info">
+                      <i class="fas fa-star"></i> Availability Rating (24 Hours): 
+                      <div id="rating"></div>
+                  </div>
+                  <div class="node_info">
+                      <i class="fas fa-star"></i> Time Overloaded (24 Hours): 
+                      <div id="overloaded"></div>
+                  </div>
+                  <div class="node_info">
+                      <i class="far fa-handshake"></i> Trust Index: 
+                      <div id="trust_index"></div>
+                  </div>
+                  <div class="node_info">
+                      <i class="fas fa-server"></i> Type:
+                      <div id="validator_type" style="text-overflow: ellipsis;"></div>
+                  </div>
+                  <div class="node_info">
+                      <i class="fas fa-rocket"></i> Status:
+                      <div id="is_validating" style="text-overflow: ellipsis;"></div>
+                  </div>
+                  <div class="node_info">
+                      <i class="fas fa-code-branch"></i> Core Version: 
+                      <div id="core_version" style="text-overflow: ellipsis;"></div>
+                  </div>
+                  Trusted
+                  <div v-if="currentNode" id="validator_list" class="list-group">
+                    <!-- <div v-for="validator in curr_node.quorumArr">
+                      <a v-on:click="setupTween(nodes[validator.listPos])" href="#" class="list-group-item list-group-item-dark"> {{ getNodeName(validator) }}</a>
+                    </div> -->
+                    <div v-if="innerQuorumSets">
+                      <div v-for="quorumSet in innerQuorumSets">
+                        <div v-for="validator in quorumSet.validators">
+                          <a v-on:click="setupTween(findNodeByKey(validator))" href="#" class="list-group-item list-group-item-dark"> {{ getNodeName(findNodeByKey(validator)) }}</a>
+                        </div>
                       </div>
-                    </div> 
-                    Trusted By
-                    <div id="trusted_by_list" class="list-group">
-                      <div v-for="validator in curr_node.trusted_by">
-                        <a v-on:click="setupTween(nodes[validator.listPos])" href="#" class="list-group-item list-group-item-dark"> {{ getNodeName(validator) }}</a>
-                      </div>
-                    </div>  
-                        <!-- <div class="force-overflow"></div> -->
+                    </div>
+                  </div>
+                  Trusted By
+                  <div id="trusted_by_list" class="list-group">
+                    <div v-for="validator in curr_node.trusted_by">
+                      <a v-on:click="setupTween(nodes[validator.listPos])" href="#" class="list-group-item list-group-item-dark"> {{ getNodeName(validator) }}</a>
+                    </div>
+                  </div>
                 </div>
             </div> 
         </div>
@@ -135,8 +141,6 @@
 <script type="text/javascript">
 
 async function reqListener () {
-  console.log(this.responseText);
-  console.log(JSON.parse(this.responseText));
   data = JSON.parse(this.responseText);
   $('#output').html(data);
   app.nodes = data;
@@ -202,13 +206,28 @@ var app = new Vue({
     theta: null,
     trusted_by: [],
     trusted: [],
-    tracks_store: []
+    tracks_store: [],
+    lastMove: Date.now(),
+    in_node_view: false,
   },
   mounted: function() {
     var oReq = new XMLHttpRequest();
     oReq.addEventListener("load", reqListener);
     oReq.open("GET", "https://api.stellarbeat.io/v1/nodes");
     oReq.send();
+  },
+  computed: {
+    currentNode: function() {
+      return this.curr_node;
+    },
+    hasQuorumSet: function() {
+      return this.currentNode.quorumSet != null;
+    },
+    innerQuorumSets: function() {
+      if(this.currentNode.quorumSet) {
+        return this.currentNode.quorumSet.innerQuorumSets;
+      }
+    },
   },
   methods: {
     init: async function() {
@@ -288,8 +307,6 @@ var app = new Vue({
     
               earth_texture.image.crossOrigin = "anonymous";
               water_texture.image.crossOrigin = "anonymous";
-              console.log(water_texture);
-              console.log(earth_texture);
 
               app.globe.add(new THREE.Mesh(
                 new THREE.SphereGeometry(app.radius, segments, segments),
@@ -386,6 +403,11 @@ var app = new Vue({
         if(this.nodes[f].quorumSet) {
           var quorumSet = this.nodes[f].quorumSet.validators;
 
+          //add in inner quorum set nodes to make connections for
+          var innerQuorumNodes = this.getInnerQuorumSet(this.nodes[f].quorumSet);
+          
+          quorumSet = quorumSet.concat(innerQuorumNodes);
+
           this.nodes[f].quorumArr = [];
           
           var coords = this.xyz_from_lat_lng( start_lat, start_lng, 0.5);
@@ -396,7 +418,7 @@ var app = new Vue({
 
           label_coord.multiplyScalar(1.1);
 
-          if(this.nodes[f].name) {
+          //if(this.nodes[f].name) {
               /*
               var spritey = makeTextSprite( " " + nodes[f].name + " ", { fontsize: 32, backgroundColor: {r:255, g:100, b:100, a:1} } );
 
@@ -414,7 +436,7 @@ var app = new Vue({
               var labelMaterial;
               var labelSprite;
               var altitude = 0.05;
-              var text = this.nodes[f].name;
+              var text = this.getNodeName(this.nodes[f]);
               var opts = {
                   lineColor: "#FFCC00",
                   lineWidth: 1,
@@ -516,14 +538,10 @@ var app = new Vue({
               //find validator key in nodes array
               validatorMatch = _.where(this.nodes, {publicKey: validator});
 
-              //console.log(validatorMatch);
-
               if(validatorMatch.length > 0) {
 
                   //add current node to validator nodes trusted nodes array
                   v_index = validatorMatch[0].listPos;
-
-                  //console.log("validator index: " + v_index);
 
                   this.nodes[v_index].trusted_by.push(this.nodes[f]);
                   
@@ -532,19 +550,6 @@ var app = new Vue({
 
                   var end_lat = validatorMatch[0].geoData.latitude;
                   var end_lng = validatorMatch[0].geoData.longitude;
-
-                  // var material = new THREE.ShaderMaterial( {
-                  //     uniforms: {
-                  //         color:   { value: new THREE.Color( 0xffffff ) },
-                  //         texture: { value: this.spriteMap }
-                  //     }
-                  // } );
-
-                  /*
-                  track_point_cloud_geom.addAttribute('position', new THREE.BufferAttribute(positions, 3));
-                  track_point_cloud_geom.addAttribute('customColor', new THREE.BufferAttribute(colors, 3));
-                  track_point_cloud_geom.addAttribute('size', new THREE.BufferAttribute(sizes, 1));
-                  track_point_cloud_geom.computeBoundingBox();*/
 
                   if (start_lat === end_lat && start_lng === end_lng) {
                       continue;
@@ -601,11 +606,9 @@ var app = new Vue({
                   };
                   this.addToTrusted(track, v_index);
                   this.nodes[f].connections.push(track);
-                  console.log(track.spline);
                   this.all_tracks.push(track);
                 }
-            }
-            //node_tracks.push(node);
+            //}
         }
       }
       this.tracks_store = this.all_tracks;
@@ -640,7 +643,6 @@ var app = new Vue({
           index++;
         }
       }
-      //console.log("track points object", this.track_points_object);
       this.track_points_object.geometry.attributes.position.needsUpdate = true;
     },
     fast_get_spline_point: function (index, t) {
@@ -709,7 +711,6 @@ var app = new Vue({
             colors[(i * this.settings.num_track_line_control_points + j) * 6 + 4] = color.g;
             colors[(i * this.settings.num_track_line_control_points + j) * 6 + 5] = color.b;
           }
-          //console.log(i);
         }
       }
 
@@ -926,7 +927,6 @@ var app = new Vue({
       }
     },
     setupTween: function(node) {
-      console.log("doing the tween");
       this.clearTag();
       app.curr_node = node;
       this.addValidators();
@@ -936,6 +936,7 @@ var app = new Vue({
       //toggle left window if mobile
       this.toggleIfMobile(true);
       this.zoomToLocation(this.xyz_from_lat_lng(node.geoData.latitude, node.geoData.longitude, 1.3));
+      this.in_node_view = true;
     },
     zoomToLocation: function(pos) {
       var position = { x : this.camera.position.x, y: this.camera.position.y, z: this.camera.position.z };
@@ -946,11 +947,8 @@ var app = new Vue({
         var target = { x : pos.x, y: pos.y, z: pos.z };
       }
 
-
       target.z = target.z;
       target.x = target.x;
-
-      //console.log(target);
 
       var tween = new TWEEN.Tween(position).to(target, 1500);
 
@@ -1050,6 +1048,22 @@ var app = new Vue({
         }
       });
     },
+    getInnerQuorumSet: function(quorumSet) {
+      let innerQuorumSets = quorumSet.innerQuorumSets;
+      let validators = [];
+      let quorumValidators = [];
+      let validator = null;
+
+      for(let i = 0; i < innerQuorumSets.length; i++) {
+        quorumSet = innerQuorumSets[i].validators;
+        for(let j = 0; j < quorumSet.length; j++) {
+          validator = quorumSet[j];
+          quorumValidators.push(validator);
+        }
+      }
+
+      return quorumValidators;
+    },
     addValidators: function() {
       var validator_node;
       var validator;
@@ -1067,8 +1081,8 @@ var app = new Vue({
       $('#trust_index').empty();
       $('#validator_type').empty();
       $('#core_version').empty();
-      $('#validator_list').empty();
-      $('#trusted_by_list').empty();
+      //$('#validator_list').empty();
+      //$('#trusted_by_list').empty();
       $('#is_validating').empty();
       $('#overloaded').empty();
 
@@ -1081,23 +1095,6 @@ var app = new Vue({
       $('#is_validating').append(curr_node.isValidating ? "Validating" : "Not Validating");
       $('#overloaded').append(curr_node.statistics.overLoaded24HoursPercentage.toString() + "%");
 
-      for(var node in quorumArr) {
-        //nodes it trusted
-        validator = quorumArr[node];
-        //validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
-        //$('#validator_list').append(validator_node);
-        console.log("Adding to trusted list");
-        //this.trusted.push(this.nodes[validator.listPos]);
-
-      }
-
-      for(var node in trusted_by) {
-        validator = trusted_by[node];
-        // validator_node = '<a onclick="setupTween(nodes[' + validator.listPos + '])" href="#" class="list-group-item list-group-item-dark">' + this.getNodeName(validator) + '</a>';
-        // $('#trusted_by_list').append(validator_node); 
-
-        //this.trusted_by.push(this.nodes[validator.listPos]);
-      }
     },
     addOutgoingTag: function(tracks) {
       for(var i = 0; i < tracks.length; i++) {
@@ -1114,7 +1111,6 @@ var app = new Vue({
       return tracks;
     },
     shouldShowLink: function (link, baseNode) {
-      console.log(link);
       //change colours depending on connection type
       if(link.source === baseNode) {
         link.color = "#00ff00";
@@ -1160,6 +1156,7 @@ var app = new Vue({
       this.track_points_object = await this.generate_track_point_cloud();
       this.scene.add(this.track_points_object);
       this.toggleIfMobile(false);
+      this.in_node_view = false;
     },
     addValidators: function() {
       var validator_node;
@@ -1178,8 +1175,8 @@ var app = new Vue({
       $('#trust_index').empty();
       $('#validator_type').empty();
       $('#core_version').empty();
-      $('#validator_list').empty();
-      $('#trusted_by_list').empty();
+      //$('#validator_list').empty();
+      //$('#trusted_by_list').empty();
       $('#is_validating').empty();
       $('#overloaded').empty();
 
@@ -1288,8 +1285,7 @@ var app = new Vue({
       var spriteMaterial = new THREE.SpriteMaterial( 
           { map: texture } );
       var sprite = new THREE.Sprite( spriteMaterial );
-      sprite.scale.set(0.14,0.07,1.0);
-      //console.log(sprite);
+
       return sprite;  
   },
   createLabel: function(text, size, color, font, underlineColor) {
@@ -1377,6 +1373,12 @@ var app = new Vue({
     ctx.stroke();   
   },
   onDocumentMouseup: function (event){
+    if (Date.now() - this.lastMove < 31 || !this.in_node_view) { // 32 frames a second
+        return;
+    } else {
+      this.lastMove = Date.now();
+    }
+
     var pin;
     
     this.raycaster.setFromCamera( this.mouse, this.camera );
@@ -1392,7 +1394,6 @@ var app = new Vue({
           pin = this.findNode(this.INTERSECTED_CLICK.id);
           if(pin){
             // set a new color for closest object
-            //console.log(pin);
             pin.node.tag.visible = false;
           } 
         }
@@ -1419,6 +1420,12 @@ var app = new Vue({
     }
   },
   onDocumentMouseMove: function( event ) {
+    if (Date.now() - this.lastMove < 31 || !this.in_node_view) { // 32 frames a second
+        return;
+    } else {
+      this.lastMove = Date.now();
+    }
+
     event.preventDefault();
     this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
@@ -1437,7 +1444,6 @@ var app = new Vue({
             pin = this.findNode(this.INTERSECTED.id);
             if(pin){
                 // set a new color for closest object
-                //console.log(pin);
                 if(app.cur_node_pin != pin.id){
                     pin.node.tag.visible = false;
                 }
@@ -1454,7 +1460,6 @@ var app = new Vue({
         pin = this.findNode(this.INTERSECTED.id);
         if(pin){
           // set a new color for closest object
-          //console.log(pin);
           pin.node.tag.visible = true;
             
         } 
@@ -1475,6 +1480,25 @@ var app = new Vue({
     }
 
     return null; // The object was not found
+  },
+  findNodeByKey: function(key) {
+    for (var i = 0, len = app.nodes.length; i < len; i++) {
+      if (app.nodes[i].publicKey === key)
+        return app.nodes[i]; // Return as soon as the object is found
+    }
+
+    return null; // The object was not found
+  },
+  hasNodesInQuorum: function(node) {
+    if(node.quorumSet) {
+      if(node.quorumSet.validators.length > 0 || node.quorumSet.innerQuorumSets.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   },
   animate: function(time) {
     requestAnimationFrame(this.animate);
